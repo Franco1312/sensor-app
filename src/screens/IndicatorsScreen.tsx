@@ -9,57 +9,33 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/navigation/types';
 import { ScreenContainer, Header, ListItem } from '@/components/layout';
-import { AppText } from '@/components/common';
+import { AppText, TrendIcon } from '@/components/common';
 import { useTheme } from '@/theme/ThemeProvider';
 import { mockIndicators } from '@/utils/mockData';
+import {
+  INDICATOR_FREQUENCIES,
+  INDICATOR_CATEGORIES,
+  DEFAULT_FREQUENCY,
+  DEFAULT_CATEGORY,
+  IndicatorFrequency,
+} from '@/constants/indicators';
 import { Indicator } from '@/types';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-type FrequencyFilter = 'Diaria' | 'Semanal' | 'Mensual';
-type CategoryFilter = 'Todo' | 'Precios' | 'Monetaria' | 'Actividad' | 'Externo' | 'Finanzas';
-
 export const IndicatorsScreen: React.FC = () => {
   const { theme } = useTheme();
   const navigation = useNavigation<NavigationProp>();
-  const [frequencyFilter, setFrequencyFilter] = useState<FrequencyFilter>('Mensual');
-  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('Todo');
-
-  const categories: CategoryFilter[] = [
-    'Todo',
-    'Precios',
-    'Monetaria',
-    'Actividad',
-    'Externo',
-    'Finanzas',
-  ];
-  const frequencies: FrequencyFilter[] = ['Diaria', 'Semanal', 'Mensual'];
+  const [frequencyFilter, setFrequencyFilter] = useState<IndicatorFrequency>(DEFAULT_FREQUENCY);
+  const [categoryFilter, setCategoryFilter] = useState<string>(DEFAULT_CATEGORY);
 
   const filteredIndicators = mockIndicators.filter(indicator => {
-    if (categoryFilter !== 'Todo') {
-      const categoryMap: Record<CategoryFilter, string> = {
-        Todo: '',
-        Precios: 'precios',
-        Monetaria: 'monetaria',
-        Actividad: 'actividad',
-        Externo: 'externo',
-        Finanzas: 'finanzas',
-      };
-      return indicator.category === categoryMap[categoryFilter];
+    if (categoryFilter !== DEFAULT_CATEGORY) {
+      const categoryValue = INDICATOR_CATEGORIES.find(cat => cat.label === categoryFilter)?.value;
+      return categoryValue ? indicator.category === categoryValue : true;
     }
     return true;
   });
-
-  const getTrendIcon = (trend: 'up' | 'down' | 'neutral') => {
-    switch (trend) {
-      case 'up':
-        return '📈';
-      case 'down':
-        return '📉';
-      default:
-        return '➖';
-    }
-  };
 
   const getTrendColor = (trend: 'up' | 'down' | 'neutral') => {
     switch (trend) {
@@ -69,6 +45,17 @@ export const IndicatorsScreen: React.FC = () => {
         return theme.colors.error;
       default:
         return theme.colors.textSecondary;
+    }
+  };
+
+  const getTrendArrow = (trend: 'up' | 'down' | 'neutral') => {
+    switch (trend) {
+      case 'up':
+        return '↑';
+      case 'down':
+        return '↓';
+      default:
+        return '−';
     }
   };
 
@@ -82,24 +69,7 @@ export const IndicatorsScreen: React.FC = () => {
       <ListItem
         title={item.name}
         subtitle={`Actualizado: ${item.lastUpdate}`}
-        leftIcon={
-          <View
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: theme.radii.base,
-              backgroundColor:
-                item.trend === 'up'
-                  ? theme.colors.successLight
-                  : item.trend === 'down'
-                    ? theme.colors.errorLight
-                    : theme.colors.surfaceSecondary,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <AppText variant="lg">{getTrendIcon(item.trend)}</AppText>
-          </View>
-        }
+        leftIcon={<TrendIcon trend={item.trend} size={24} />}
         rightContent={
           <View style={{ alignItems: 'flex-end', gap: 4 }}>
             <AppText variant="base" weight="medium">
@@ -108,6 +78,9 @@ export const IndicatorsScreen: React.FC = () => {
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
               <AppText variant="sm" style={{ color: getTrendColor(item.trend) }}>
                 {changeValue}
+              </AppText>
+              <AppText variant="sm" style={{ color: getTrendColor(item.trend) }}>
+                {getTrendArrow(item.trend)}
               </AppText>
             </View>
           </View>
@@ -124,7 +97,7 @@ export const IndicatorsScreen: React.FC = () => {
   };
 
   return (
-    <ScreenContainer>
+    <ScreenContainer scrollable={false}>
       <Header
         title="Indicadores Económicos"
         leftIcon={<AppText variant="2xl">☰</AppText>}
@@ -144,7 +117,7 @@ export const IndicatorsScreen: React.FC = () => {
             padding: 4,
             gap: 4,
           }}>
-          {frequencies.map(freq => (
+          {INDICATOR_FREQUENCIES.map(freq => (
             <TouchableOpacity
               key={freq}
               onPress={() => setFrequencyFilter(freq)}
@@ -175,22 +148,26 @@ export const IndicatorsScreen: React.FC = () => {
           gap: theme.spacing.sm,
           paddingBottom: theme.spacing.sm,
         }}>
-        {categories.map(category => (
+        {INDICATOR_CATEGORIES.map(category => (
           <TouchableOpacity
-            key={category}
-            onPress={() => setCategoryFilter(category)}
+            key={category.label}
+            onPress={() => setCategoryFilter(category.label)}
             style={{
               paddingHorizontal: theme.spacing.base,
               paddingVertical: theme.spacing.sm,
               borderRadius: theme.radii.full,
               backgroundColor:
-                categoryFilter === category ? theme.colors.primary : theme.colors.surfaceSecondary,
+                categoryFilter === category.label
+                  ? theme.colors.primary
+                  : theme.colors.surfaceSecondary,
+              minHeight: 32,
+              alignSelf: 'flex-start',
             }}>
             <AppText
               variant="sm"
               weight="medium"
-              color={categoryFilter === category ? 'textPrimary' : 'textSecondary'}>
-              {category}
+              color={categoryFilter === category.label ? 'textPrimary' : 'textSecondary'}>
+              {category.label}
             </AppText>
           </TouchableOpacity>
         ))}

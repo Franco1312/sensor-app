@@ -42,23 +42,29 @@ export const Header: React.FC<HeaderProps> = ({
           }),
         },
       ]}>
-      <View style={{ width: 48, alignItems: 'flex-start' }}>
-        {leftIcon && onLeftPress && (
-          <TouchableOpacity onPress={onLeftPress} activeOpacity={0.7}>
+      <View style={{ width: 48, alignItems: 'flex-start', justifyContent: 'center' }}>
+        {leftIcon && (
+          <TouchableOpacity
+            onPress={onLeftPress}
+            activeOpacity={0.7}
+            style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
             {leftIcon}
           </TouchableOpacity>
         )}
       </View>
 
-      <View style={{ flex: 1, alignItems: 'center' }}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <AppText variant="lg" weight="bold">
           {title}
         </AppText>
       </View>
 
-      <View style={{ width: 48, alignItems: 'flex-end' }}>
-        {rightIcon && onRightPress && (
-          <TouchableOpacity onPress={onRightPress} activeOpacity={0.7}>
+      <View style={{ width: 48, alignItems: 'flex-end', justifyContent: 'center' }}>
+        {rightIcon && (
+          <TouchableOpacity
+            onPress={onRightPress}
+            activeOpacity={0.7}
+            style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
             {rightIcon}
           </TouchableOpacity>
         )}

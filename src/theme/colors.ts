@@ -25,9 +25,9 @@ export const lightColors = {
 
   // Status
   success: '#34C759',
-  successLight: '#E8F5E9',
+  successLight: 'rgba(52, 199, 89, 0.1)', // ~10% opacity like bg-positive/10
   error: '#FF3B30',
-  errorLight: '#FFEBEE',
+  errorLight: 'rgba(255, 59, 48, 0.1)', // ~10% opacity like bg-negative/10
   warning: '#FF9500',
   info: '#007AFF',
 
@@ -62,9 +62,9 @@ export const darkColors = {
 
   // Status
   success: '#34C759',
-  successLight: '#1B5E20',
+  successLight: 'rgba(52, 199, 89, 0.15)', // Slightly more visible in dark mode
   error: '#FF3B30',
-  errorLight: '#B71C1C',
+  errorLight: 'rgba(255, 59, 48, 0.15)', // Slightly more visible in dark mode
   warning: '#FF9500',
   info: '#0A84FF',
 

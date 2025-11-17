@@ -10,7 +10,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '@/navigation/types';
 import { ScreenContainer } from '@/components/layout';
-import { Card, AppText } from '@/components/common';
+import { Card, AppText, Chart } from '@/components/common';
 import { useTheme } from '@/theme/ThemeProvider';
 import { getIndicatorById } from '@/utils/mockData';
 
@@ -78,17 +78,27 @@ export const IndicatorDetailScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Chart Placeholder */}
+        {/* Chart */}
         <View
           style={{
-            height: 180,
-            backgroundColor: theme.colors.surfaceSecondary,
-            borderRadius: theme.radii.lg,
+            minHeight: 180,
             marginBottom: theme.spacing.base,
-            justifyContent: 'center',
-            alignItems: 'center',
+            paddingTop: theme.spacing.base,
           }}>
-          <AppText color="textSecondary">Gráfico de evolución</AppText>
+          <Chart height={148} />
+          {/* Chart labels */}
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              marginTop: theme.spacing.sm,
+            }}>
+            {['Ene', 'Mar', 'May', 'Jul', 'Sep', 'Nov'].map((label, index) => (
+              <AppText key={index} variant="xs" color="textSecondary" weight="bold">
+                {label}
+              </AppText>
+            ))}
+          </View>
         </View>
 
         {/* Time Range Selector */}
@@ -128,41 +138,38 @@ export const IndicatorDetailScreen: React.FC = () => {
             marginBottom: theme.spacing.lg,
             flexWrap: 'wrap',
           }}>
-          <Card style={{ flex: 1, minWidth: '45%' }}>
-            <AppText
-              variant="base"
-              weight="medium"
-              color="textSecondary"
-              style={{ marginBottom: theme.spacing.sm }}>
-              Último Valor
-            </AppText>
-            <AppText variant="2xl" weight="bold">
-              {indicator.value}
-            </AppText>
+          <Card style={{ flex: 1, minWidth: 158 }}>
+            <View style={{ gap: theme.spacing.sm }}>
+              <AppText variant="base" weight="medium" color="textSecondary">
+                Último Valor
+              </AppText>
+              <AppText variant="2xl" weight="bold" style={{ lineHeight: 32 }}>
+                {indicator.value}
+              </AppText>
+            </View>
           </Card>
-          <Card style={{ flex: 1, minWidth: '45%' }}>
-            <AppText
-              variant="base"
-              weight="medium"
-              color="textSecondary"
-              style={{ marginBottom: theme.spacing.sm }}>
-              Variación Mensual
-            </AppText>
-            <AppText variant="2xl" weight="bold" style={{ color: theme.colors.success }}>
-              {changeLabel}
-            </AppText>
+          <Card style={{ flex: 1, minWidth: 158 }}>
+            <View style={{ gap: theme.spacing.sm }}>
+              <AppText variant="base" weight="medium" color="textSecondary">
+                Variación Mensual
+              </AppText>
+              <AppText
+                variant="2xl"
+                weight="bold"
+                style={{ lineHeight: 32, color: theme.colors.success }}>
+                {changeLabel}
+              </AppText>
+            </View>
           </Card>
-          <Card style={{ flex: 1, minWidth: '45%' }}>
-            <AppText
-              variant="base"
-              weight="medium"
-              color="textSecondary"
-              style={{ marginBottom: theme.spacing.sm }}>
-              Última Actualización
-            </AppText>
-            <AppText variant="2xl" weight="bold">
-              {indicator.lastUpdate}
-            </AppText>
+          <Card style={{ flex: 1, minWidth: 158 }}>
+            <View style={{ gap: theme.spacing.sm }}>
+              <AppText variant="base" weight="medium" color="textSecondary">
+                Última Actualización
+              </AppText>
+              <AppText variant="2xl" weight="bold" style={{ lineHeight: 32 }}>
+                {indicator.lastUpdate}
+              </AppText>
+            </View>
           </Card>
         </View>
 

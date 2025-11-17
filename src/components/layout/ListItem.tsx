@@ -37,19 +37,17 @@ export const ListItem: React.FC<ListItemProps> = ({
           paddingHorizontal: theme.spacing.base,
           paddingVertical: theme.spacing.base,
           backgroundColor: theme.colors.surface,
-          borderRadius: theme.radii.base,
+          borderRadius: theme.radii.lg, // rounded-lg = 0.5rem
           borderWidth: 1,
           borderColor: theme.colors.border,
         },
         style,
       ]}>
       {leftIcon && (
-        <View style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
-          {leftIcon}
-        </View>
+        <View style={{ flexShrink: 0 }}>{leftIcon}</View>
       )}
 
-      <View style={{ flex: 1, gap: 2 }}>
+      <View style={{ flex: 1, flexGrow: 1, gap: 2 }}>
         <AppText variant="base" weight="medium" numberOfLines={1}>
           {title}
         </AppText>
@@ -60,7 +58,7 @@ export const ListItem: React.FC<ListItemProps> = ({
         )}
       </View>
 
-      {rightContent && <View>{rightContent}</View>}
+      {rightContent && <View style={{ flexShrink: 0 }}>{rightContent}</View>}
     </View>
   );
 

@@ -23,10 +23,10 @@ export const Card: React.FC<CardProps> = ({
 
   const cardStyle = {
     backgroundColor: theme.colors.surface,
-    borderRadius: theme.radii.lg,
+    borderRadius: theme.radii.xl, // rounded-xl = 1rem = 16px
     borderWidth: 1,
     borderColor: theme.colors.border,
-    padding: theme.spacing.base,
+    padding: theme.spacing.base, // p-4 = 16px
     ...(variant === 'elevated' && {
       shadowColor: theme.colors.textPrimary,
       shadowOffset: { width: 0, height: 2 },

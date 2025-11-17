@@ -20,12 +20,12 @@ export const Tag: React.FC<TagProps> = ({ label, variant = 'neutral', size = 'sm
     switch (variant) {
       case 'positive':
         return {
-          backgroundColor: theme.colors.successLight,
+          backgroundColor: theme.colors.successLight, // Using successLight which has opacity
           color: theme.colors.success,
         };
       case 'negative':
         return {
-          backgroundColor: theme.colors.errorLight,
+          backgroundColor: theme.colors.errorLight, // Using errorLight which has opacity
           color: theme.colors.error,
         };
       case 'primary':

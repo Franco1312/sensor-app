@@ -8,8 +8,10 @@ import { StatusBar, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
 import { TabIcon } from '@/components/common/TabIcon';
+import { SwipeableTabView } from '@/components/navigation/SwipeableTabView';
 import { RootStackParamList, MainTabParamList } from './types';
 
 // Screens
@@ -23,11 +25,30 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 /**
+ * Swipeable Tabs Wrapper
+ * Enables swipe gestures between all tabs
+ */
+const SwipeableTabsWrapper: React.FC = () => {
+  return (
+    <SwipeableTabView
+      tabNames={['Home', 'Indicators', 'Quotes', 'Settings']}
+      children={[
+        <HomeScreen key="home" />,
+        <IndicatorsScreen key="indicators" />,
+        <QuotesScreen key="quotes" />,
+        <SettingsScreen key="settings" />,
+      ]}
+    />
+  );
+};
+
+/**
  * Main Tab Navigator
- * Bottom tabs for primary navigation
+ * Bottom tabs for primary navigation with swipe support
  */
 const MainTabs = () => {
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tab.Navigator
@@ -39,9 +60,9 @@ const MainTabs = () => {
           backgroundColor: theme.colors.surface,
           borderTopColor: theme.colors.border,
           borderTopWidth: 1,
-          paddingBottom: 4,
+          paddingBottom: Math.max(insets.bottom, 4),
           paddingTop: 4,
-          height: 60,
+          height: 60 + Math.max(insets.bottom, 0),
         },
         tabBarLabelStyle: {
           fontSize: theme.typography.fontSize.xs,
@@ -50,7 +71,7 @@ const MainTabs = () => {
       }}>
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={SwipeableTabsWrapper}
         options={{
           tabBarLabel: 'Inicio',
           tabBarIcon: ({ focused, size }) => <TabIcon name="home" focused={focused} size={size} />,
@@ -58,7 +79,7 @@ const MainTabs = () => {
       />
       <Tab.Screen
         name="Indicators"
-        component={IndicatorsScreen}
+        component={SwipeableTabsWrapper}
         options={{
           tabBarLabel: 'Gráficos',
           tabBarIcon: ({ focused, size }) => <TabIcon name="chart" focused={focused} size={size} />,
@@ -66,7 +87,7 @@ const MainTabs = () => {
       />
       <Tab.Screen
         name="Quotes"
-        component={QuotesScreen}
+        component={SwipeableTabsWrapper}
         options={{
           tabBarLabel: 'Noticias',
           tabBarIcon: ({ focused, size }) => <TabIcon name="news" focused={focused} size={size} />,
@@ -74,7 +95,7 @@ const MainTabs = () => {
       />
       <Tab.Screen
         name="Settings"
-        component={SettingsScreen}
+        component={SwipeableTabsWrapper}
         options={{
           tabBarLabel: 'Ajustes',
           tabBarIcon: ({ focused, size }) => <TabIcon name="settings" focused={focused} size={size} />,

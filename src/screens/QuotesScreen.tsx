@@ -3,30 +3,38 @@
  * Based on detalle_cotizacion design
  */
 
-import React, { useState } from 'react';
-import { View, FlatList, TouchableOpacity } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, FlatList } from 'react-native';
 import { ScreenContainer, Header, ListItem } from '@/components/layout';
 import { AppText } from '@/components/common';
+import { CategoryTabs } from '@/components/navigation/CategoryTabs';
+import { CategoryPager } from '@/components/navigation/CategoryPager';
 import { useTheme } from '@/theme/ThemeProvider';
+import { useCategoryPager } from '@/hooks/useCategoryPager';
 import { mockQuotes } from '@/utils/mockData';
+import { QUOTE_CATEGORY_TABS, DEFAULT_QUOTE_CATEGORY, QuoteCategory } from '@/constants/quotes';
 import { Quote } from '@/types';
-
-type CategoryTab = 'Dólares' | 'Acciones' | 'Bonos' | 'Cripto';
 
 export const QuotesScreen: React.FC = () => {
   const { theme } = useTheme();
-  const [activeTab, setActiveTab] = useState<CategoryTab>('Dólares');
+  const categories = useMemo(
+    () => QUOTE_CATEGORY_TABS.map(tab => tab.value),
+    []
+  );
 
-  const tabs: CategoryTab[] = ['Dólares', 'Acciones', 'Bonos', 'Cripto'];
-
-  const categoryMap: Record<CategoryTab, string> = {
-    Dólares: 'dolares',
-    Acciones: 'acciones',
-    Bonos: 'bonos',
-    Cripto: 'cripto',
-  };
-
-  const filteredQuotes = mockQuotes.filter(quote => quote.category === categoryMap[activeTab]);
+  const {
+    pagerRef,
+    activeCategory,
+    initialIndex,
+    handlePageSelected,
+    handlePageScroll,
+    handlePageScrollStateChanged,
+    handleCategoryChange,
+    scrollEnabled,
+  } = useCategoryPager({
+    categories,
+    defaultCategory: DEFAULT_QUOTE_CATEGORY,
+  });
 
   const renderQuote = ({ item }: { item: Quote }) => {
     const isPositive = item.changePercent >= 0;
@@ -68,41 +76,18 @@ export const QuotesScreen: React.FC = () => {
   };
 
   return (
-    <ScreenContainer>
+    <ScreenContainer scrollable={false}>
       <Header
         title="Cotizaciones"
         leftIcon={<AppText variant="2xl">🔍</AppText>}
         rightIcon={<AppText variant="2xl">☀️</AppText>}
       />
 
-      {/* Category Tabs */}
-      <View
-        style={{
-          flexDirection: 'row',
-          borderBottomWidth: 1,
-          borderBottomColor: theme.colors.border,
-          backgroundColor: theme.colors.background,
-        }}>
-        {tabs.map(tab => (
-          <TouchableOpacity
-            key={tab}
-            onPress={() => setActiveTab(tab)}
-            style={{
-              flex: 1,
-              paddingVertical: theme.spacing.base,
-              alignItems: 'center',
-              borderBottomWidth: activeTab === tab ? 3 : 0,
-              borderBottomColor: activeTab === tab ? theme.colors.primary : 'transparent',
-            }}>
-            <AppText
-              variant="sm"
-              weight={activeTab === tab ? 'bold' : 'normal'}
-              color={activeTab === tab ? 'textPrimary' : 'textSecondary'}>
-              {tab}
-            </AppText>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <CategoryTabs
+        tabs={QUOTE_CATEGORY_TABS}
+        activeTab={activeCategory}
+        onTabPress={handleCategoryChange}
+      />
 
       {/* Last Update */}
       <View style={{ padding: theme.spacing.base, alignItems: 'center' }}>
@@ -111,15 +96,29 @@ export const QuotesScreen: React.FC = () => {
         </AppText>
       </View>
 
-      {/* Quotes List */}
-      <View style={{ flex: 1, paddingHorizontal: theme.spacing.base }}>
-        <FlatList
-          data={filteredQuotes}
-          renderItem={renderQuote}
-          keyExtractor={item => item.id}
-          contentContainerStyle={{ paddingTop: theme.spacing.md }}
-        />
-      </View>
+      {/* Swipeable Quotes List */}
+      <CategoryPager
+        pagerRef={pagerRef}
+        categories={categories}
+        initialIndex={initialIndex}
+        scrollEnabled={scrollEnabled}
+        onPageSelected={handlePageSelected}
+        onPageScroll={handlePageScroll}
+        onPageScrollStateChanged={handlePageScrollStateChanged}
+        renderPage={(category: QuoteCategory) => {
+          const categoryQuotes = mockQuotes.filter(quote => quote.category === category);
+          return (
+            <View style={{ flex: 1, paddingHorizontal: theme.spacing.base }}>
+              <FlatList
+                data={categoryQuotes}
+                renderItem={renderQuote}
+                keyExtractor={item => item.id}
+                contentContainerStyle={{ paddingTop: theme.spacing.md }}
+              />
+            </View>
+          );
+        }}
+      />
     </ScreenContainer>
   );
 };

@@ -48,9 +48,11 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
     );
   }
 
+  // When not scrollable, use regular View to avoid any safe area padding
+  // The safe area is handled by the tab bar at the bottom
   return (
-    <SafeAreaView style={[containerStyle, style]} edges={safeAreaEdges}>
-      <View style={{ flex: 1 }}>{children}</View>
-    </SafeAreaView>
+    <View style={[containerStyle, style, { flex: 1 }]}>
+      {children}
+    </View>
   );
 };

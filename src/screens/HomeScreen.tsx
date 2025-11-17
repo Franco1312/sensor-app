@@ -4,12 +4,12 @@
  */
 
 import React from 'react';
-import { View, FlatList } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/navigation/types';
 import { ScreenContainer, Header, SectionTitle } from '@/components/layout';
-import { Card, AppText, Tag } from '@/components/common';
+import { Card, AppText, Tag, MiniChart } from '@/components/common';
 import { useTheme } from '@/theme/ThemeProvider';
 import { mockIndicators, mockQuotes } from '@/utils/mockData';
 import { Indicator, Quote } from '@/types';
@@ -26,7 +26,6 @@ export const HomeScreen: React.FC = () => {
 
     return (
       <Card
-        style={{ flex: 1, margin: theme.spacing.sm }}
         onPress={() =>
           navigation.navigate('IndicatorDetail', {
             indicatorId: item.id,
@@ -40,21 +39,18 @@ export const HomeScreen: React.FC = () => {
           <AppText variant="3xl" weight="bold" style={{ lineHeight: 32 }}>
             {item.value}
           </AppText>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.sm, flexWrap: 'wrap' }}>
             <Tag
               label={changeLabel}
               variant={isPositive ? 'positive' : item.trend === 'down' ? 'negative' : 'neutral'}
             />
+            <AppText variant="xs" color="textSecondary">
+              Actualizado: {item.lastUpdate}
+            </AppText>
           </View>
-          {/* Placeholder for chart - in production use react-native-svg or chart library */}
-          <View
-            style={{
-              height: 60,
-              marginTop: theme.spacing.sm,
-              backgroundColor: theme.colors.surfaceSecondary,
-              borderRadius: theme.radii.base,
-            }}
-          />
+          <View style={{ minHeight: 60, marginTop: theme.spacing.sm }}>
+            <MiniChart trend={item.trend} height={60} />
+          </View>
         </View>
       </Card>
     );
@@ -66,7 +62,6 @@ export const HomeScreen: React.FC = () => {
 
     return (
       <Card
-        style={{ flex: 1, margin: theme.spacing.sm }}
         onPress={() => {
           // Navigate to quote detail if needed
         }}>
@@ -77,25 +72,22 @@ export const HomeScreen: React.FC = () => {
           <AppText variant="3xl" weight="bold" style={{ lineHeight: 32 }}>
             {item.sellPrice}
           </AppText>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.sm, flexWrap: 'wrap' }}>
             <Tag label={changeLabel} variant={isPositive ? 'positive' : 'negative'} />
+            <AppText variant="xs" color="textSecondary">
+              Actualizado: {item.lastUpdate}
+            </AppText>
           </View>
-          {/* Placeholder for chart */}
-          <View
-            style={{
-              height: 60,
-              marginTop: theme.spacing.sm,
-              backgroundColor: theme.colors.surfaceSecondary,
-              borderRadius: theme.radii.base,
-            }}
-          />
+          <View style={{ minHeight: 60, marginTop: theme.spacing.sm }}>
+            <MiniChart trend={isPositive ? 'up' : 'down'} height={60} />
+          </View>
         </View>
       </Card>
     );
   };
 
   return (
-    <ScreenContainer>
+    <ScreenContainer scrollable={false}>
       <Header
         title="Radar Económico"
         leftIcon={
@@ -110,25 +102,37 @@ export const HomeScreen: React.FC = () => {
         }
       />
 
-      <SectionTitle title="Indicadores Principales" />
-      <FlatList
-        data={mockIndicators.slice(0, 4)}
-        renderItem={renderIndicatorCard}
-        keyExtractor={item => item.id}
-        numColumns={2}
-        scrollEnabled={false}
-        contentContainerStyle={{ paddingHorizontal: theme.spacing.base }}
-      />
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: theme.spacing.lg }}
+        showsVerticalScrollIndicator={false}>
+        <SectionTitle title="Indicadores Principales" />
+        <View
+          style={{
+            paddingHorizontal: theme.spacing.base,
+            marginBottom: theme.spacing.lg,
+            gap: theme.spacing.base,
+          }}>
+          {mockIndicators.slice(0, 4).map(item => (
+            <View key={item.id}>
+              {renderIndicatorCard({ item })}
+            </View>
+          ))}
+        </View>
 
-      <SectionTitle title="Cotizaciones de Mercado" />
-      <FlatList
-        data={mockQuotes.slice(0, 4)}
-        renderItem={renderQuoteCard}
-        keyExtractor={item => item.id}
-        numColumns={2}
-        scrollEnabled={false}
-        contentContainerStyle={{ paddingHorizontal: theme.spacing.base }}
-      />
+        <SectionTitle title="Cotizaciones de Mercado" />
+        <View
+          style={{
+            paddingHorizontal: theme.spacing.base,
+            gap: theme.spacing.base,
+          }}>
+          {mockQuotes.slice(0, 4).map(item => (
+            <View key={item.id}>
+              {renderQuoteCard({ item })}
+            </View>
+          ))}
+        </View>
+      </ScrollView>
     </ScreenContainer>
   );
 };
