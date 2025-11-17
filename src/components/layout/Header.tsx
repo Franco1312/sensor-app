@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
 import { AppText } from '../common/AppText';
 
@@ -25,6 +26,7 @@ export const Header: React.FC<HeaderProps> = ({
   showBorder = true,
 }) => {
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
 
   return (
     <View
@@ -34,7 +36,8 @@ export const Header: React.FC<HeaderProps> = ({
           alignItems: 'center',
           justifyContent: 'space-between',
           paddingHorizontal: theme.spacing.base,
-          paddingVertical: theme.spacing.md,
+          paddingTop: Math.max(insets.top, theme.spacing.md),
+          paddingBottom: theme.spacing.md,
           backgroundColor: theme.colors.background,
           ...(showBorder && {
             borderBottomWidth: 1,
@@ -53,8 +56,8 @@ export const Header: React.FC<HeaderProps> = ({
         )}
       </View>
 
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <AppText variant="lg" weight="bold">
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: theme.spacing.sm, minWidth: 0 }}>
+        <AppText variant="lg" weight="bold" numberOfLines={1} ellipsizeMode="tail" style={{ textAlign: 'center' }}>
           {title}
         </AppText>
       </View>
