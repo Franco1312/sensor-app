@@ -17,7 +17,14 @@ export const SectionTitle: React.FC<SectionTitleProps> = ({ title, style }) => {
 
   return (
     <View
-      style={[{ paddingHorizontal: theme.spacing.base, paddingTop: theme.spacing.base }, style]}>
+      style={[
+        {
+          paddingHorizontal: theme.spacing.base,
+          paddingTop: theme.spacing.lg,
+          paddingBottom: theme.spacing.md,
+        },
+        style,
+      ]}>
       <AppText variant="lg" weight="bold">
         {title}
       </AppText>
