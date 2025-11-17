@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Radar Económico - Cotizaciones</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#F4D35E",
+              "background-light": "#FAFAFA",
+              "card-light": "#FFFFFF",
+              "text-light-primary": "#1F2937",
+              "text-light-secondary": "#6B7280",
+              "border-light": "#E5E7EB",
+              "positive": "#2ECC71",
+              "negative": "#E74C3C"
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {
+                "DEFAULT": "0.5rem", 
+                "lg": "0.75rem", 
+                "xl": "1rem", 
+                "full": "9999px"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light group/design-root overflow-x-hidden">
+<div class="sticky top-0 z-10 flex items-center bg-background-light p-4 pb-2 justify-between border-b border-border-light">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 text-text-light-primary">
+<span class="material-symbols-outlined text-2xl">search</span>
+</button>
+<h1 class="text-text-light-primary text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Cotizaciones</h1>
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 text-text-light-primary">
+<span class="material-symbols-outlined text-2xl">light_mode</span>
+</button>
+</div>
+<div class="sticky top-[68px] z-10 bg-background-light">
+<div class="flex border-b border-border-light px-4 justify-between">
+<a class="flex flex-col items-center justify-center border-b-[3px] border-primary text-text-light-primary pb-[13px] pt-4 flex-1" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Dólares</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-light-secondary pb-[13px] pt-4 flex-1" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Acciones</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-light-secondary pb-[13px] pt-4 flex-1" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Bonos</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-light-secondary pb-[13px] pt-4 flex-1" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Cripto</p>
+</a>
+</div>
+</div>
+<main class="flex-1 px-4 py-4">
+<p class="text-text-light-secondary text-xs font-normal leading-normal pb-4 text-center">Actualizado: 14:32:05 hs</p>
+<div class="space-y-3">
+<div class="flex items-center gap-4 bg-card-light rounded-lg p-3 justify-between border border-gray-200/80">
+<div class="flex flex-col justify-center flex-grow">
+<p class="text-text-light-primary text-base font-medium leading-normal line-clamp-1">Dólar Blue</p>
+<p class="text-text-light-secondary text-sm font-normal leading-normal line-clamp-2">Venta: $1.250,50</p>
+</div>
+<div class="flex flex-col items-end shrink-0">
+<p class="text-positive text-base font-medium leading-normal">+1.50%</p>
+<p class="text-positive text-xs font-normal leading-normal">+$18,50</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-card-light rounded-lg p-3 justify-between border border-gray-200/80">
+<div class="flex flex-col justify-center flex-grow">
+<p class="text-text-light-primary text-base font-medium leading-normal line-clamp-1">Dólar Oficial</p>
+<p class="text-text-light-secondary text-sm font-normal leading-normal line-clamp-2">Venta: $920,00</p>
+</div>
+<div class="flex flex-col items-end shrink-0">
+<p class="text-negative text-base font-medium leading-normal">-0.25%</p>
+<p class="text-negative text-xs font-normal leading-normal">-$2,30</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-card-light rounded-lg p-3 justify-between border border-gray-200/80">
+<div class="flex flex-col justify-center flex-grow">
+<p class="text-text-light-primary text-base font-medium leading-normal line-clamp-1">Dólar MEP</p>
+<p class="text-text-light-secondary text-sm font-normal leading-normal line-clamp-2">Venta: $1.215,70</p>
+</div>
+<div class="flex flex-col items-end shrink-0">
+<p class="text-positive text-base font-medium leading-normal">+0.88%</p>
+<p class="text-positive text-xs font-normal leading-normal">+$10,60</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-card-light rounded-lg p-3 justify-between border border-gray-200/80">
+<div class="flex flex-col justify-center flex-grow">
+<p class="text-text-light-primary text-base font-medium leading-normal line-clamp-1">Dólar CCL</p>
+<p class="text-text-light-secondary text-sm font-normal leading-normal line-clamp-2">Venta: $1.240,10</p>
+</div>
+<div class="flex flex-col items-end shrink-0">
+<p class="text-text-light-secondary text-base font-medium leading-normal">0.00%</p>
+<p class="text-text-light-secondary text-xs font-normal leading-normal">$0,00</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-card-light rounded-lg p-3 justify-between border border-gray-200/80">
+<div class="flex flex-col justify-center flex-grow">
+<p class="text-text-light-primary text-base font-medium leading-normal line-clamp-1">Dólar Tarjeta</p>
+<p class="text-text-light-secondary text-sm font-normal leading-normal line-clamp-2">Venta: $1.472,00</p>
+</div>
+<div class="flex flex-col items-end shrink-0">
+<p class="text-negative text-base font-medium leading-normal">-0.25%</p>
+<p class="text-negative text-xs font-normal leading-normal">-$3,68</p>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>
