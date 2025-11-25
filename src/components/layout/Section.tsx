@@ -1,18 +1,18 @@
 /**
- * SectionTitle - Section heading component
+ * Section - Section heading component
  */
 
 import React from 'react';
 import { View } from 'react-native';
-import { AppText } from '../common/AppText';
+import { Text } from '@/components/ui';
 import { useTheme } from '@/theme/ThemeProvider';
 
-interface SectionTitleProps {
+interface SectionProps {
   title: string;
   style?: object;
 }
 
-export const SectionTitle: React.FC<SectionTitleProps> = ({ title, style }) => {
+export const Section: React.FC<SectionProps> = ({ title, style }) => {
   const { theme } = useTheme();
 
   return (
@@ -25,9 +25,9 @@ export const SectionTitle: React.FC<SectionTitleProps> = ({ title, style }) => {
         },
         style,
       ]}>
-      <AppText variant="lg" weight="bold">
+      <Text variant="lg" weight="bold">
         {title}
-      </AppText>
+      </Text>
     </View>
   );
 };

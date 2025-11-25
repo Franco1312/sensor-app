@@ -11,7 +11,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/navigation/types';
-import { DataCard } from './DataCard';
+import { DataCard } from '@/components/common/DataCard';
 import { Indicator } from '@/types';
 import { formatChangePercent } from '@/utils/formatting';
 

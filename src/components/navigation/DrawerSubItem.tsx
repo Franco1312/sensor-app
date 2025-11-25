@@ -3,8 +3,8 @@
  */
 
 import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
-import { AppText } from '@/components/common/AppText';
+import { TouchableOpacity } from 'react-native';
+import { Text } from '@/components/ui';
 import { useTheme } from '@/theme/ThemeProvider';
 
 interface DrawerSubItemProps {
@@ -20,35 +20,26 @@ export const DrawerSubItem: React.FC<DrawerSubItemProps> = ({ label, isActive, o
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.7}
-      style={[
-        styles.container,
-        {
-          flexDirection: 'row',
-          alignItems: 'center',
-          paddingHorizontal: theme.spacing.base,
-          paddingVertical: theme.spacing.sm,
-          paddingLeft: theme.spacing.xl + theme.spacing.base,
-          marginLeft: theme.spacing.base,
-          backgroundColor: isActive ? theme.colors.primaryLight : 'transparent',
-          borderLeftWidth: isActive ? 3 : 0,
-          borderLeftColor: isActive ? theme.colors.primary : 'transparent',
-        },
-      ]}>
-      <AppText
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: theme.spacing.base,
+        paddingVertical: theme.spacing.sm,
+        paddingLeft: theme.spacing.xl + theme.spacing.base,
+        marginLeft: theme.spacing.base,
+        backgroundColor: isActive ? theme.colors.primaryLight : 'transparent',
+        borderLeftWidth: isActive ? 3 : 0,
+        borderLeftColor: isActive ? theme.colors.primary : 'transparent',
+      }}>
+      <Text
         variant="sm"
         weight={isActive ? 'semibold' : 'medium'}
         style={{
           color: isActive ? theme.colors.textPrimary : theme.colors.textSecondary,
         }}>
         {label}
-      </AppText>
+      </Text>
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    // Styles handled by inline style
-  },
-});
 

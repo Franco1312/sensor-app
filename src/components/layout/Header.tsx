@@ -7,7 +7,7 @@ import { View, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useDrawerContext } from '@/context/DrawerContext';
-import { AppText } from '../common/AppText';
+import { Text } from '@/components/ui';
 import { HamburgerIcon } from '../common/HamburgerIcon';
 
 interface HeaderProps {
@@ -67,9 +67,9 @@ export const Header: React.FC<HeaderProps> = ({
       </View>
 
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: theme.spacing.sm, minWidth: 0 }}>
-        <AppText variant="lg" weight="bold" numberOfLines={1} ellipsizeMode="tail" style={{ textAlign: 'center' }}>
+        <Text variant="lg" weight="bold" numberOfLines={1} ellipsizeMode="tail" style={{ textAlign: 'center' }}>
           {title}
-        </AppText>
+        </Text>
       </View>
 
       <View style={{ width: 48, alignItems: 'flex-end', justifyContent: 'center' }}>

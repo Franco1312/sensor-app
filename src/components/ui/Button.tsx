@@ -1,5 +1,5 @@
 /**
- * AppButton - Button component with theme support
+ * Button - Button component with theme support
  */
 
 import React from 'react';
@@ -9,10 +9,10 @@ import {
   ActivityIndicator,
   ViewStyle,
 } from 'react-native';
-import { AppText } from './AppText';
+import { Text } from './Text';
 import { useTheme } from '@/theme/ThemeProvider';
 
-interface AppButtonProps extends Omit<TouchableOpacityProps, 'style'> {
+interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
   title: string;
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
@@ -20,7 +20,7 @@ interface AppButtonProps extends Omit<TouchableOpacityProps, 'style'> {
   style?: ViewStyle;
 }
 
-export const AppButton: React.FC<AppButtonProps> = ({
+export const Button: React.FC<ButtonProps> = ({
   title,
   variant = 'primary',
   size = 'md',
@@ -99,9 +99,9 @@ export const AppButton: React.FC<AppButtonProps> = ({
           color={variant === 'primary' ? theme.colors.textPrimary : theme.colors.primary}
         />
       ) : (
-        <AppText weight={variant === 'primary' ? 'bold' : 'medium'} color={getTextColor()}>
+        <Text weight={variant === 'primary' ? 'bold' : 'medium'} color={getTextColor()}>
           {title}
-        </AppText>
+        </Text>
       )}
     </TouchableOpacity>
   );

@@ -1,19 +1,19 @@
 /**
- * Tag - Badge/Tag component for status indicators
+ * Badge - Badge component for status indicators
  */
 
 import React from 'react';
 import { View } from 'react-native';
-import { AppText } from './AppText';
+import { Text } from './Text';
 import { useTheme } from '@/theme/ThemeProvider';
 
-interface TagProps {
+interface BadgeProps {
   label: string;
   variant?: 'positive' | 'negative' | 'neutral' | 'primary';
   size?: 'sm' | 'md';
 }
 
-export const Tag: React.FC<TagProps> = ({ label, variant = 'neutral', size = 'sm' }) => {
+export const Badge: React.FC<BadgeProps> = ({ label, variant = 'neutral', size = 'sm' }) => {
   const { theme } = useTheme();
 
   const getVariantStyle = () => {
@@ -54,12 +54,12 @@ export const Tag: React.FC<TagProps> = ({ label, variant = 'neutral', size = 'sm
           paddingVertical: size === 'sm' ? 2 : 4,
         },
       ]}>
-      <AppText
+      <Text
         variant={size === 'sm' ? 'xs' : 'sm'}
         weight="semibold"
         style={{ color: variantStyle.color }}>
         {label}
-      </AppText>
+      </Text>
     </View>
   );
 };

@@ -10,7 +10,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { RootStackParamList, MainTabParamList } from '@/navigation/types';
 import { Header, ListItem } from '@/components/layout';
-import { AppText, TrendIcon, Skeleton, Card, FilterButton, ChangeDisplay } from '@/components/common';
+import { Text, TrendIcon, Skeleton, Card, FilterButton, ChangeDisplay } from '@/components/common';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Theme } from '@/theme/theme';
 import { formatUpdatedLabel } from '@/constants/labels';
@@ -40,13 +40,10 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({ selected, onSelect, the
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={[
-        styles.categoryFilterContent,
-        {
-          paddingHorizontal: theme.spacing.base,
-          gap: theme.spacing.sm,
-        },
-      ]}>
+      contentContainerStyle={{
+        paddingHorizontal: theme.spacing.base,
+        gap: theme.spacing.sm,
+      }}>
       {INDICATOR_CATEGORIES.map(category => (
         <FilterButton
           key={category.label}
@@ -107,9 +104,9 @@ export const IndicatorsScreen: React.FC = () => {
         leftIcon={<TrendIcon trend={item.trend} size={24} />}
         rightContent={
           <View style={styles.rightContent}>
-            <AppText variant="base" weight="medium">
+            <Text variant="base" weight="medium">
               {item.value}
-            </AppText>
+            </Text>
             <ChangeDisplay changePercent={item.changePercent} trend={item.trend} />
           </View>
         }
@@ -170,15 +167,6 @@ export const IndicatorsScreen: React.FC = () => {
 // ============================================================================
 
 const styles = StyleSheet.create({
-  categoryFilterContent: {
-    // Styles handled by inline style
-  },
-  categoryButton: {
-    // Styles handled by inline style
-  },
-  listContainer: {
-    // Styles handled by inline style
-  },
   rightContent: {
     alignItems: 'flex-end',
     gap: 4,

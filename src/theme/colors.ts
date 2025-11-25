@@ -38,6 +38,9 @@ export const lightColors = {
   neutral500: '#737373',
   neutral800: '#262626',
   neutral900: '#171717',
+
+  // Overlays
+  overlay: 'rgba(0, 0, 0, 0.5)',
 };
 
 export const darkColors = {
@@ -75,6 +78,9 @@ export const darkColors = {
   neutral500: '#8E8E93',
   neutral800: '#D1D1D1',
   neutral900: '#EAEAEA',
+
+  // Overlays
+  overlay: 'rgba(0, 0, 0, 0.7)',
 };
 
 export type Colors = typeof lightColors;

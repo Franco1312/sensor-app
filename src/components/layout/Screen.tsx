@@ -1,5 +1,5 @@
 /**
- * ScreenContainer - Wrapper for screens with safe area and theme
+ * Screen - Wrapper for screens with safe area and theme
  */
 
 import React, { ReactNode } from 'react';
@@ -7,13 +7,13 @@ import { View, ScrollView, ScrollViewProps } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
 
-interface ScreenContainerProps extends ScrollViewProps {
+interface ScreenProps extends ScrollViewProps {
   children: ReactNode;
   scrollable?: boolean;
   safeAreaEdges?: ('top' | 'bottom' | 'left' | 'right')[];
 }
 
-export const ScreenContainer: React.FC<ScreenContainerProps> = ({
+export const Screen: React.FC<ScreenProps> = ({
   children,
   scrollable = true,
   safeAreaEdges = ['top', 'bottom'],

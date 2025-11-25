@@ -5,8 +5,8 @@
 
 import React, { useMemo, useEffect } from 'react';
 import { View, FlatList } from 'react-native';
-import { ScreenContainer, Header, ListItem } from '@/components/layout';
-import { AppText } from '@/components/common';
+import { Screen, Header, ListItem } from '@/components/layout';
+import { Text } from '@/components/common';
 import { CategoryTabs } from '@/components/navigation/CategoryTabs';
 import { CategoryPager } from '@/components/navigation/CategoryPager';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -64,21 +64,21 @@ export const QuotesScreen: React.FC = () => {
         subtitle={`Venta: ${item.sellPrice}`}
         rightContent={
           <View style={{ alignItems: 'flex-end', gap: 4 }}>
-            <AppText
+            <Text
               variant="base"
               weight="medium"
               style={{
                 color: isPositive ? theme.colors.success : theme.colors.error,
               }}>
               {changeLabel}
-            </AppText>
-            <AppText
+            </Text>
+            <Text
               variant="xs"
               style={{
                 color: isPositive ? theme.colors.success : theme.colors.error,
               }}>
               {changeValue}
-            </AppText>
+            </Text>
           </View>
         }
         style={{
@@ -93,7 +93,7 @@ export const QuotesScreen: React.FC = () => {
   };
 
   return (
-    <ScreenContainer scrollable={false}>
+    <Screen scrollable={false}>
       <Header title="Cotizaciones" />
 
       <CategoryTabs
@@ -104,9 +104,9 @@ export const QuotesScreen: React.FC = () => {
 
       {/* Last Update */}
       <View style={{ padding: theme.spacing.base, alignItems: 'center' }}>
-        <AppText variant="xs" color="textSecondary">
+        <Text variant="xs" color="textSecondary">
           Actualizado: 14:32:05 hs
-        </AppText>
+        </Text>
       </View>
 
       {/* Swipeable Quotes List */}
@@ -132,6 +132,6 @@ export const QuotesScreen: React.FC = () => {
           );
         }}
       />
-    </ScreenContainer>
+    </Screen>
   );
 };

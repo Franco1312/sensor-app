@@ -5,7 +5,7 @@
 import React, { ReactNode } from 'react';
 import { View, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
-import { AppText } from '../common/AppText';
+import { Text } from '@/components/ui';
 
 interface ListItemProps extends Omit<TouchableOpacityProps, 'style'> {
   title: string;
@@ -48,13 +48,13 @@ export const ListItem: React.FC<ListItemProps> = ({
       )}
 
       <View style={{ flex: 1, flexGrow: 1, gap: 2 }}>
-        <AppText variant="base" weight="medium" numberOfLines={1}>
+        <Text variant="base" weight="medium" numberOfLines={1}>
           {title}
-        </AppText>
+        </Text>
         {subtitle && (
-          <AppText variant="sm" color="textSecondary" numberOfLines={2}>
+          <Text variant="sm" color="textSecondary" numberOfLines={2}>
             {subtitle}
-          </AppText>
+          </Text>
         )}
       </View>
 

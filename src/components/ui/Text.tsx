@@ -1,19 +1,19 @@
 /**
- * AppText - Typography component that uses theme
+ * Text - Typography component that uses theme
  */
 
 import React from 'react';
-import { Text, TextProps } from 'react-native';
+import { Text as RNText, TextProps as RNTextProps } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 
-interface AppTextProps extends TextProps {
+interface TextProps extends RNTextProps {
   variant?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
   weight?: 'normal' | 'medium' | 'semibold' | 'bold' | 'extrabold';
   color?: 'primary' | 'textPrimary' | 'textSecondary' | 'textTertiary' | 'success' | 'error';
   children: React.ReactNode;
 }
 
-export const AppText: React.FC<AppTextProps> = ({
+export const Text: React.FC<TextProps> = ({
   variant = 'base',
   weight = 'normal',
   color = 'textPrimary',
@@ -31,7 +31,7 @@ export const AppText: React.FC<AppTextProps> = ({
   // Note: For custom fonts (Inter), you'll need to link them in native code
   // For now, using system fonts with fontWeight
   return (
-    <Text
+    <RNText
       style={[
         {
           fontSize,
@@ -42,6 +42,6 @@ export const AppText: React.FC<AppTextProps> = ({
       ]}
       {...props}>
       {children}
-    </Text>
+    </RNText>
   );
 };

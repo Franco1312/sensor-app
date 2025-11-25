@@ -3,10 +3,9 @@
  */
 
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native';
-import { ScreenContainer } from '@/components/layout';
-import { AppText, AppButton } from '@/components/common';
-import { InputIcon, ChartIcon } from '@/components/common';
+import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native';
+import { Screen } from '@/components/layout';
+import { Text, Button, Input, ChartIcon } from '@/components/common';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/context/AuthContext';
 import { login, requestPasswordReset, LoginRequest } from '@/services/auth-api';
@@ -57,7 +56,7 @@ export const LoginScreen: React.FC = () => {
   };
 
   return (
-    <ScreenContainer scrollable={false}>
+    <Screen scrollable={false}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -85,96 +84,57 @@ export const LoginScreen: React.FC = () => {
                 ]}>
                 <ChartIcon size={32} />
               </View>
-              <AppText variant="3xl" weight="bold" style={{ marginBottom: theme.spacing.sm, textAlign: 'center' }}>
+              <Text variant="3xl" weight="bold" style={{ marginBottom: theme.spacing.sm, textAlign: 'center' }}>
                 Bienvenido de vuelta
-              </AppText>
-              <AppText variant="base" color="textSecondary" style={{ textAlign: 'center' }}>
+              </Text>
+              <Text variant="base" color="textSecondary" style={{ textAlign: 'center' }}>
                 Inicia sesión para continuar en Radar Económico
-              </AppText>
+              </Text>
             </View>
 
             {/* Login Form */}
             <View style={styles.form}>
               {/* Email or User Field */}
-              <View style={[styles.inputContainer, { marginBottom: theme.spacing.base }]}>
-                <AppText variant="sm" weight="medium" style={{ marginBottom: theme.spacing.xs, color: theme.colors.textPrimary }}>
-                  Email o Usuario
-                </AppText>
-                <View style={styles.inputWrapper}>
-                  <View style={styles.iconLeft}>
-                    <InputIcon name="person" size={20} />
-                  </View>
-                  <TextInput
-                    style={[
-                      styles.input,
-                      {
-                        backgroundColor: theme.colors.background,
-                        borderColor: theme.colors.border,
-                        color: theme.colors.textPrimary,
-                        paddingLeft: 40,
-                      },
-                    ]}
-                    placeholder="Ingresa tu email o usuario"
-                    placeholderTextColor={theme.colors.textSecondary}
-                    value={email}
-                    onChangeText={setEmail}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoComplete="email"
-                    editable={!loading}
-                  />
-                </View>
-              </View>
+              <Input
+                label="Email o Usuario"
+                leftIcon="person"
+                placeholder="Ingresa tu email o usuario"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
+                editable={!loading}
+                containerStyle={{ marginBottom: theme.spacing.base }}
+              />
 
               {/* Password Field */}
-              <View style={[styles.inputContainer, { marginBottom: theme.spacing.sm }]}>
-                <AppText variant="sm" weight="medium" style={{ marginBottom: theme.spacing.xs, color: theme.colors.textPrimary }}>
-                  Contraseña
-                </AppText>
-                <View style={styles.inputWrapper}>
-                  <View style={styles.iconLeft}>
-                    <InputIcon name="lock" size={20} />
-                  </View>
-                  <TextInput
-                    style={[
-                      styles.input,
-                      {
-                        backgroundColor: theme.colors.background,
-                        borderColor: theme.colors.border,
-                        color: theme.colors.textPrimary,
-                        paddingLeft: 40,
-                        paddingRight: 40,
-                      },
-                    ]}
-                    placeholder="Ingresa tu contraseña"
-                    placeholderTextColor={theme.colors.textSecondary}
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!showPassword}
-                    autoCapitalize="none"
-                    editable={!loading}
-                  />
-                  <TouchableOpacity
-                    style={styles.iconRight}
-                    onPress={() => setShowPassword(!showPassword)}
-                    activeOpacity={0.7}>
-                    <InputIcon name={showPassword ? 'visibility_off' : 'visibility'} size={20} />
-                  </TouchableOpacity>
-                </View>
-              </View>
+              <Input
+                label="Contraseña"
+                leftIcon="lock"
+                rightIcon={showPassword ? 'visibility_off' : 'visibility'}
+                onRightIconPress={() => setShowPassword(!showPassword)}
+                placeholder="Ingresa tu contraseña"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
+                editable={!loading}
+                containerStyle={{ marginBottom: theme.spacing.sm }}
+              />
 
               {/* Forgot Password Link */}
               <TouchableOpacity
                 onPress={handleForgotPassword}
                 activeOpacity={0.7}
                 style={{ alignSelf: 'flex-end', marginBottom: theme.spacing.base }}>
-                <AppText variant="sm" weight="medium" style={{ color: theme.colors.primary }}>
+                <Text variant="sm" weight="medium" style={{ color: theme.colors.primary }}>
                   ¿Olvidaste tu contraseña?
-                </AppText>
+                </Text>
               </TouchableOpacity>
 
               {/* Login Button */}
-              <AppButton
+              <Button
                 title="Iniciar Sesión"
                 variant="primary"
                 onPress={handleLogin}
@@ -187,9 +147,9 @@ export const LoginScreen: React.FC = () => {
             {/* Divider */}
             <View style={[styles.divider, { marginVertical: theme.spacing.lg }]}>
               <View style={[styles.dividerLine, { backgroundColor: theme.colors.border }]} />
-              <AppText variant="xs" weight="medium" color="textSecondary" style={{ paddingHorizontal: theme.spacing.base }}>
+              <Text variant="xs" weight="medium" color="textSecondary" style={{ paddingHorizontal: theme.spacing.base }}>
                 O
-              </AppText>
+              </Text>
               <View style={[styles.dividerLine, { backgroundColor: theme.colors.border }]} />
             </View>
 
@@ -209,9 +169,9 @@ export const LoginScreen: React.FC = () => {
                   // TODO: Implement Google login
                   Alert.alert('Info', 'Login con Google - Próximamente');
                 }}>
-                <AppText variant="sm" weight="medium" style={{ color: theme.colors.textPrimary }}>
+                <Text variant="sm" weight="medium" style={{ color: theme.colors.textPrimary }}>
                   Continuar con Google
-                </AppText>
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -227,17 +187,17 @@ export const LoginScreen: React.FC = () => {
                   // TODO: Implement Apple login
                   Alert.alert('Info', 'Login con Apple - Próximamente');
                 }}>
-                <AppText variant="sm" weight="medium" style={{ color: theme.colors.textPrimary }}>
+                <Text variant="sm" weight="medium" style={{ color: theme.colors.textPrimary }}>
                   Continuar con Apple
-                </AppText>
+                </Text>
               </TouchableOpacity>
             </View>
 
             {/* Sign Up Link */}
             <View style={[styles.signUpContainer, { marginTop: theme.spacing.xl }]}>
-              <AppText variant="sm" color="textSecondary" style={{ textAlign: 'center' }}>
+              <Text variant="sm" color="textSecondary" style={{ textAlign: 'center' }}>
                 ¿No tienes una cuenta?{' '}
-                <AppText
+                <Text
                   variant="sm"
                   weight="semibold"
                   style={{ color: theme.colors.primary }}
@@ -246,13 +206,13 @@ export const LoginScreen: React.FC = () => {
                     Alert.alert('Info', 'Registro - Próximamente');
                   }}>
                   Regístrate ahora
-                </AppText>
-              </AppText>
+                </Text>
+              </Text>
             </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </ScreenContainer>
+    </Screen>
   );
 };
 
@@ -277,33 +237,6 @@ const styles = StyleSheet.create({
   },
   form: {
     width: '100%',
-  },
-  inputContainer: {
-    width: '100%',
-  },
-  inputWrapper: {
-    position: 'relative',
-  },
-  input: {
-    height: 48,
-    borderRadius: 12,
-    borderWidth: 1,
-    paddingHorizontal: 16,
-    fontSize: 16,
-  },
-  iconLeft: {
-    position: 'absolute',
-    left: 12,
-    top: '50%',
-    transform: [{ translateY: -10 }],
-    zIndex: 1,
-  },
-  iconRight: {
-    position: 'absolute',
-    right: 12,
-    top: '50%',
-    transform: [{ translateY: -10 }],
-    zIndex: 1,
   },
   divider: {
     flexDirection: 'row',

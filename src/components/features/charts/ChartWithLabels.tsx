@@ -5,8 +5,8 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Chart } from './Chart';
-import { ChartSkeleton } from './Skeleton';
-import { AppText } from './AppText';
+import { ChartSkeleton } from '@/components/ui/Skeleton';
+import { Text } from '@/components/ui/Text';
 import { useTheme } from '@/theme/ThemeProvider';
 import { LABELS } from '@/constants/labels';
 import { ChartDataPoint } from '@/utils/seriesTransform';
@@ -38,9 +38,9 @@ export const ChartWithLabels: React.FC<ChartWithLabelsProps> = ({
       )}
       <View style={[styles.labelsContainer, { marginTop: theme.spacing.sm }]}>
         {LABELS.CHART_MONTHS.map((label, index) => (
-          <AppText key={index} variant="xs" color="textSecondary" weight="bold">
+          <Text key={index} variant="xs" color="textSecondary" weight="bold">
             {label}
-          </AppText>
+          </Text>
         ))}
       </View>
     </View>

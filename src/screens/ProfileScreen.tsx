@@ -4,8 +4,8 @@
 
 import React from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
-import { ScreenContainer, Header } from '@/components/layout';
-import { AppText, Card } from '@/components/common';
+import { Screen, Header, Section } from '@/components/layout';
+import { Text, Card } from '@/components/common';
 import { ListItem } from '@/components/layout';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/context/AuthContext';
@@ -39,18 +39,6 @@ const UserAvatar: React.FC<{ size?: number }> = ({ size = 80 }) => {
   );
 };
 
-/**
- * Profile Section Header
- */
-const SectionHeader: React.FC<{ title: string }> = ({ title }) => {
-  const { theme } = useTheme();
-  return (
-    <AppText variant="lg" weight="bold" style={{ marginBottom: theme.spacing.base, marginTop: theme.spacing.lg }}>
-      {title}
-    </AppText>
-  );
-};
-
 export const ProfileScreen: React.FC = () => {
   const { theme, isDarkMode, setThemeMode } = useTheme();
   const { user, logout } = useAuth();
@@ -60,7 +48,7 @@ export const ProfileScreen: React.FC = () => {
   };
 
   return (
-    <ScreenContainer scrollable>
+    <Screen scrollable>
       <Header title="Perfil" />
 
       <ScrollView
@@ -69,16 +57,16 @@ export const ProfileScreen: React.FC = () => {
         {/* User Info Section */}
         <Card style={{ marginBottom: theme.spacing.lg, alignItems: 'center', paddingVertical: theme.spacing.xl }}>
           <UserAvatar size={100} />
-          <AppText variant="xl" weight="bold" style={{ marginTop: theme.spacing.base, marginBottom: theme.spacing.xs }}>
+          <Text variant="xl" weight="bold" style={{ marginTop: theme.spacing.base, marginBottom: theme.spacing.xs }}>
             {userData.name}
-          </AppText>
-          <AppText variant="base" color="textSecondary">
+          </Text>
+          <Text variant="base" color="textSecondary">
             {userData.email}
-          </AppText>
+          </Text>
         </Card>
 
         {/* Account Section */}
-        <SectionHeader title="Cuenta" />
+        <Section title="Cuenta" />
 
         <ListItem
           title="Editar Perfil"
@@ -99,7 +87,7 @@ export const ProfileScreen: React.FC = () => {
         />
 
         {/* Preferences Section */}
-        <SectionHeader title="Preferencias" />
+        <Section title="Preferencias" />
 
         <ListItem
           title="Modo Oscuro"
@@ -132,18 +120,18 @@ export const ProfileScreen: React.FC = () => {
         />
 
         {/* About Section */}
-        <SectionHeader title="Acerca de" />
+        <Section title="Acerca de" />
 
         <Card style={{ marginBottom: theme.spacing.md }}>
-          <AppText variant="base" weight="bold" style={{ marginBottom: theme.spacing.sm }}>
+          <Text variant="base" weight="bold" style={{ marginBottom: theme.spacing.sm }}>
             Radar Económico
-          </AppText>
-          <AppText variant="sm" color="textSecondary" style={{ marginBottom: theme.spacing.sm }}>
+          </Text>
+          <Text variant="sm" color="textSecondary" style={{ marginBottom: theme.spacing.sm }}>
             Versión 1.0.0
-          </AppText>
-          <AppText variant="sm" color="textSecondary" style={{ marginBottom: theme.spacing.sm }}>
+          </Text>
+          <Text variant="sm" color="textSecondary" style={{ marginBottom: theme.spacing.sm }}>
             Aplicación para seguimiento de indicadores económicos y cotizaciones de mercado.
-          </AppText>
+          </Text>
         </Card>
 
         <ListItem
@@ -178,12 +166,12 @@ export const ProfileScreen: React.FC = () => {
             logout();
           }}
           activeOpacity={0.7}>
-          <AppText variant="base" weight="semibold" style={{ color: theme.colors.error }}>
+          <Text variant="base" weight="semibold" style={{ color: theme.colors.error }}>
             Cerrar Sesión
-          </AppText>
+          </Text>
         </TouchableOpacity>
       </ScrollView>
-    </ScreenContainer>
+    </Screen>
   );
 };
 

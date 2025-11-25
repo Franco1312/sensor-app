@@ -3,8 +3,8 @@
  */
 
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { AppText } from '@/components/common/AppText';
+import { View, TouchableOpacity } from 'react-native';
+import { Text } from '@/components/ui';
 import { MenuIcon } from '@/components/common/MenuIcon';
 import { ChevronIcon } from '@/components/common/ChevronIcon';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -30,66 +30,48 @@ export const DrawerMenuItem: React.FC<DrawerMenuItemProps> = ({
 }) => {
   const { theme } = useTheme();
 
-  // If there's an active subitem, the main item should be less highlighted
-  const shouldHighlight = isActive && !hasActiveSubItem;
-  const shouldColorIcon = isActive || hasActiveSubItem; // Icon should be colored if item or subitem is active
-  const backgroundColor = shouldHighlight
-    ? theme.colors.primaryLight
-    : hasActiveSubItem
-      ? theme.colors.surfaceSecondary
-      : 'transparent';
+  // Icon background should be colored only if the item itself is active (not just subitem)
+  const shouldColorIconBackground = isActive && !hasActiveSubItem;
+  const iconColor = shouldColorIconBackground
+    ? theme.colors.textPrimary // Dark icon on yellow background for contrast
+    : (isActive || hasActiveSubItem)
+      ? theme.colors.primary // Primary color when active but no yellow background
+      : theme.colors.textPrimary; // Default text color when inactive
 
   return (
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.7}
-      style={[
-        styles.container,
-        {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: theme.spacing.base,
-          paddingHorizontal: theme.spacing.base,
-          paddingVertical: theme.spacing.md,
-          backgroundColor,
-          borderLeftWidth: shouldHighlight ? 3 : 0,
-          borderLeftColor: shouldHighlight ? theme.colors.primary : 'transparent',
-        },
-      ]}>
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: theme.spacing.base,
+        paddingHorizontal: theme.spacing.base,
+        paddingVertical: theme.spacing.md,
+        backgroundColor: 'transparent', // Items del drawer no se pintan
+      }}>
       <View
-        style={[
-          styles.iconContainer,
-          {
-            width: 40,
-            height: 40,
-            borderRadius: theme.radii.base,
-            backgroundColor: shouldHighlight ? theme.colors.primary : theme.colors.surfaceSecondary,
-            alignItems: 'center',
-            justifyContent: 'center',
-          },
-        ]}>
-        <MenuIcon name={icon} size={20} color={shouldColorIcon ? theme.colors.primary : theme.colors.textPrimary} />
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: theme.radii.base,
+          backgroundColor: shouldColorIconBackground ? theme.colors.primary : theme.colors.surfaceSecondary,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <MenuIcon name={icon} size={20} color={iconColor} />
       </View>
-      <AppText
+      <Text
         variant="base"
-        weight={shouldHighlight ? 'semibold' : 'medium'}
+        weight={isActive && !hasActiveSubItem ? 'semibold' : 'medium'}
         style={{
           flex: 1,
           color: theme.colors.textPrimary,
         }}> 
         {label}
-      </AppText>
+      </Text>
       {hasSubItems && <ChevronIcon expanded={isExpanded} size={18} />}
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    // Styles handled by inline style
-  },
-  iconContainer: {
-    // Styles handled by inline style
-  },
-});
 

@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { Card, AppText, InfoIcon } from '@/components/common';
+import { Card, Text, InfoIcon } from '@/components/common';
 import { useTheme } from '@/theme/ThemeProvider';
 
 interface StatCardProps {
@@ -30,9 +30,9 @@ export const StatCard: React.FC<StatCardProps> = ({
     <Card style={styles.statCard}>
       <View style={{ gap: theme.spacing.sm }}>
         <View style={styles.titleRow}>
-          <AppText variant="base" weight="medium" color="textSecondary">
+          <Text variant="base" weight="medium" color="textSecondary">
             {title}
-          </AppText>
+          </Text>
           {showInfoIcon && (
             <TouchableOpacity
               onPress={onInfoPress}
@@ -42,16 +42,16 @@ export const StatCard: React.FC<StatCardProps> = ({
             </TouchableOpacity>
           )}
         </View>
-        <AppText
+        <Text
           variant="2xl"
           weight="bold"
           style={[{ lineHeight: 32 }, valueColor ? { color: valueColor } : {}]}>
           {value}
-        </AppText>
+        </Text>
         {subtitle && (
-          <AppText variant="xs" color="textSecondary">
+          <Text variant="xs" color="textSecondary">
             {subtitle}
-          </AppText>
+          </Text>
         )}
       </View>
     </Card>

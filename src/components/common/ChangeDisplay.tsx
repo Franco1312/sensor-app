@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { AppText } from './AppText';
+import { Text } from '@/components/ui';
 import { useTheme } from '@/theme/ThemeProvider';
 import { getTrendColor, getTrendArrow } from '@/utils/formatting';
 
@@ -30,13 +30,13 @@ export const ChangeDisplay: React.FC<ChangeDisplayProps> = ({
 
   return (
     <View style={styles.container}>
-      <AppText variant={variant} style={{ color: trendColor }}>
+      <Text variant={variant} style={{ color: trendColor }}>
         {changeValue}
-      </AppText>
+      </Text>
       {showArrow && (
-        <AppText variant={variant} style={{ color: trendColor }}>
+        <Text variant={variant} style={{ color: trendColor }}>
           {trendArrow}
-        </AppText>
+        </Text>
       )}
     </View>
   );

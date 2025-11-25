@@ -3,7 +3,7 @@
  */
 
 import React, { ReactNode } from 'react';
-import { View, ViewProps, StyleSheet } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 
 interface ContainerProps extends ViewProps {
@@ -28,10 +28,4 @@ export const Container: React.FC<ContainerProps> = ({ children, gap, style, ...p
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    // Gap handled by inline style
-  },
-});
 

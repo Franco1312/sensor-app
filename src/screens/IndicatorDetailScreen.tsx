@@ -9,8 +9,8 @@ import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '@/navigation/types';
-import { ScreenContainer, Container, Row } from '@/components/layout';
-import { AppText, StatCardSkeleton, Skeleton, FilterButton, InfoModal, InfoSection, StatCard, Card, ValueHeader, ChartWithLabels, EmptyState } from '@/components/common';
+import { Screen, Container, Row } from '@/components/layout';
+import { Text, StatCardSkeleton, Skeleton, FilterButton, InfoModal, InfoSection, StatCard, Card, ValueHeader, ChartWithLabels, EmptyState } from '@/components/common';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Theme } from '@/theme/theme';
 import { useSeriesHistory } from '@/hooks/useSeriesHistory';
@@ -192,7 +192,7 @@ export const IndicatorDetailScreen: React.FC = () => {
   const isLoading = indicatorLoading || metadataLoading || !indicator;
   if (isLoading) {
     return (
-      <ScreenContainer
+      <Screen
         scrollable={true}
         safeAreaEdges={[]}
         contentContainerStyle={[
@@ -243,24 +243,24 @@ export const IndicatorDetailScreen: React.FC = () => {
           <Skeleton width="90%" height={14} style={{ marginBottom: 4 }} />
           <Skeleton width="80%" height={14} />
         </Card>
-      </ScreenContainer>
+      </Screen>
     );
   }
 
   // Error state (should not happen if API is working correctly)
   if (!indicator) {
     return (
-      <ScreenContainer>
+      <Screen>
         <EmptyState
           title={LABELS.INDICATOR_NOT_FOUND}
           message="No se pudo cargar la información del indicador. Por favor, intenta nuevamente."
         />
-      </ScreenContainer>
+      </Screen>
     );
   }
 
   return (
-    <ScreenContainer
+    <Screen
       scrollable={true}
       safeAreaEdges={[]}
       contentContainerStyle={[
@@ -318,7 +318,7 @@ export const IndicatorDetailScreen: React.FC = () => {
       {indicator.source && (
         <InfoSection title={LABELS.SOURCE} content={indicator.source} />
       )}
-    </ScreenContainer>
+    </Screen>
   );
 };
 

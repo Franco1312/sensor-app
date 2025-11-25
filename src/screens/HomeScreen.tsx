@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
-import { ScreenContainer, Header, SectionTitle } from '@/components/layout';
+import { View, ScrollView } from 'react-native';
+import { Screen, Header, Section } from '@/components/layout';
 import { IndicatorCard, QuoteCard, IndicatorCardSkeleton, QuoteCardSkeleton } from '@/components/common';
 import { Card } from '@/components/common';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -18,15 +18,15 @@ export const HomeScreen: React.FC = () => {
   const { indicators, loading } = useIndicators();
 
   return (
-    <ScreenContainer scrollable={false}>
+    <Screen scrollable={false}>
       <Header title="Radar Económico" />
 
       <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: theme.spacing.lg }]}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: theme.spacing.lg }}
         showsVerticalScrollIndicator={false}>
-        <SectionTitle title={LABELS.MAIN_INDICATORS} />
-        <View style={[styles.section, { paddingHorizontal: theme.spacing.base, marginBottom: theme.spacing.lg, gap: theme.spacing.base }]}>
+        <Section title={LABELS.MAIN_INDICATORS} />
+        <View style={{ paddingHorizontal: theme.spacing.base, marginBottom: theme.spacing.lg, gap: theme.spacing.base }}>
           {loading ? (
             // Show 4 skeleton cards while loading
             Array.from({ length: 4 }).map((_, index) => (
@@ -41,25 +41,13 @@ export const HomeScreen: React.FC = () => {
           )}
         </View>
 
-        <SectionTitle title={LABELS.MARKET_QUOTES} />
-        <View style={[styles.section, { paddingHorizontal: theme.spacing.base, gap: theme.spacing.base }]}>
+        <Section title={LABELS.MARKET_QUOTES} />
+        <View style={{ paddingHorizontal: theme.spacing.base, gap: theme.spacing.base }}>
           {mockQuotes.slice(0, 4).map(quote => (
             <QuoteCard key={quote.id} quote={quote} />
           ))}
         </View>
       </ScrollView>
-    </ScreenContainer>
+    </Screen>
   );
 };
-
-const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    // Padding handled by inline style
-  },
-  section: {
-    // Styles handled by inline styles
-  },
-});

@@ -5,7 +5,9 @@
 
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Card, AppText, MiniChart, MetaRow } from '@/components/common';
+import { Card, Text } from '@/components/ui';
+import { MiniChart } from '@/components/features/charts';
+import { MetaRow } from './MetaRow';
 import { useTheme } from '@/theme/ThemeProvider';
 
 interface DataCardProps {
@@ -32,12 +34,12 @@ export const DataCard: React.FC<DataCardProps> = ({
   return (
     <Card onPress={onPress}>
       <View style={[styles.container, { gap: theme.spacing.sm }]}>
-        <AppText variant="sm" color="textSecondary" weight="medium">
+        <Text variant="sm" color="textSecondary" weight="medium">
           {title}
-        </AppText>
-        <AppText variant="3xl" weight="bold" style={styles.value}>
+        </Text>
+        <Text variant="3xl" weight="bold" style={styles.value}>
           {value}
-        </AppText>
+        </Text>
         <MetaRow
           changeLabel={changeLabel}
           changeVariant={changeVariant}

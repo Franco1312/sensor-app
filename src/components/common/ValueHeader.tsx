@@ -5,7 +5,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Row } from '@/components/layout';
-import { AppText } from './AppText';
+import { Text } from '@/components/ui';
 import { useTheme } from '@/theme/ThemeProvider';
 import { LABELS } from '@/constants/labels';
 
@@ -29,26 +29,26 @@ export const ValueHeader: React.FC<ValueHeaderProps> = ({
   return (
     <View style={{ gap: theme.spacing.sm }}>
       {title && (
-        <AppText variant="base" weight="medium" color="textSecondary">
+        <Text variant="base" weight="medium" color="textSecondary">
           {title}
-        </AppText>
+        </Text>
       )}
-      <AppText variant="5xl" weight="bold" style={{ lineHeight: 48 }}>
+      <Text variant="5xl" weight="bold" style={{ lineHeight: 48 }}>
         {value}
-      </AppText>
+      </Text>
       <Row gap={theme.spacing.sm}>
         {subtitle ? (
-          <AppText variant="base" color="textSecondary">
+          <Text variant="base" color="textSecondary">
             {subtitle}
-          </AppText>
+          </Text>
         ) : (
-          <AppText variant="base" color="textSecondary">
+          <Text variant="base" color="textSecondary">
             {LABELS.LAST_YEAR}
-          </AppText>
+          </Text>
         )}
-        <AppText variant="base" weight="medium" style={{ color: changeColor || theme.colors.success }}>
+        <Text variant="base" weight="medium" style={{ color: changeColor || theme.colors.success }}>
           {changeLabel}
-        </AppText>
+        </Text>
       </Row>
     </View>
   );

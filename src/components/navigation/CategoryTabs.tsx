@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { AppText } from '@/components/common';
+import { Text } from '@/components/common';
 import { useTheme } from '@/theme/ThemeProvider';
 
 interface CategoryTab<T extends string> {
@@ -48,12 +48,12 @@ export const CategoryTabs = <T extends string>({
                 borderBottomWidth: isActive ? 3 : 0,
               },
             ]}>
-            <AppText
+            <Text
               variant="sm"
               weight="bold"
               color={isActive ? 'textPrimary' : 'textSecondary'}>
               {tab.label}
-            </AppText>
+            </Text>
           </TouchableOpacity>
         );
       })}

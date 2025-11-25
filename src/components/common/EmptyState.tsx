@@ -4,7 +4,7 @@
 
 import React, { ReactNode } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { AppText } from './AppText';
+import { Text } from '@/components/ui';
 import { useTheme } from '@/theme/ThemeProvider';
 
 interface EmptyStateProps {
@@ -25,13 +25,13 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   return (
     <View style={[styles.container, { padding: theme.spacing.xl }]}>
       {icon && <View style={styles.iconContainer}>{icon}</View>}
-      <AppText variant="lg" weight="bold" style={{ marginBottom: theme.spacing.sm, textAlign: 'center' }}>
+      <Text variant="lg" weight="bold" style={{ marginBottom: theme.spacing.sm, textAlign: 'center' }}>
         {title}
-      </AppText>
+      </Text>
       {message && (
-        <AppText variant="base" color="textSecondary" style={{ textAlign: 'center', marginBottom: theme.spacing.md }}>
+        <Text variant="base" color="textSecondary" style={{ textAlign: 'center', marginBottom: theme.spacing.md }}>
           {message}
-        </AppText>
+        </Text>
       )}
       {action && <View style={styles.actionContainer}>{action}</View>}
     </View>

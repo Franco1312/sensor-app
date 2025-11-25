@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { View, StyleSheet, Modal, Pressable } from 'react-native';
-import { Card, AppText, AppButton } from '@/components/common';
+import { Card, Text, Button } from '@/components/common';
 import { useTheme } from '@/theme/ThemeProvider';
 import { LABELS } from '@/constants/labels';
 
@@ -25,19 +25,19 @@ export const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose, title, m
       animationType="fade"
       onRequestClose={onClose}>
       <Pressable
-        style={styles.modalOverlay}
+        style={[styles.modalOverlay, { backgroundColor: theme.colors.overlay }]}
         onPress={onClose}>
         <Pressable onPress={(e) => e.stopPropagation()}>
           <Card style={[styles.modalCard, { backgroundColor: theme.colors.surface }]}>
             <View style={styles.modalContent}>
-              <AppText variant="lg" weight="bold" style={{ marginBottom: theme.spacing.md }}>
+              <Text variant="lg" weight="bold" style={{ marginBottom: theme.spacing.md }}>
                 {title}
-              </AppText>
-              <AppText variant="base" color="textSecondary" style={{ marginBottom: theme.spacing.lg, lineHeight: 22 }}>
+              </Text>
+              <Text variant="base" color="textSecondary" style={{ marginBottom: theme.spacing.lg, lineHeight: 22 }}>
                 {message}
-              </AppText>
+              </Text>
               <View style={styles.modalButtonContainer}>
-                <AppButton
+                <Button
                   title={LABELS.UNDERSTOOD}
                   variant="primary"
                   onPress={onClose}
@@ -54,7 +54,6 @@ export const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose, title, m
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,

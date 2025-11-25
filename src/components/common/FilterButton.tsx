@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
-import { AppText } from './AppText';
+import { Text } from '@/components/ui';
 import { useTheme } from '@/theme/ThemeProvider';
 
 interface FilterButtonProps {
@@ -47,12 +47,12 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
           alignSelf: fullWidth ? undefined : 'flex-start',
         },
       ]}>
-      <AppText
+      <Text
         variant="sm"
         weight={isSelected ? 'medium' : 'normal'}
         color={isSelected ? 'textPrimary' : 'textSecondary'}>
         {label}
-      </AppText>
+      </Text>
     </TouchableOpacity>
   );
 };

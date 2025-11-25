@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { DataCard } from './DataCard';
+import { DataCard } from '@/components/common/DataCard';
 import { Quote } from '@/types';
 import { formatChangePercent } from '@/utils/formatting';
 

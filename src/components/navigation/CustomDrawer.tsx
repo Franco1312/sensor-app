@@ -8,7 +8,7 @@ import { View, StyleSheet, Modal, Animated, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AppText } from '@/components/common/AppText';
+import { Text } from '@/components/ui';
 import { DrawerMenuItem } from './DrawerMenuItem';
 import { DrawerSubItem } from './DrawerSubItem';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -155,13 +155,13 @@ export const CustomDrawer: React.FC<CustomDrawerProps> = ({ visible, onClose }) 
         {/* Overlay */}
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose}>
           <Animated.View
-            style={[
-              StyleSheet.absoluteFill,
-              {
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                opacity: overlayOpacity,
-              },
-            ]}
+              style={[
+                StyleSheet.absoluteFill,
+                {
+                  backgroundColor: theme.colors.overlay,
+                  opacity: overlayOpacity,
+                },
+              ]}
           />
         </Pressable>
 
@@ -173,12 +173,14 @@ export const CustomDrawer: React.FC<CustomDrawerProps> = ({ visible, onClose }) 
               backgroundColor: theme.colors.background,
               paddingTop: insets.top,
               transform: [{ translateX: slideAnim }],
+              ...theme.shadows.md,
+              shadowOffset: { width: 2, height: 0 }, // Horizontal shadow for drawer
             },
           ]}>
       <View style={[styles.header, { paddingBottom: theme.spacing.lg, borderBottomColor: theme.colors.border, paddingHorizontal: theme.spacing.base }]}>
-        <AppText variant="2xl" weight="bold" style={{ color: theme.colors.textPrimary }}>
+        <Text variant="2xl" weight="bold" style={{ color: theme.colors.textPrimary }}>
           Radar Económico
-        </AppText>
+        </Text>
       </View>
 
           <View style={[styles.menuContainer, { paddingTop: theme.spacing.md }]}>
@@ -256,11 +258,6 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: DRAWER_WIDTH,
-    shadowColor: '#000',
-    shadowOffset: { width: 2, height: 0 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
   },
   header: {
     paddingTop: 20,

@@ -4,8 +4,7 @@
 
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { AppText } from './AppText';
-import { Tag } from './Tag';
+import { Text, Badge } from '@/components/ui';
 import { useTheme } from '@/theme/ThemeProvider';
 import { LABELS, formatUpdatedLabel } from '@/constants/labels';
 
@@ -20,10 +19,10 @@ export const MetaRow: React.FC<MetaRowProps> = ({ changeLabel, changeVariant, la
 
   return (
     <View style={[styles.container, { gap: theme.spacing.sm }]}>
-      <Tag label={changeLabel} variant={changeVariant} />
-      <AppText variant="xs" color="textSecondary">
+      <Badge label={changeLabel} variant={changeVariant} />
+      <Text variant="xs" color="textSecondary">
         {formatUpdatedLabel(lastUpdate)}
-      </AppText>
+      </Text>
     </View>
   );
 };
