@@ -77,11 +77,7 @@ export const QuotesScreen: React.FC = () => {
 
   return (
     <ScreenContainer scrollable={false}>
-      <Header
-        title="Cotizaciones"
-        leftIcon={<AppText variant="2xl">🔍</AppText>}
-        rightIcon={<AppText variant="2xl">☀️</AppText>}
-      />
+      <Header title="Cotizaciones" />
 
       <CategoryTabs
         tabs={QUOTE_CATEGORY_TABS}
