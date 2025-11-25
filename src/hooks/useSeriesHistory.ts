@@ -27,7 +27,7 @@ export const useSeriesHistory = (
   enabled: boolean = true
 ): UseSeriesHistoryResult => {
   const [data, setData] = useState<SeriesData[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {

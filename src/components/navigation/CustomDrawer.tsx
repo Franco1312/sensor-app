@@ -28,13 +28,13 @@ interface CustomDrawerProps {
 interface DrawerMenuItem {
   label: string;
   tabScreen: keyof MainTabParamList;
-  icon: 'profile' | 'indicators' | 'quotes';
+  icon: 'home' | 'profile' | 'indicators' | 'quotes';
   expandable?: boolean;
   subItems?: Array<{ label: string; value: string }>;
 }
 
 const DRAWER_MENU_ITEMS: DrawerMenuItem[] = [
-  { label: 'Perfil', tabScreen: 'Settings', icon: 'profile' },
+  { label: 'Inicio', tabScreen: 'Home', icon: 'home' },
   {
     label: 'Indicadores',
     tabScreen: 'Indicators',

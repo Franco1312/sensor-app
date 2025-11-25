@@ -1,6 +1,5 @@
 /**
  * AuthContext - Authentication context for managing user session
- * Mock implementation for now
  */
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
@@ -23,10 +22,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  // Check for stored session on mount (mock - in real app would check AsyncStorage)
+  // Check for stored session on mount
   useEffect(() => {
-    // Mock: Check if user is logged in
-    // In real app: const storedUser = await AsyncStorage.getItem('user');
+    // TODO: Check AsyncStorage for stored user session
+    // const storedUser = await AsyncStorage.getItem('user');
     // For now, user starts as null (logged out)
   }, []);
 

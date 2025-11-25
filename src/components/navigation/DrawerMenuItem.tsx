@@ -11,7 +11,7 @@ import { useTheme } from '@/theme/ThemeProvider';
 
 interface DrawerMenuItemProps {
   label: string;
-  icon: 'profile' | 'indicators' | 'quotes';
+  icon: 'home' | 'profile' | 'indicators' | 'quotes';
   isActive: boolean;
   isExpanded?: boolean;
   hasSubItems?: boolean;

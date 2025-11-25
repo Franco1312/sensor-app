@@ -25,7 +25,7 @@ export const useSeriesData = (
   enabled: boolean = true
 ): UseSeriesDataResult => {
   const [data, setData] = useState<Indicator | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {

@@ -21,16 +21,20 @@ export const useIndicators = (): UseIndicatorsResult => {
   const { data: baseMonetariaData, loading: loadingBase } = useSeriesData(SERIES_CODES.BASE_MONETARIA);
   const { data: reservasData, loading: loadingReservas } = useSeriesData(SERIES_CODES.RESERVAS_INTERNACIONALES);
   const { data: circulanteData, loading: loadingCirculante } = useSeriesData(SERIES_CODES.CIRCULANTE_PUBLICO);
+  const { data: ipcMensualData, loading: loadingIpcMensual } = useSeriesData(SERIES_CODES.IPC_VARIACION_MENSUAL);
+  const { data: ipcInteranualData, loading: loadingIpcInteranual } = useSeriesData(SERIES_CODES.IPC_VARIACION_INTERANUAL);
 
   const indicators = useMemo(() => {
     const data: Indicator[] = [];
     if (baseMonetariaData) data.push(baseMonetariaData);
     if (reservasData) data.push(reservasData);
     if (circulanteData) data.push(circulanteData);
+    if (ipcMensualData) data.push(ipcMensualData);
+    if (ipcInteranualData) data.push(ipcInteranualData);
     return data;
-  }, [baseMonetariaData, reservasData, circulanteData]);
+  }, [baseMonetariaData, reservasData, circulanteData, ipcMensualData, ipcInteranualData]);
 
-  const loading = loadingBase || loadingReservas || loadingCirculante;
+  const loading = loadingBase || loadingReservas || loadingCirculante || loadingIpcMensual || loadingIpcInteranual;
 
   return { indicators, loading };
 };

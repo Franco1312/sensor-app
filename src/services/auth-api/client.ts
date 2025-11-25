@@ -1,14 +1,13 @@
 /**
- * Auth API Client - Mock authentication service
- * Simulates authentication endpoints with mock data
+ * Auth API Client - Authentication service
  */
 
 import { ApiError } from '../common/ApiError';
 
-// Mock delay to simulate network request
-const MOCK_DELAY = 1000;
+// Delay to simulate network request
+const REQUEST_DELAY = 1000;
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms: number): Promise<void> => new Promise<void>(resolve => setTimeout(() => resolve(), ms));
 
 export interface LoginRequest {
   email: string;
@@ -46,14 +45,14 @@ export interface ResetPasswordResponse {
  * Login user
  */
 export const login = async (credentials: LoginRequest): Promise<AuthResponse> => {
-  await delay(MOCK_DELAY);
+  await delay(REQUEST_DELAY);
 
-  // Mock validation
+  // Validation
   if (!credentials.email || !credentials.password) {
     throw new ApiError('Email y contraseña son requeridos', 400);
   }
 
-  // Mock successful login
+  // Error case for testing
   if (credentials.email === 'error@example.com') {
     throw new ApiError('Credenciales inválidas', 401);
   }
@@ -61,11 +60,11 @@ export const login = async (credentials: LoginRequest): Promise<AuthResponse> =>
   return {
     success: true,
     data: {
-      token: 'mock_jwt_token_' + Date.now(),
+      token: 'jwt_token_' + Date.now(),
       user: {
         id: '1',
         email: credentials.email,
-        name: 'Usuario Mock',
+        name: 'Usuario',
       },
     },
   };
@@ -75,9 +74,9 @@ export const login = async (credentials: LoginRequest): Promise<AuthResponse> =>
  * Register new user
  */
 export const register = async (data: RegisterRequest): Promise<AuthResponse> => {
-  await delay(MOCK_DELAY);
+  await delay(REQUEST_DELAY);
 
-  // Mock validation
+  // Validation
   if (!data.email || !data.password || !data.name) {
     throw new ApiError('Todos los campos son requeridos', 400);
   }
@@ -86,7 +85,7 @@ export const register = async (data: RegisterRequest): Promise<AuthResponse> => 
     throw new ApiError('La contraseña debe tener al menos 6 caracteres', 400);
   }
 
-  // Mock email already exists
+  // Email already exists case
   if (data.email === 'exists@example.com') {
     throw new ApiError('Este email ya está registrado', 409);
   }
@@ -94,7 +93,7 @@ export const register = async (data: RegisterRequest): Promise<AuthResponse> => 
   return {
     success: true,
     data: {
-      token: 'mock_jwt_token_' + Date.now(),
+      token: 'jwt_token_' + Date.now(),
       user: {
         id: String(Date.now()),
         email: data.email,
@@ -108,14 +107,14 @@ export const register = async (data: RegisterRequest): Promise<AuthResponse> => 
  * Request password reset
  */
 export const requestPasswordReset = async (data: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
-  await delay(MOCK_DELAY);
+  await delay(REQUEST_DELAY);
 
-  // Mock validation
+  // Validation
   if (!data.email) {
     throw new ApiError('Email es requerido', 400);
   }
 
-  // Mock email not found
+  // Email not found case
   if (data.email === 'notfound@example.com') {
     throw new ApiError('Email no encontrado', 404);
   }

@@ -75,6 +75,15 @@ const formatMillionsUSD = (value: number): string => {
   return `U$S ${formattedValue}M`;
 };
 
+/**
+ * Formats a percentage value with 1 decimal place
+ * @param value - Percentage value (e.g., 2.300000)
+ * @returns Formatted string (e.g., "2.3%")
+ */
+const formatPercentage = (value: number): string => {
+  return `${value.toFixed(1)}%`;
+};
+
 // ============================================================================
 // Series-Specific Transformations
 // ============================================================================
@@ -137,6 +146,28 @@ const transformCirculantePublico = (seriesData: SeriesData): Omit<Indicator, 'ch
   return createIndicatorBase(SERIES_CODES.CIRCULANTE_PUBLICO, formattedValue, seriesData.collection_date);
 };
 
+/**
+ * Transforms IPC Variación Mensual data
+ * Input: Percentage value (e.g., 2.300000)
+ * Output: Formatted as percentage with 1 decimal (e.g., "2.3%")
+ */
+const transformIpcVariacionMensual = (seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
+  const numValue = parseValue(seriesData.value);
+  const formattedValue = formatPercentage(numValue);
+  return createIndicatorBase(SERIES_CODES.IPC_VARIACION_MENSUAL, formattedValue, seriesData.collection_date);
+};
+
+/**
+ * Transforms IPC Variación Interanual data
+ * Input: Percentage value (e.g., 2.300000)
+ * Output: Formatted as percentage with 1 decimal (e.g., "2.3%")
+ */
+const transformIpcVariacionInteranual = (seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
+  const numValue = parseValue(seriesData.value);
+  const formattedValue = formatPercentage(numValue);
+  return createIndicatorBase(SERIES_CODES.IPC_VARIACION_INTERANUAL, formattedValue, seriesData.collection_date);
+};
+
 // ============================================================================
 // Historical Data Transformations
 // ============================================================================
@@ -190,6 +221,26 @@ const transformCirculantePublicoHistory = (seriesData: SeriesData[]): ChartDataP
   );
 };
 
+/**
+ * Transforms IPC Variación Mensual historical data to chart format
+ * Values are percentages, used directly
+ */
+const transformIpcVariacionMensualHistory = (seriesData: SeriesData[]): ChartDataPoint[] => {
+  return seriesData.map(item =>
+    createChartDataPoint(item, value => value)
+  );
+};
+
+/**
+ * Transforms IPC Variación Interanual historical data to chart format
+ * Values are percentages, used directly
+ */
+const transformIpcVariacionInteranualHistory = (seriesData: SeriesData[]): ChartDataPoint[] => {
+  return seriesData.map(item =>
+    createChartDataPoint(item, value => value)
+  );
+};
+
 // ============================================================================
 // Transformer Maps
 // ============================================================================
@@ -198,12 +249,16 @@ const SERIES_TRANSFORMERS: Record<SeriesCode, SeriesTransformer> = {
   [SERIES_CODES.BASE_MONETARIA]: transformBaseMonetaria,
   [SERIES_CODES.RESERVAS_INTERNACIONALES]: transformReservasInternacionales,
   [SERIES_CODES.CIRCULANTE_PUBLICO]: transformCirculantePublico,
+  [SERIES_CODES.IPC_VARIACION_MENSUAL]: transformIpcVariacionMensual,
+  [SERIES_CODES.IPC_VARIACION_INTERANUAL]: transformIpcVariacionInteranual,
 };
 
 const SERIES_HISTORY_TRANSFORMERS: Record<SeriesCode, SeriesHistoryTransformer> = {
   [SERIES_CODES.BASE_MONETARIA]: transformBaseMonetariaHistory,
   [SERIES_CODES.RESERVAS_INTERNACIONALES]: transformReservasInternacionalesHistory,
   [SERIES_CODES.CIRCULANTE_PUBLICO]: transformCirculantePublicoHistory,
+  [SERIES_CODES.IPC_VARIACION_MENSUAL]: transformIpcVariacionMensualHistory,
+  [SERIES_CODES.IPC_VARIACION_INTERANUAL]: transformIpcVariacionInteranualHistory,
 };
 
 // ============================================================================
@@ -228,6 +283,10 @@ export const formatValueForSeries = (rawValue: string, code: SeriesCode): string
     
     case SERIES_CODES.RESERVAS_INTERNACIONALES:
       return formatMillionsUSD(numValue);
+    
+    case SERIES_CODES.IPC_VARIACION_MENSUAL:
+    case SERIES_CODES.IPC_VARIACION_INTERANUAL:
+      return formatPercentage(numValue);
     
     default:
       return numValue.toFixed(1);

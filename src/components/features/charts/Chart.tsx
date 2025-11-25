@@ -265,7 +265,7 @@ export const Chart: React.FC<ChartProps> = ({ height = 180, data, seriesCode, on
             />
 
             {/* Date and value label */}
-            {selectedDataPoint && seriesCode && labelPosition && (
+            {selectedDataPoint && labelPosition && (
               <>
                 {/* Background rectangle for readability */}
                 <Path
@@ -295,7 +295,13 @@ export const Chart: React.FC<ChartProps> = ({ height = 180, data, seriesCode, on
                   fill={theme.colors.textPrimary}
                   textAnchor={labelPosition.textAnchor}
                   opacity={1}>
-                  {formatValueForSeries(selectedDataPoint.rawValue, seriesCode)}
+                  {seriesCode 
+                    ? formatValueForSeries(selectedDataPoint.rawValue, seriesCode)
+                    : `$${parseFloat(selectedDataPoint.rawValue).toLocaleString('es-AR', {
+                        minimumFractionDigits: parseFloat(selectedDataPoint.rawValue) % 1 !== 0 ? 2 : 0,
+                        maximumFractionDigits: 2,
+                      })}`
+                  }
                 </SvgText>
               </>
             )}

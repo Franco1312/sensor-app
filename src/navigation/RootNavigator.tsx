@@ -23,6 +23,7 @@ import { HomeScreen } from '@/screens/HomeScreen';
 import { IndicatorsScreen } from '@/screens/IndicatorsScreen';
 import { IndicatorDetailScreen } from '@/screens/IndicatorDetailScreen';
 import { QuotesScreen } from '@/screens/QuotesScreen';
+import { QuoteDetailScreen } from '@/screens/QuoteDetailScreen';
 import { ProfileScreen } from '@/screens/ProfileScreen';
 import { LoginScreen } from '@/screens/LoginScreen';
 
@@ -135,6 +136,26 @@ const RootStack: React.FC = () => {
           <Stack.Screen
             name="IndicatorDetail"
             component={IndicatorDetailScreen}
+            options={{
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: theme.colors.background,
+              },
+              headerTintColor: theme.colors.textPrimary,
+              headerTitleStyle: {
+                fontWeight: theme.typography.fontWeight.bold,
+                fontSize: theme.typography.fontSize.lg,
+              },
+              headerShadowVisible: false,
+              headerTransparent: false,
+              contentStyle: {
+                backgroundColor: theme.colors.background,
+              },
+            }}
+          />
+          <Stack.Screen
+            name="QuoteDetail"
+            component={QuoteDetailScreen}
             options={{
               headerShown: true,
               headerStyle: {
