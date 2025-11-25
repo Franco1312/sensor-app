@@ -41,10 +41,10 @@ export const lightColors = {
 };
 
 export const darkColors = {
-  // Primary (same in dark mode)
-  primary: '#F4D35E',
-  primaryDark: '#D4B34E',
-  primaryLight: '#F9E88F',
+  // Primary (adjusted for better contrast in dark mode)
+  primary: '#D4B34E', // Slightly darker yellow for better readability
+  primaryDark: '#B89A3E',
+  primaryLight: 'rgba(212, 179, 78, 0.2)', // More subtle background in dark mode
 
   // Backgrounds
   background: '#121212',

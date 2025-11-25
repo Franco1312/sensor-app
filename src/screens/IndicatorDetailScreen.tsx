@@ -4,14 +4,13 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, TouchableOpacity, ActivityIndicator, StyleSheet, Modal, Pressable } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Path } from 'react-native-svg';
 import { RootStackParamList } from '@/navigation/types';
-import { ScreenContainer } from '@/components/layout';
-import { Card, AppText, Chart, AppButton } from '@/components/common';
+import { ScreenContainer, Container, Row } from '@/components/layout';
+import { AppText, StatCardSkeleton, Skeleton, FilterButton, InfoModal, InfoSection, StatCard, Card, ValueHeader, ChartWithLabels, EmptyState } from '@/components/common';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Theme } from '@/theme/theme';
 import { useSeriesHistory } from '@/hooks/useSeriesHistory';
@@ -20,6 +19,9 @@ import { useSeriesMetadata } from '@/hooks/useSeriesMetadata';
 import { SeriesCode } from '@/constants/series';
 import { transformSeriesHistoryToChart } from '@/utils/seriesTransform';
 import { TimeRange as TimeRangeType } from '@/utils/dateRange';
+import { formatDate } from '@/utils/dateFormat';
+import { formatChangePercent } from '@/utils/formatting';
+import { LABELS } from '@/constants/labels';
 import { IndicatorDetail } from '@/types';
 
 // ============================================================================
@@ -34,152 +36,14 @@ type TimeRange = '1M' | '3M' | '1A';
 // Constants
 // ============================================================================
 
-const TIME_RANGES: TimeRange[] = ['1M', '3M', '1A'];
-const CHART_MONTH_LABELS = ['Ene', 'Mar', 'May', 'Jul', 'Sep', 'Nov'];
+const TIME_RANGES: TimeRange[] = [LABELS.TIME_RANGE_1M, LABELS.TIME_RANGE_3M, LABELS.TIME_RANGE_1A] as TimeRange[];
 const CHART_HEIGHT = 148;
-
-// ============================================================================
-// Helper Functions
-// ============================================================================
-
-/**
- * Formats a date string to DD/MM/YYYY format
- */
-const formatDate = (dateString: string): string => {
-  try {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  } catch {
-    return dateString;
-  }
-};
-
-/**
- * Formats change percentage with sign
- */
-const formatChangePercent = (changePercent: number, isPositive: boolean): string => {
-  return `${isPositive ? '+' : ''}${changePercent.toFixed(1)}%`;
-};
 
 // ============================================================================
 // Sub-components
 // ============================================================================
 
-/**
- * InfoModal - Custom modal component following app design
- */
-interface InfoModalProps {
-  visible: boolean;
-  onClose: () => void;
-  title: string;
-  message: string;
-  theme: Theme;
-}
 
-const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose, title, message, theme }) => (
-  <Modal
-    visible={visible}
-    transparent
-    animationType="fade"
-    onRequestClose={onClose}>
-    <Pressable
-      style={styles.modalOverlay}
-      onPress={onClose}>
-      <Pressable onPress={(e) => e.stopPropagation()}>
-        <Card style={[styles.modalCard, { backgroundColor: theme.colors.surface }]}>
-          <View style={styles.modalContent}>
-            <AppText variant="lg" weight="bold" style={{ marginBottom: theme.spacing.md }}>
-              {title}
-            </AppText>
-            <AppText variant="base" color="textSecondary" style={{ marginBottom: theme.spacing.lg, lineHeight: 22 }}>
-              {message}
-            </AppText>
-            <View style={styles.modalButtonContainer}>
-              <AppButton
-                title="Entendido"
-                variant="primary"
-                onPress={onClose}
-              />
-            </View>
-          </View>
-        </Card>
-      </Pressable>
-    </Pressable>
-  </Modal>
-);
-
-/**
- * InfoIcon - Small info icon component following Material Design style
- */
-interface InfoIconProps {
-  size?: number;
-  color?: string;
-}
-
-const InfoIcon: React.FC<InfoIconProps> = ({ size = 16, color }) => {
-  const { theme } = useTheme();
-  const iconColor = color || theme.colors.textSecondary;
-  const iconPath = 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z';
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Path d={iconPath} fill={iconColor} fillOpacity={0.7} />
-    </Svg>
-  );
-};
-
-interface HeaderSectionProps {
-  value: string;
-  changeLabel: string;
-  theme: Theme;
-}
-
-const HeaderSection: React.FC<HeaderSectionProps> = ({ value, changeLabel, theme }) => (
-  <View style={[styles.section, { marginBottom: theme.spacing.lg }]}>
-    <AppText variant="base" weight="medium" color="textSecondary">
-      Evolución Histórica
-    </AppText>
-    <AppText variant="5xl" weight="bold" style={{ lineHeight: 48 }}>
-      {value}
-    </AppText>
-    <View style={[styles.row, { gap: theme.spacing.sm }]}>
-      <AppText variant="base" color="textSecondary">
-        Último Año
-      </AppText>
-      <AppText variant="base" weight="medium" style={{ color: theme.colors.success }}>
-        {changeLabel}
-      </AppText>
-    </View>
-  </View>
-);
-
-interface ChartSectionProps {
-  loading: boolean;
-  chartData: ReturnType<typeof transformSeriesHistoryToChart> | undefined;
-  seriesCode: SeriesCode;
-  theme: Theme;
-}
-
-const ChartSection: React.FC<ChartSectionProps> = ({ loading, chartData, seriesCode, theme }) => (
-  <View style={[styles.chartContainer, { marginBottom: theme.spacing.base, paddingTop: theme.spacing.base }]}>
-    {loading ? (
-      <View style={[styles.chartLoading, { height: CHART_HEIGHT }]}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-      </View>
-    ) : (
-      <Chart height={CHART_HEIGHT} data={chartData} seriesCode={seriesCode} />
-    )}
-    <View style={[styles.chartLabels, { marginTop: theme.spacing.sm }]}>
-      {CHART_MONTH_LABELS.map((label, index) => (
-        <AppText key={index} variant="xs" color="textSecondary" weight="bold">
-          {label}
-        </AppText>
-      ))}
-    </View>
-  </View>
-);
 
 interface TimeRangeSelectorProps {
   timeRange: TimeRange;
@@ -194,78 +58,17 @@ const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
 }) => (
   <View style={[styles.timeRangeContainer, { gap: theme.spacing.sm, marginBottom: theme.spacing.lg }]}>
     {TIME_RANGES.map(range => (
-      <TouchableOpacity
+      <FilterButton
         key={range}
+        label={range}
+        isSelected={timeRange === range}
         onPress={() => onTimeRangeChange(range)}
-        style={[
-          styles.timeRangeButton,
-          {
-            paddingHorizontal: theme.spacing.base,
-            paddingVertical: theme.spacing.sm,
-            borderRadius: theme.radii.full,
-            backgroundColor:
-              timeRange === range ? theme.colors.primary : theme.colors.surfaceSecondary,
-          },
-        ]}>
-        <AppText
-          variant="sm"
-          weight="medium"
-          color={timeRange === range ? 'textPrimary' : 'textSecondary'}>
-          {range}
-        </AppText>
-      </TouchableOpacity>
+        fullWidth
+      />
     ))}
   </View>
 );
 
-interface StatCardProps {
-  title: string;
-  value: string;
-  subtitle?: string;
-  valueColor?: string;
-  theme: Theme;
-  showInfoIcon?: boolean;
-  onInfoPress?: () => void;
-}
-
-const StatCard: React.FC<StatCardProps> = ({
-  title,
-  value,
-  subtitle,
-  valueColor,
-  theme,
-  showInfoIcon,
-  onInfoPress,
-}) => (
-  <Card style={styles.statCard}>
-    <View style={{ gap: theme.spacing.sm }}>
-      <View style={styles.titleRow}>
-        <AppText variant="base" weight="medium" color="textSecondary">
-          {title}
-        </AppText>
-        {showInfoIcon && (
-          <TouchableOpacity
-            onPress={onInfoPress}
-            style={styles.infoIconButton}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <InfoIcon size={16} />
-          </TouchableOpacity>
-        )}
-      </View>
-      <AppText
-        variant="2xl"
-        weight="bold"
-        style={[{ lineHeight: 32 }, valueColor ? { color: valueColor } : {}]}>
-        {value}
-      </AppText>
-      {subtitle && (
-        <AppText variant="xs" color="textSecondary">
-          {subtitle}
-        </AppText>
-      )}
-    </View>
-  </Card>
-);
 
 interface StatsSectionProps {
   indicator: IndicatorDetail;
@@ -296,49 +99,29 @@ const StatsSection: React.FC<StatsSectionProps> = ({
     <>
       <View style={[styles.statsContainer, { gap: theme.spacing.base, marginBottom: theme.spacing.lg }]}>
         <StatCard
-          title="Último Valor"
+          title={LABELS.LAST_VALUE}
           value={indicator.value}
           subtitle={lastDataPointDate || undefined}
-          theme={theme}
           showInfoIcon
           onInfoPress={handleInfoPress}
         />
         <StatCard
-          title="Variación Mensual"
+          title={LABELS.MONTHLY_VARIATION}
           value={changeLabel}
           valueColor={theme.colors.success}
-          theme={theme}
         />
-        <StatCard title="Última Actualización" value={indicator.lastUpdate} theme={theme} />
+        <StatCard title={LABELS.LAST_UPDATE} value={indicator.lastUpdate} />
       </View>
       <InfoModal
         visible={isModalVisible}
         onClose={handleCloseModal}
-        title="Información sobre los datos"
+        title={LABELS.DATA_INFO_TITLE}
         message={message}
-        theme={theme}
       />
     </>
   );
 };
 
-interface InfoSectionProps {
-  title: string;
-  content: string;
-  theme: Theme;
-  marginBottom?: boolean;
-}
-
-const InfoSection: React.FC<InfoSectionProps> = ({ title, content, theme, marginBottom }) => (
-  <Card style={marginBottom ? { marginBottom: theme.spacing.base } : undefined}>
-    <AppText variant="sm" weight="medium" style={{ marginBottom: theme.spacing.sm }}>
-      {title}
-    </AppText>
-    <AppText variant="sm" color="textSecondary">
-      {content}
-    </AppText>
-  </Card>
-);
 
 // ============================================================================
 // Main Component
@@ -383,21 +166,14 @@ export const IndicatorDetailScreen: React.FC = () => {
 
   const indicator: IndicatorDetail | undefined = useMemo(() => {
     if (!indicatorData || !metadata) {
-      console.log('Missing data:', { hasIndicatorData: !!indicatorData, hasMetadata: !!metadata });
       return undefined;
     }
-    const result = {
+    return {
       ...indicatorData,
       description: metadata.description,
       methodology: metadata.methodology,
       source: metadata.source,
     };
-    console.log('Indicator created:', {
-      hasDescription: !!result.description,
-      description: result.description,
-      metadata: metadata,
-    });
-    return result;
   }, [indicatorData, metadata]);
 
   const isPositive = indicator?.trend === 'up';
@@ -416,10 +192,57 @@ export const IndicatorDetailScreen: React.FC = () => {
   const isLoading = indicatorLoading || metadataLoading || !indicator;
   if (isLoading) {
     return (
-      <ScreenContainer>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={theme.colors.primary} />
+      <ScreenContainer
+        scrollable={true}
+        safeAreaEdges={[]}
+        contentContainerStyle={[
+          styles.container,
+          {
+            padding: theme.spacing.base,
+            paddingTop: theme.spacing.md,
+            paddingBottom: insets.bottom + theme.spacing.lg,
+          },
+        ]}>
+        {/* Header skeleton */}
+        <Container gap={theme.spacing.sm} style={{ marginBottom: theme.spacing.lg }}>
+          <Skeleton width="40%" height={16} />
+          <Skeleton width="60%" height={48} />
+          <Row gap={theme.spacing.sm}>
+            <Skeleton width="30%" height={16} />
+            <Skeleton width="20%" height={16} />
+          </Row>
+        </Container>
+
+        {/* Chart skeleton */}
+        <ChartWithLabels loading={true} height={CHART_HEIGHT} />
+
+        {/* Time range selector skeleton */}
+        <View style={[styles.timeRangeContainer, { gap: theme.spacing.sm, marginBottom: theme.spacing.lg, marginTop: theme.spacing.base }]}>
+          <Skeleton width={50} height={32} borderRadius={16} />
+          <Skeleton width={50} height={32} borderRadius={16} />
+          <Skeleton width={50} height={32} borderRadius={16} />
         </View>
+
+        {/* Stats skeleton */}
+        <View style={[styles.statsContainer, { gap: theme.spacing.base, marginBottom: theme.spacing.lg }]}>
+          <Card style={styles.statCard}>
+            <StatCardSkeleton />
+          </Card>
+          <Card style={styles.statCard}>
+            <StatCardSkeleton />
+          </Card>
+          <Card style={styles.statCard}>
+            <StatCardSkeleton />
+          </Card>
+        </View>
+
+        {/* Info sections skeleton */}
+        <Card style={{ marginBottom: theme.spacing.base }}>
+          <Skeleton width="50%" height={16} style={{ marginBottom: theme.spacing.sm }} />
+          <Skeleton width="100%" height={14} style={{ marginBottom: 4 }} />
+          <Skeleton width="90%" height={14} style={{ marginBottom: 4 }} />
+          <Skeleton width="80%" height={14} />
+        </Card>
       </ScreenContainer>
     );
   }
@@ -428,7 +251,10 @@ export const IndicatorDetailScreen: React.FC = () => {
   if (!indicator) {
     return (
       <ScreenContainer>
-        <AppText>Indicador no encontrado</AppText>
+        <EmptyState
+          title={LABELS.INDICATOR_NOT_FOUND}
+          message="No se pudo cargar la información del indicador. Por favor, intenta nuevamente."
+        />
       </ScreenContainer>
     );
   }
@@ -445,13 +271,20 @@ export const IndicatorDetailScreen: React.FC = () => {
           paddingBottom: insets.bottom + theme.spacing.lg,
         },
       ]}>
-      <HeaderSection value={indicator.value} changeLabel={changeLabel} theme={theme} />
+      <Container gap={theme.spacing.sm} style={{ marginBottom: theme.spacing.lg }}>
+        <ValueHeader
+          title={LABELS.HISTORICAL_EVOLUTION}
+          value={indicator.value}
+          changeLabel={changeLabel}
+          changeColor={theme.colors.success}
+        />
+      </Container>
 
-      <ChartSection
+      <ChartWithLabels
         loading={historyLoading}
         chartData={chartData}
         seriesCode={seriesCode}
-        theme={theme}
+        height={CHART_HEIGHT}
       />
 
       <TimeRangeSelector
@@ -469,23 +302,21 @@ export const IndicatorDetailScreen: React.FC = () => {
 
       {/* Description section - appears right after stats */}
       <InfoSection
-        title="Descripción"
-        content={indicator.description || 'Sin descripción disponible'}
-        theme={theme}
+        title={LABELS.DESCRIPTION}
+        content={indicator.description || LABELS.NO_DESCRIPTION}
         marginBottom
       />
 
       {indicator.methodology && (
         <InfoSection
-          title="Metodología y Notas"
+          title={LABELS.METHODOLOGY}
           content={indicator.methodology}
-          theme={theme}
           marginBottom
         />
       )}
 
       {indicator.source && (
-        <InfoSection title="Fuente" content={indicator.source} theme={theme} />
+        <InfoSection title={LABELS.SOURCE} content={indicator.source} />
       )}
     </ScreenContainer>
   );
@@ -504,24 +335,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  section: {
-    gap: 8, // theme.spacing.sm equivalent
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  chartContainer: {
-    minHeight: 180,
-  },
-  chartLoading: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  chartLabels: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
   timeRangeContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -536,33 +349,5 @@ const styles = StyleSheet.create({
   statCard: {
     flex: 1,
     minWidth: 158,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  infoIconButton: {
-    padding: 2,
-    marginLeft: 2,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  modalCard: {
-    width: '85%',
-    maxWidth: 320,
-    borderRadius: 16,
-    padding: 0,
-  },
-  modalContent: {
-    padding: 20,
-  },
-  modalButtonContainer: {
-    alignItems: 'center',
   },
 });

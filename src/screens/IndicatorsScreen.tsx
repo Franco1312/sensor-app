@@ -3,74 +3,31 @@
  * Based on SECCION_INDICADORES design
  */
 
-import React, { useState, useMemo } from 'react';
-import { View, FlatList, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useMemo, useEffect } from 'react';
+import { View, FlatList, ScrollView, StyleSheet } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '@/navigation/types';
-import { ScreenContainer, Header, ListItem } from '@/components/layout';
-import { AppText, TrendIcon } from '@/components/common';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { RootStackParamList, MainTabParamList } from '@/navigation/types';
+import { Header, ListItem } from '@/components/layout';
+import { AppText, TrendIcon, Skeleton, Card, FilterButton, ChangeDisplay } from '@/components/common';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Theme } from '@/theme/theme';
+import { formatUpdatedLabel } from '@/constants/labels';
 import {
-  INDICATOR_FREQUENCIES,
   INDICATOR_CATEGORIES,
-  DEFAULT_FREQUENCY,
   DEFAULT_CATEGORY,
-  IndicatorFrequency,
 } from '@/constants/indicators';
 import { Indicator } from '@/types';
 import { useIndicators } from '@/hooks/useIndicators';
-import { formatChangeValue, getTrendColor, getTrendArrow } from '@/utils/formatting';
+import { useIndicatorsFilter } from '@/context/IndicatorsFilterContext';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type TabNavigationProp = BottomTabNavigationProp<MainTabParamList, 'Indicators'>;
 
 // ============================================================================
 // Sub-components
 // ============================================================================
-
-interface FrequencyFilterProps {
-  selected: IndicatorFrequency;
-  onSelect: (freq: IndicatorFrequency) => void;
-  theme: Theme;
-}
-
-const FrequencyFilter: React.FC<FrequencyFilterProps> = ({ selected, onSelect, theme }) => (
-  <View style={[styles.filterContainer, { paddingHorizontal: theme.spacing.base, paddingVertical: theme.spacing.md }]}>
-    <View
-      style={[
-        styles.filterRow,
-        {
-          backgroundColor: theme.colors.surfaceSecondary,
-          borderRadius: theme.radii.base,
-          padding: 4,
-          gap: 4,
-        },
-      ]}>
-      {INDICATOR_FREQUENCIES.map(freq => (
-        <TouchableOpacity
-          key={freq}
-          onPress={() => onSelect(freq)}
-          style={[
-            styles.filterButton,
-            {
-              flex: 1,
-              paddingVertical: theme.spacing.sm,
-              borderRadius: theme.radii.base,
-              backgroundColor: selected === freq ? theme.colors.primary : 'transparent',
-            },
-          ]}>
-          <AppText
-            variant="sm"
-            weight={selected === freq ? 'medium' : 'normal'}
-            color={selected === freq ? 'textPrimary' : 'textSecondary'}>
-            {freq}
-          </AppText>
-        </TouchableOpacity>
-      ))}
-    </View>
-  </View>
-);
 
 interface CategoryFilterProps {
   selected: string;
@@ -79,42 +36,27 @@ interface CategoryFilterProps {
 }
 
 const CategoryFilter: React.FC<CategoryFilterProps> = ({ selected, onSelect, theme }) => (
-  <ScrollView
-    horizontal
-    showsHorizontalScrollIndicator={false}
-    contentContainerStyle={[
-      styles.categoryFilterContent,
-      {
-        paddingHorizontal: theme.spacing.base,
-        gap: theme.spacing.sm,
-        paddingBottom: theme.spacing.sm,
-      },
-    ]}>
-    {INDICATOR_CATEGORIES.map(category => (
-      <TouchableOpacity
-        key={category.label}
-        onPress={() => onSelect(category.label)}
-        style={[
-          styles.categoryButton,
-          {
-            paddingHorizontal: theme.spacing.base,
-            paddingVertical: theme.spacing.sm,
-            borderRadius: theme.radii.full,
-            backgroundColor:
-              selected === category.label ? theme.colors.primary : theme.colors.surfaceSecondary,
-            minHeight: 32,
-            alignSelf: 'flex-start',
-          },
-        ]}>
-        <AppText
-          variant="sm"
-          weight="medium"
-          color={selected === category.label ? 'textPrimary' : 'textSecondary'}>
-          {category.label}
-        </AppText>
-      </TouchableOpacity>
-    ))}
-  </ScrollView>
+  <View style={{ paddingTop: theme.spacing.md, paddingBottom: theme.spacing.xs }}>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={[
+        styles.categoryFilterContent,
+        {
+          paddingHorizontal: theme.spacing.base,
+          gap: theme.spacing.sm,
+        },
+      ]}>
+      {INDICATOR_CATEGORIES.map(category => (
+        <FilterButton
+          key={category.label}
+          label={category.label}
+          isSelected={selected === category.label}
+          onPress={() => onSelect(category.label)}
+        />
+      ))}
+    </ScrollView>
+  </View>
 );
 
 // ============================================================================
@@ -124,10 +66,28 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({ selected, onSelect, the
 export const IndicatorsScreen: React.FC = () => {
   const { theme } = useTheme();
   const navigation = useNavigation<NavigationProp>();
-  const [frequencyFilter, setFrequencyFilter] = useState<IndicatorFrequency>(DEFAULT_FREQUENCY);
+  const { selectedCategory, setSelectedCategory, setCurrentCategory } = useIndicatorsFilter();
   const [categoryFilter, setCategoryFilter] = useState<string>(DEFAULT_CATEGORY);
 
-  const indicators = useIndicators();
+  // Update filter when context category changes
+  useEffect(() => {
+    if (selectedCategory !== null) {
+      const categoryLabel = INDICATOR_CATEGORIES.find(cat => cat.value === selectedCategory)?.label || DEFAULT_CATEGORY;
+      setCategoryFilter(categoryLabel);
+      // Clear the context after applying
+      setSelectedCategory(null);
+    }
+  }, [selectedCategory, setSelectedCategory]);
+
+  // Update current category in context when filter changes
+  useEffect(() => {
+    const categoryValue = categoryFilter === DEFAULT_CATEGORY
+      ? null
+      : INDICATOR_CATEGORIES.find(cat => cat.label === categoryFilter)?.value || null;
+    setCurrentCategory(categoryValue);
+  }, [categoryFilter, setCurrentCategory]);
+
+  const { indicators, loading } = useIndicators();
 
   const filteredIndicators = useMemo(() => {
     if (categoryFilter === DEFAULT_CATEGORY) {
@@ -140,28 +100,17 @@ export const IndicatorsScreen: React.FC = () => {
   }, [indicators, categoryFilter]);
 
   const renderIndicator = ({ item }: { item: Indicator }) => {
-    const changeValue = formatChangeValue(item.changePercent);
-    const trendColor = getTrendColor(item.trend, theme);
-    const trendArrow = getTrendArrow(item.trend);
-
     return (
       <ListItem
         title={item.name}
-        subtitle={`Actualizado: ${item.lastUpdate}`}
+        subtitle={formatUpdatedLabel(item.lastUpdate)}
         leftIcon={<TrendIcon trend={item.trend} size={24} />}
         rightContent={
           <View style={styles.rightContent}>
             <AppText variant="base" weight="medium">
               {item.value}
             </AppText>
-            <View style={styles.changeRow}>
-              <AppText variant="sm" style={{ color: trendColor }}>
-                {changeValue}
-              </AppText>
-              <AppText variant="sm" style={{ color: trendColor }}>
-                {trendArrow}
-              </AppText>
-            </View>
+            <ChangeDisplay changePercent={item.changePercent} trend={item.trend} />
           </View>
         }
         onPress={() =>
@@ -176,22 +125,43 @@ export const IndicatorsScreen: React.FC = () => {
   };
 
   return (
-    <ScreenContainer scrollable={false}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <Header title="Indicadores Económicos" />
-
-      <FrequencyFilter selected={frequencyFilter} onSelect={setFrequencyFilter} theme={theme} />
 
       <CategoryFilter selected={categoryFilter} onSelect={setCategoryFilter} theme={theme} />
 
-      <View style={[styles.listContainer, { flex: 1, paddingHorizontal: theme.spacing.base }]}>
+      {loading ? (
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ paddingHorizontal: theme.spacing.base, paddingTop: theme.spacing.xs }}>
+          <View style={{ gap: theme.spacing.md }}>
+            {Array.from({ length: 6 }).map((_, index) => (
+              <Card key={`skeleton-${index}`} style={{ marginBottom: theme.spacing.md }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.base }}>
+                  <Skeleton width={40} height={40} borderRadius={8} />
+                  <View style={{ flex: 1, gap: theme.spacing.xs }}>
+                    <Skeleton width="70%" height={16} />
+                    <Skeleton width="50%" height={14} />
+                  </View>
+                  <View style={{ alignItems: 'flex-end', gap: 4 }}>
+                    <Skeleton width={80} height={18} />
+                    <Skeleton width={60} height={14} />
+                  </View>
+                </View>
+              </Card>
+            ))}
+          </View>
+        </ScrollView>
+      ) : (
         <FlatList
           data={filteredIndicators}
           renderItem={renderIndicator}
           keyExtractor={item => item.id}
-          contentContainerStyle={{ paddingTop: theme.spacing.md }}
+          style={{ flex: 1 }}
+          contentContainerStyle={{ paddingHorizontal: theme.spacing.base, paddingTop: theme.spacing.xs, paddingBottom: theme.spacing.lg }}
         />
-      </View>
-    </ScreenContainer>
+      )}
+    </View>
   );
 };
 
@@ -200,15 +170,6 @@ export const IndicatorsScreen: React.FC = () => {
 // ============================================================================
 
 const styles = StyleSheet.create({
-  filterContainer: {
-    // Padding handled by inline style
-  },
-  filterRow: {
-    flexDirection: 'row',
-  },
-  filterButton: {
-    alignItems: 'center',
-  },
   categoryFilterContent: {
     // Styles handled by inline style
   },
@@ -220,11 +181,6 @@ const styles = StyleSheet.create({
   },
   rightContent: {
     alignItems: 'flex-end',
-    gap: 4,
-  },
-  changeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
     gap: 4,
   },
 });

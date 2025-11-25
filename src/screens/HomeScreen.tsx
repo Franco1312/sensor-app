@@ -6,14 +6,16 @@
 import React from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { ScreenContainer, Header, SectionTitle } from '@/components/layout';
-import { IndicatorCard, QuoteCard } from '@/components/common';
+import { IndicatorCard, QuoteCard, IndicatorCardSkeleton, QuoteCardSkeleton } from '@/components/common';
+import { Card } from '@/components/common';
 import { useTheme } from '@/theme/ThemeProvider';
 import { mockQuotes } from '@/utils/mockData';
 import { useIndicators } from '@/hooks/useIndicators';
+import { LABELS } from '@/constants/labels';
 
 export const HomeScreen: React.FC = () => {
   const { theme } = useTheme();
-  const indicators = useIndicators();
+  const { indicators, loading } = useIndicators();
 
   return (
     <ScreenContainer scrollable={false}>
@@ -23,14 +25,23 @@ export const HomeScreen: React.FC = () => {
         style={styles.scrollView}
         contentContainerStyle={[styles.scrollContent, { paddingBottom: theme.spacing.lg }]}
         showsVerticalScrollIndicator={false}>
-        <SectionTitle title="Indicadores Principales" />
+        <SectionTitle title={LABELS.MAIN_INDICATORS} />
         <View style={[styles.section, { paddingHorizontal: theme.spacing.base, marginBottom: theme.spacing.lg, gap: theme.spacing.base }]}>
-          {indicators.slice(0, 4).map(indicator => (
-            <IndicatorCard key={indicator.id} indicator={indicator} />
-          ))}
+          {loading ? (
+            // Show 4 skeleton cards while loading
+            Array.from({ length: 4 }).map((_, index) => (
+              <Card key={`skeleton-${index}`}>
+                <IndicatorCardSkeleton />
+              </Card>
+            ))
+          ) : (
+            indicators.slice(0, 4).map(indicator => (
+              <IndicatorCard key={indicator.id} indicator={indicator} />
+            ))
+          )}
         </View>
 
-        <SectionTitle title="Cotizaciones de Mercado" />
+        <SectionTitle title={LABELS.MARKET_QUOTES} />
         <View style={[styles.section, { paddingHorizontal: theme.spacing.base, gap: theme.spacing.base }]}>
           {mockQuotes.slice(0, 4).map(quote => (
             <QuoteCard key={quote.id} quote={quote} />

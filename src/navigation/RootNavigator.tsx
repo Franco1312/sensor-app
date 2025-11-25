@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { StatusBar, Platform } from 'react-native';
+import { StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -12,6 +12,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
 import { TabIcon } from '@/components/common/TabIcon';
 import { SwipeableTabView } from '@/components/navigation/SwipeableTabView';
+import { CustomDrawer } from '@/components/navigation/CustomDrawer';
+import { DrawerProvider, useDrawerContext } from '@/context/DrawerContext';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { IndicatorsFilterProvider } from '@/context/IndicatorsFilterContext';
 import { RootStackParamList, MainTabParamList } from './types';
 
 // Screens
@@ -19,7 +23,8 @@ import { HomeScreen } from '@/screens/HomeScreen';
 import { IndicatorsScreen } from '@/screens/IndicatorsScreen';
 import { IndicatorDetailScreen } from '@/screens/IndicatorDetailScreen';
 import { QuotesScreen } from '@/screens/QuotesScreen';
-import { SettingsScreen } from '@/screens/SettingsScreen';
+import { ProfileScreen } from '@/screens/ProfileScreen';
+import { LoginScreen } from '@/screens/LoginScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -36,7 +41,7 @@ const SwipeableTabsWrapper: React.FC = () => {
         <HomeScreen key="home" />,
         <IndicatorsScreen key="indicators" />,
         <QuotesScreen key="quotes" />,
-        <SettingsScreen key="settings" />,
+        <ProfileScreen key="settings" />,
       ]}
     />
   );
@@ -97,8 +102,8 @@ const MainTabs = () => {
         name="Settings"
         component={SwipeableTabsWrapper}
         options={{
-          tabBarLabel: 'Ajustes',
-          tabBarIcon: ({ focused, size }) => <TabIcon name="settings" focused={focused} size={size} />,
+          tabBarLabel: 'Perfil',
+          tabBarIcon: ({ focused, size }) => <TabIcon name="profile" focused={focused} size={size} />,
         }}
       />
     </Tab.Navigator>
@@ -108,37 +113,24 @@ const MainTabs = () => {
 
 /**
  * Root Stack Navigator
- * Handles navigation to detail screens
+ * Handles navigation to detail screens and authentication
  */
-export const RootNavigator: React.FC = () => {
+const RootStack: React.FC = () => {
   const { theme } = useTheme();
+  const { isAuthenticated } = useAuth();
 
   return (
-    <>
-      <StatusBar
-        barStyle={theme.isDark ? 'light-content' : 'dark-content'}
-        backgroundColor={theme.colors.background}
-        translucent={false}
-      />
-      <NavigationContainer
-        theme={{
-          dark: theme.isDark,
-          colors: {
-            primary: theme.colors.primary,
-            background: theme.colors.background,
-            card: theme.colors.surface,
-            text: theme.colors.textPrimary,
-            border: theme.colors.border,
-            notification: theme.colors.primary,
-          },
-        }}>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-            contentStyle: {
-              backgroundColor: theme.colors.background,
-            },
-          }}>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        contentStyle: {
+          backgroundColor: theme.colors.background,
+        },
+      }}>
+      {!isAuthenticated ? (
+        <Stack.Screen name="Login" component={LoginScreen} />
+      ) : (
+        <>
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen
             name="IndicatorDetail"
@@ -160,8 +152,58 @@ export const RootNavigator: React.FC = () => {
               },
             }}
           />
-        </Stack.Navigator>
+        </>
+      )}
+    </Stack.Navigator>
+  );
+};
+
+/**
+ * Root Navigator Content
+ * Inner component that uses drawer context
+ */
+const RootNavigatorContent: React.FC = () => {
+  const { theme } = useTheme();
+  const { isOpen, closeDrawer } = useDrawerContext();
+
+  return (
+    <>
+      <StatusBar
+        barStyle={theme.isDark ? 'light-content' : 'dark-content'}
+        backgroundColor={theme.colors.background}
+        translucent={false}
+      />
+      <NavigationContainer
+        theme={{
+          dark: theme.isDark,
+          colors: {
+            primary: theme.colors.primary,
+            background: theme.colors.background,
+            card: theme.colors.surface,
+            text: theme.colors.textPrimary,
+            border: theme.colors.border,
+            notification: theme.colors.primary,
+          },
+        }}>
+        <RootStack />
+        <CustomDrawer visible={isOpen} onClose={closeDrawer} />
       </NavigationContainer>
     </>
+  );
+};
+
+/**
+ * Root Navigator
+ * Main navigation container with custom drawer and auth
+ */
+export const RootNavigator: React.FC = () => {
+  return (
+    <AuthProvider>
+      <IndicatorsFilterProvider>
+        <DrawerProvider>
+          <RootNavigatorContent />
+        </DrawerProvider>
+      </IndicatorsFilterProvider>
+    </AuthProvider>
   );
 };

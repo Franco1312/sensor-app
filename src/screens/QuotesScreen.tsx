@@ -3,7 +3,7 @@
  * Based on detalle_cotizacion design
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { View, FlatList } from 'react-native';
 import { ScreenContainer, Header, ListItem } from '@/components/layout';
 import { AppText } from '@/components/common';
@@ -11,12 +11,15 @@ import { CategoryTabs } from '@/components/navigation/CategoryTabs';
 import { CategoryPager } from '@/components/navigation/CategoryPager';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useCategoryPager } from '@/hooks/useCategoryPager';
+import { useIndicatorsFilter } from '@/context/IndicatorsFilterContext';
 import { mockQuotes } from '@/utils/mockData';
 import { QUOTE_CATEGORY_TABS, DEFAULT_QUOTE_CATEGORY, QuoteCategory } from '@/constants/quotes';
 import { Quote } from '@/types';
 
 export const QuotesScreen: React.FC = () => {
   const { theme } = useTheme();
+  const { selectedQuoteCategory, setSelectedQuoteCategory, setCurrentQuoteCategory } =
+    useIndicatorsFilter();
   const categories = useMemo(
     () => QUOTE_CATEGORY_TABS.map(tab => tab.value),
     []
@@ -35,6 +38,20 @@ export const QuotesScreen: React.FC = () => {
     categories,
     defaultCategory: DEFAULT_QUOTE_CATEGORY,
   });
+
+  // Update category when context category changes
+  useEffect(() => {
+    if (selectedQuoteCategory !== null) {
+      handleCategoryChange(selectedQuoteCategory as QuoteCategory);
+      // Clear the context after applying
+      setSelectedQuoteCategory(null);
+    }
+  }, [selectedQuoteCategory, setSelectedQuoteCategory, handleCategoryChange]);
+
+  // Update current category in context when active category changes
+  useEffect(() => {
+    setCurrentQuoteCategory(activeCategory);
+  }, [activeCategory, setCurrentQuoteCategory]);
 
   const renderQuote = ({ item }: { item: Quote }) => {
     const isPositive = item.changePercent >= 0;

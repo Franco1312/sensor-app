@@ -34,26 +34,7 @@ export interface ChartDataPoint {
 type SeriesTransformer = (seriesData: SeriesData) => Omit<Indicator, 'change' | 'changePercent' | 'trend'>;
 type SeriesHistoryTransformer = (seriesData: SeriesData[]) => ChartDataPoint[];
 
-// ============================================================================
-// Date Formatting
-// ============================================================================
-
-/**
- * Formats a date string to DD/MM/YYYY format
- * @param dateString - ISO date string from API
- * @returns Formatted date string (DD/MM/YYYY) or original string if invalid
- */
-const formatDate = (dateString: string): string => {
-  try {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  } catch {
-    return dateString;
-  }
-};
+import { formatDate } from './dateFormat';
 
 // ============================================================================
 // Value Formatting Helpers

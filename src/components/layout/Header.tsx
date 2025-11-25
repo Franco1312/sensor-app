@@ -6,7 +6,9 @@ import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
+import { useDrawerContext } from '@/context/DrawerContext';
 import { AppText } from '../common/AppText';
+import { HamburgerIcon } from '../common/HamburgerIcon';
 
 interface HeaderProps {
   title: string;
@@ -27,6 +29,14 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
+  const { openDrawer } = useDrawerContext();
+
+  const handleDrawerOpen = () => {
+    openDrawer();
+  };
+
+  const defaultLeftIcon = leftIcon === undefined ? <HamburgerIcon /> : leftIcon;
+  const defaultOnLeftPress = onLeftPress === undefined ? handleDrawerOpen : onLeftPress;
 
   return (
     <View
@@ -46,12 +56,12 @@ export const Header: React.FC<HeaderProps> = ({
         },
       ]}>
       <View style={{ width: 48, alignItems: 'flex-start', justifyContent: 'center' }}>
-        {leftIcon && (
+        {defaultLeftIcon && (
           <TouchableOpacity
-            onPress={onLeftPress}
+            onPress={defaultOnLeftPress}
             activeOpacity={0.7}
             style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
-            {leftIcon}
+            {defaultLeftIcon}
           </TouchableOpacity>
         )}
       </View>

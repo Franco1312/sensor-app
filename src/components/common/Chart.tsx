@@ -9,6 +9,7 @@ import Svg, { Path, Defs, LinearGradient, Stop, Line, Circle, Text as SvgText } 
 import { useTheme } from '@/theme/ThemeProvider';
 import { ChartDataPoint, formatValueForSeries } from '@/utils/seriesTransform';
 import { SeriesCode } from '@/constants/series';
+import { formatDate } from '@/utils/dateFormat';
 
 interface ChartProps {
   height?: number;
@@ -43,21 +44,6 @@ interface LabelPosition {
   textX: number;
   textAnchor: 'start' | 'end';
 }
-
-/**
- * Formats a date string to DD/MM/YYYY format
- */
-const formatDate = (dateString: string): string => {
-  try {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  } catch {
-    return dateString;
-  }
-};
 
 /**
  * Calculates the min and max values from data points for normalization

@@ -3,14 +3,15 @@
  */
 
 export type RootStackParamList = {
-  MainTabs: undefined;
+  Login: undefined;
+  MainTabs: { screen?: keyof MainTabParamList; params?: MainTabParamList[keyof MainTabParamList] } | undefined;
   IndicatorDetail: { indicatorId: string; indicatorName: string };
   QuoteDetail: { quoteId: string; quoteName: string };
 };
 
 export type MainTabParamList = {
   Home: undefined;
-  Indicators: undefined;
+  Indicators: { category?: string } | undefined;
   Quotes: undefined;
   Settings: undefined;
 };
