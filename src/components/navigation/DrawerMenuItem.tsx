@@ -30,13 +30,12 @@ export const DrawerMenuItem: React.FC<DrawerMenuItemProps> = ({
 }) => {
   const { theme } = useTheme();
 
-  // Icon background should be colored only if the item itself is active (not just subitem)
-  const shouldColorIconBackground = isActive && !hasActiveSubItem;
-  const iconColor = shouldColorIconBackground
-    ? theme.colors.textPrimary // Dark icon on yellow background for contrast
-    : (isActive || hasActiveSubItem)
-      ? theme.colors.primary // Primary color when active but no yellow background
-      : theme.colors.textPrimary; // Default text color when inactive
+  // Icon should be colored (yellow) when item or subitem is active
+  // Background always stays gray - never yellow
+  const isIconActive = isActive || hasActiveSubItem;
+  const iconColor = isIconActive
+    ? theme.colors.primary // Yellow icon when active
+    : theme.colors.textPrimary; // Dark icon when inactive
 
   return (
     <TouchableOpacity
@@ -55,7 +54,7 @@ export const DrawerMenuItem: React.FC<DrawerMenuItemProps> = ({
           width: 40,
           height: 40,
           borderRadius: theme.radii.base,
-          backgroundColor: shouldColorIconBackground ? theme.colors.primary : theme.colors.surfaceSecondary,
+          backgroundColor: theme.colors.surfaceSecondary, // Always gray background
           alignItems: 'center',
           justifyContent: 'center',
         }}>
