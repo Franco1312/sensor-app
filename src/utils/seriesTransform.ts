@@ -63,11 +63,16 @@ const formatBillions = (value: number): string => {
 /**
  * Formats a value in millions (USD) with currency symbol
  * @param value - Value in millions
- * @returns Formatted string (e.g., "$40,356M U$S")
+ * @returns Formatted string (e.g., "U$S 40.356M")
  */
 const formatMillionsUSD = (value: number): string => {
-  if (value === 0) return '$0M U$S';
-  return `$${value.toLocaleString('es-AR', { maximumFractionDigits: 0 })}M U$S`;
+  if (value === 0) return 'U$S 0M';
+  // Format with dot as thousands separator and no decimals
+  const formattedValue = value.toLocaleString('en-US', { 
+    maximumFractionDigits: 0,
+    useGrouping: true
+  }).replace(/,/g, '.'); // Replace comma with dot for thousands separator
+  return `U$S ${formattedValue}M`;
 };
 
 // ============================================================================
