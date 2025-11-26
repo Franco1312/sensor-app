@@ -66,8 +66,14 @@ export const CustomDrawer: React.FC<CustomDrawerProps> = ({ visible, onClose }) 
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   // Get current active screen from navigation state
-  const getActiveScreen = (): keyof MainTabParamList | null => {
+  const getActiveScreen = (): keyof MainTabParamList | 'Quotes' | null => {
     const state = navigation.getState();
+    // Check if we're on Quotes screen (Stack screen)
+    const quotesRoute = state?.routes.find((r: any) => r.name === 'Quotes');
+    if (quotesRoute) {
+      return 'Quotes';
+    }
+    // Otherwise check MainTabs
     const mainTabsState = state?.routes.find((r: any) => r.name === 'MainTabs')?.state;
     if (mainTabsState && 'index' in mainTabsState && mainTabsState.routes) {
       const activeRoute = mainTabsState.routes[mainTabsState.index as number];
@@ -126,7 +132,12 @@ export const CustomDrawer: React.FC<CustomDrawerProps> = ({ visible, onClose }) 
     if (item.expandable) {
       toggleExpand(item.label);
     } else {
-      navigation.navigate('MainTabs', { screen: item.tabScreen });
+      // Quotes is now a Stack screen, not a Tab
+      if (item.tabScreen === 'Quotes') {
+        navigation.navigate('Quotes');
+      } else {
+        navigation.navigate('MainTabs', { screen: item.tabScreen });
+      }
       onClose();
     }
   };
@@ -138,7 +149,8 @@ export const CustomDrawer: React.FC<CustomDrawerProps> = ({ visible, onClose }) 
       navigation.navigate('MainTabs', { screen: tabScreen });
     } else if (tabScreen === 'Quotes') {
       setSelectedQuoteCategory(categoryValue);
-      navigation.navigate('MainTabs', { screen: tabScreen });
+      // Quotes is now a Stack screen, not a Tab
+      navigation.navigate('Quotes');
     } else {
       navigation.navigate('MainTabs', { screen: tabScreen });
     }
