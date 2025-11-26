@@ -75,7 +75,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
 };
 
 /**
- * Skeleton for IndicatorCard
+ * Skeleton for IndicatorCard (full size)
  */
 export const IndicatorCardSkeleton: React.FC = () => {
   const { theme } = useTheme();
@@ -94,7 +94,7 @@ export const IndicatorCardSkeleton: React.FC = () => {
 };
 
 /**
- * Skeleton for QuoteCard
+ * Skeleton for QuoteCard (full size)
  */
 export const QuoteCardSkeleton: React.FC = () => {
   const { theme } = useTheme();
@@ -108,6 +108,36 @@ export const QuoteCardSkeleton: React.FC = () => {
         <Skeleton width="50%" height={14} />
       </View>
       <Skeleton width="100%" height={60} borderRadius={8} />
+    </View>
+  );
+};
+
+/**
+ * Skeleton for CompactIndicatorCard - matches the compact card layout
+ */
+export const CompactIndicatorCardSkeleton: React.FC = () => {
+  const { theme } = useTheme();
+
+  return (
+    <View style={[styles.compactCardContainer, { gap: 4 }]}>
+      <Skeleton width="70%" height={12} />
+      <Skeleton width="85%" height={24} style={{ marginTop: 4 }} />
+      <Skeleton width="40%" height={12} style={{ marginTop: 6 }} />
+    </View>
+  );
+};
+
+/**
+ * Skeleton for CompactQuoteCard - matches the compact card layout
+ */
+export const CompactQuoteCardSkeleton: React.FC = () => {
+  const { theme } = useTheme();
+
+  return (
+    <View style={[styles.compactCardContainer, { gap: 4 }]}>
+      <Skeleton width="70%" height={12} />
+      <Skeleton width="85%" height={24} style={{ marginTop: 4 }} />
+      <Skeleton width="40%" height={12} style={{ marginTop: 6 }} />
     </View>
   );
 };
@@ -138,6 +168,9 @@ const styles = StyleSheet.create({
   cardContainer: {
     padding: 16,
     borderRadius: 12,
+  },
+  compactCardContainer: {
+    padding: 8, // sm padding
   },
   row: {
     flexDirection: 'row',

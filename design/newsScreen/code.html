@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Radar Económico - Noticias</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FBBF24", // amber-300
+                        "background-light": "#F3F4F6", // gray-100
+                        "background-dark": "#181818", // Custom dark gray
+                        "card-dark": "#272727"
+                    },
+                    fontFamily: {
+                        display: ["Roboto", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "1rem", // 16px
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-300">
+<div class="h-screen w-screen flex flex-col" id="app">
+<header class="flex items-center justify-between p-4 sticky top-0 bg-background-light/80 dark:bg-background-dark/90 backdrop-blur-sm z-10 border-b border-gray-200 dark:border-gray-800">
+<button class="text-gray-800 dark:text-gray-200">
+<span class="material-icons-outlined">menu</span>
+</button>
+<h1 class="text-xl font-bold text-gray-900 dark:text-white">Noticias</h1>
+<button class="text-gray-800 dark:text-gray-200">
+<span class="material-icons-outlined">notifications</span>
+</button>
+</header>
+<main class="flex-grow overflow-y-auto px-4 pb-24">
+<div class="py-6">
+<div class="divide-y divide-gray-200 dark:divide-gray-800">
+<div class="py-6">
+<div class="flex items-start space-x-4">
+<div class="flex-1">
+<p class="text-xs font-medium text-primary mb-1">Ámbito Financiero</p>
+<h3 class="font-bold text-gray-900 dark:text-white leading-tight">El Banco Central mantiene la tasa de interés</h3>
+<p class="text-sm text-gray-600 dark:text-gray-400 mt-2 leading-snug">La autoridad monetaria decidió no alterar la política actual, citando la necesidad de observar más datos.</p>
+</div>
+<img alt="News thumbnail" class="w-24 h-24 rounded-lg object-cover flex-shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3RXtX1q_VNUXIqZMKw7VBWkhD4sKec8XEdRE7VU1xPOLRCmNeUFksd_kjuKdrL3S-7oj65Zi-wrDajJPfHlQhcfsdSJL770vtCcXhIWL8q_AueqngMNJdKJhSIspCzG1ojS_BHckgypr0ejjg1oFi2eLCbu9fg3iSq413Ox5tL18vjGYjwk5XNfUiXGwSRkC915MlzNALGts9YgljknYxe0KbsepVdhcK4cs6JSQ3fLzYySi36bGsO6bLummvrKLoZR2sGJSBKUpj"/>
+</div>
+<a class="flex items-center text-sm font-semibold text-primary mt-4" href="#">
+<span>ver más</span>
+<span class="material-icons-outlined text-lg ml-1">arrow_forward</span>
+</a>
+</div>
+<div class="py-6">
+<div class="flex items-start space-x-4">
+<div class="flex-1">
+<p class="text-xs font-medium text-primary mb-1">El Cronista</p>
+<h3 class="font-bold text-gray-900 dark:text-white leading-tight">El Merval cierra en alza impulsado por el sector energético</h3>
+<p class="text-sm text-gray-600 dark:text-gray-400 mt-2 leading-snug">Las acciones líderes experimentaron una jornada positiva, con un volumen de negocios que superó las expectativas.</p>
+</div>
+<img alt="News thumbnail" class="w-24 h-24 rounded-lg object-cover flex-shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjEQTS7_fHQ_2EFHRq48ecRlCUcdbjJeC95_WSULo6hq5iuBTUHbalDKMcAWRkI_rv1gUhViM_wLTr-3RmM3X85PZnx4ZsoK_636ObUH4zoXR9M8_5dDKKoXqr2OSNXaKiOOIbY3pNOehjYWblshoL3VRipp3-B1ATZVrayXrNzi_xEj9jYhH70c16pic2pCdCC1ZSah7W1tUMiExeFWbGEf3ZWw_oCUbtnGhOCedqVbhyq6QTfD2JVIENKd0NnEJOUOeRWzibia-T"/>
+</div>
+<a class="flex items-center text-sm font-semibold text-primary mt-4" href="#">
+<span>ver más</span>
+<span class="material-icons-outlined text-lg ml-1">arrow_forward</span>
+</a>
+</div>
+<div class="py-6">
+<div class="flex items-start space-x-4">
+<div class="flex-1">
+<p class="text-xs font-medium text-primary mb-1">Infobae</p>
+<h3 class="font-bold text-gray-900 dark:text-white leading-tight">Acuerdo con el FMI: se esperan nuevas medidas</h3>
+<p class="text-sm text-gray-600 dark:text-gray-400 mt-2 leading-snug">El gobierno negocia los próximos pasos para cumplir con las metas fiscales pactadas con el organismo internacional.</p>
+</div>
+<img alt="News thumbnail" class="w-24 h-24 rounded-lg object-cover flex-shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6PSqDMvkfM5kDKLCkWKVHNoOg3r5RL3tFC8pJMJS0Zl_3oNpVUiuLvgwfisOtXbgaqC18T1zZZG0obaV34AQMg3NRbGX0hrj-YbIte98Zn4Ntnv3n3Nztf--wg683zWsSlc-KktO-Is9Iwsezh5W2NeIx9ahRucoPyOn9gOpvdnfGD6v-8QkYzSub0comU4uX3Td1OcLsCRlOwJtU0JHMJ6_yilIGIav6FHgfydwDzKANPaVMvzQxFbH7uuWbL7nrq8TQXPBsT4lL"/>
+</div>
+<a class="flex items-center text-sm font-semibold text-primary mt-4" href="#">
+<span>ver más</span>
+<span class="material-icons-outlined text-lg ml-1">arrow_forward</span>
+</a>
+</div>
+<div class="py-6">
+<div class="flex items-start space-x-4">
+<div class="flex-1">
+<p class="text-xs font-medium text-primary mb-1">La Nación</p>
+<h3 class="font-bold text-gray-900 dark:text-white leading-tight">La inflación de mayo se desacelera pero sigue alta</h3>
+<p class="text-sm text-gray-600 dark:text-gray-400 mt-2 leading-snug">El índice de precios al consumidor registró una leve baja respecto al mes anterior, aunque la variación interanual preocupa.</p>
+</div>
+<img alt="News thumbnail" class="w-24 h-24 rounded-lg object-cover flex-shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEZVWDfNPb2-KbGpfSAK6spoHsA17gp1TkGF-rAUqqZLrY-HS7NsOUEYbhWw5JhR89i0FVjbmCqckjTvQcHa2kBf4SBXdxn-ThqJBvS7dQffzwskpMLK-ON1PpMyi-DoIMNnp9leIsN1aEfKtOulkdCXgzD785PTouFsF8OlJDxRnz38GWt-uOCdtpweyXpoYghdTRt-Uv36H3UuZ9RaacxokvJ7ARbMNpkPM1X82wgiSb05LqV1V6sFb7jozIUlpB6UohEomVz6NF"/>
+</div>
+<a class="flex items-center text-sm font-semibold text-primary mt-4" href="#">
+<span>ver más</span>
+<span class="material-icons-outlined text-lg ml-1">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</main>
+<footer class="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-800">
+<nav class="flex justify-around items-center h-20">
+<a class="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400" href="#">
+<span class="material-icons-outlined">home</span>
+<span class="text-xs font-medium">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400" href="#">
+<span class="material-icons-outlined">bar_chart</span>
+<span class="text-xs font-medium">Mercados</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary" href="#">
+<span class="material-icons-outlined">article</span>
+<span class="text-xs font-medium">Noticias</span>
+</a>
+<a class="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400" href="#">
+<span class="material-icons-outlined">person</span>
+<span class="text-xs font-medium">Perfil</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

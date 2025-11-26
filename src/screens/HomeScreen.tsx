@@ -40,7 +40,7 @@ export const HomeScreen: React.FC = () => {
   const featuredNews = news.slice(0, 2);
 
   const handleVerMasQuotes = () => {
-    navigation.navigate('MainTabs', { screen: 'Quotes' });
+    navigation.navigate('Quotes');
   };
 
   const handleVerMasIndicators = () => {
@@ -48,7 +48,7 @@ export const HomeScreen: React.FC = () => {
   };
 
   const handleVerMasNews = () => {
-    navigation.navigate('MainTabs', { screen: 'Quotes' }); // Quotes tab ahora muestra NewsScreen
+    navigation.navigate('MainTabs', { screen: 'News' });
   };
 
   const handleNewsPress = (newsItem: typeof news[0]) => {
@@ -72,7 +72,7 @@ export const HomeScreen: React.FC = () => {
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: theme.spacing.xl }]}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: theme.spacing.xl, paddingTop: theme.spacing.base }]}
         showsVerticalScrollIndicator={false}>
         {/* Cotizaciones del Día */}
         <View style={styles.section}>
@@ -82,7 +82,7 @@ export const HomeScreen: React.FC = () => {
               // Show 2 skeleton cards while loading
               Array.from({ length: 2 }).map((_, index) => (
                 <View key={`quote-skeleton-${index}`} style={styles.gridItem}>
-                  <Card variant="elevated" padding="sm">
+                  <Card variant="elevated" padding="md">
                     <CompactQuoteCardSkeleton />
                   </Card>
                 </View>
@@ -117,7 +117,7 @@ export const HomeScreen: React.FC = () => {
               // Show 2 skeleton cards while loading
               Array.from({ length: 2 }).map((_, index) => (
                 <View key={`indicator-skeleton-${index}`} style={styles.gridItem}>
-                  <Card variant="elevated" padding="sm">
+                  <Card variant="elevated" padding="md">
                     <CompactIndicatorCardSkeleton />
                   </Card>
                 </View>
@@ -199,13 +199,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   section: {
-    marginBottom: 24,
+    marginBottom: 16, // Reducido de 24 a 16
+    paddingBottom: 16, // Reducido de 24 a 16
   },
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 16,
-    marginTop: 12,
+    gap: 16, // gap-4 = 16px
+    marginTop: 12, // mt-3 = 12px
   },
   gridItem: {
     flex: 1,
@@ -213,13 +214,13 @@ const styles = StyleSheet.create({
     maxWidth: '48%',
   },
   newsContainer: {
-    gap: 12,
-    marginTop: 12,
+    gap: 16, // gap-4 = 16px (space-y-4)
+    marginTop: 12, // mt-3 = 12px
   },
   newsItem: {
     width: '100%',
   },
   verMasContainer: {
-    marginTop: 4,
+    marginTop: 0, // El botón ya tiene su propio marginTop
   },
 });

@@ -19,13 +19,11 @@ export const Section: React.FC<SectionProps> = ({ title, style }) => {
     <View
       style={[
         {
-          paddingHorizontal: theme.spacing.base,
-          paddingTop: theme.spacing.lg,
           paddingBottom: theme.spacing.md,
         },
         style,
       ]}>
-      <Text variant="lg" weight="bold">
+      <Text variant="xl" weight="bold">
         {title}
       </Text>
     </View>

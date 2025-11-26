@@ -3,4 +3,5 @@
  */
 
 export { QuoteCard } from './QuoteCard';
+export { CompactQuoteCard } from './CompactQuoteCard';
 

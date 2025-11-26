@@ -23,16 +23,19 @@ export const VerMasButton: React.FC<VerMasButtonProps> = ({ onPress }) => {
         styles.button,
         {
           backgroundColor: theme.colors.surfaceSecondary,
+          borderRadius: theme.radii.base,
+          paddingVertical: theme.spacing.sm,
+          paddingHorizontal: theme.spacing.base,
         },
       ]}>
       <View style={styles.content}>
-        <Text variant="sm" weight="semibold" color="textSecondary">
+        <Text variant="sm" weight="semibold" color="textPrimary">
           Ver más
         </Text>
-        <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
+        <Svg width={14} height={14} viewBox="0 0 24 24" fill="none">
           <Path
             d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"
-            fill={theme.colors.textSecondary}
+            fill={theme.colors.textPrimary}
           />
         </Svg>
       </View>
@@ -43,11 +46,9 @@ export const VerMasButton: React.FC<VerMasButtonProps> = ({ onPress }) => {
 const styles = StyleSheet.create({
   button: {
     width: '100%',
-    paddingVertical: 10,
-    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 8,
+    marginTop: 16, // mt-4 = 16px
   },
   content: {
     flexDirection: 'row',

@@ -5,6 +5,7 @@
 export type RootStackParamList = {
   Login: undefined;
   MainTabs: { screen?: keyof MainTabParamList; params?: MainTabParamList[keyof MainTabParamList] } | undefined;
+  Quotes: undefined;
   IndicatorDetail: { indicatorId: string; indicatorName: string };
   QuoteDetail: { quoteId: string; quoteName: string };
 };
@@ -13,6 +14,7 @@ export type MainTabParamList = {
   Home: undefined;
   Indicators: { category?: string } | undefined;
   Quotes: undefined;
+  News: undefined;
   Settings: undefined;
 };
 

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Radar Económico - Inicio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FBBF24", // amber-300
+                        "background-light": "#F3F4F6", // gray-100
+                        "background-dark": "#181818", // Custom dark gray
+                    },
+                    fontFamily: {
+                        display: ["Roboto", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "1rem", // 16px
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="h-screen w-screen flex flex-col" id="app">
+<header class="flex items-center justify-between p-4 sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm z-10 border-b border-gray-200 dark:border-gray-800">
+<button class="text-gray-800 dark:text-gray-200">
+<span class="material-icons-outlined">menu</span>
+</button>
+<h1 class="text-xl font-bold text-gray-900 dark:text-white">Radar Económico</h1>
+<button class="text-gray-800 dark:text-gray-200">
+<span class="material-icons-outlined">notifications</span>
+</button>
+</header>
+<main class="flex-grow overflow-y-auto px-4 pb-24">
+<div class="py-6">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-bold text-gray-900 dark:text-white">Cotizaciones del Día</h2>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-3">
+<div class="p-3 rounded-lg bg-white dark:bg-gray-800 shadow-sm">
+<p class="text-xs text-gray-500 dark:text-gray-400">Oficial</p>
+<p class="text-xl font-bold text-gray-900 dark:text-white mt-1">$1.470</p>
+<div class="flex items-center text-xs mt-1.5 text-green-700 dark:text-green-300">
+<span class="material-icons-outlined text-sm">arrow_upward</span>
+<span>0.00%</span>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-white dark:bg-gray-800 shadow-sm">
+<p class="text-xs text-gray-500 dark:text-gray-400">Blue</p>
+<p class="text-xl font-bold text-gray-900 dark:text-white mt-1">$1.460</p>
+<div class="flex items-center text-xs mt-1.5 text-green-700 dark:text-green-300">
+<span class="material-icons-outlined text-sm">arrow_upward</span>
+<span>0.00%</span>
+</div>
+</div>
+</div>
+<a class="mt-4 block w-full text-center py-2.5 bg-gray-200/50 dark:bg-gray-800/50 rounded-lg text-sm font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/60 transition-colors" href="#">
+<span class="flex items-center justify-center">Ver más <span class="material-icons-outlined text-base ml-1.5">arrow_forward_ios</span></span>
+</a>
+</div>
+<div class="pb-6">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-bold text-gray-900 dark:text-white">Indicadores Principales</h2>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-3">
+<div class="p-3 rounded-lg bg-white dark:bg-gray-800 shadow-sm">
+<p class="text-xs text-gray-500 dark:text-gray-400">Base Monetaria</p>
+<p class="text-xl font-bold text-gray-900 dark:text-white mt-1">$40.8B</p>
+<div class="flex items-center text-xs mt-1.5 text-green-700 dark:text-green-300">
+<span class="material-icons-outlined text-sm">arrow_upward</span>
+<span>0.00%</span>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-white dark:bg-gray-800 shadow-sm">
+<p class="text-xs text-gray-500 dark:text-gray-400">Reservas</p>
+<p class="text-xl font-bold text-gray-900 dark:text-white mt-1">U$S 40.3M</p>
+<div class="flex items-center text-xs mt-1.5 text-green-700 dark:text-green-300">
+<span class="material-icons-outlined text-sm">arrow_upward</span>
+<span>0.00%</span>
+</div>
+</div>
+</div>
+<a class="mt-4 block w-full text-center py-2.5 bg-gray-200/50 dark:bg-gray-800/50 rounded-lg text-sm font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/60 transition-colors" href="#">
+<span class="flex items-center justify-center">Ver más <span class="material-icons-outlined text-base ml-1.5">arrow_forward_ios</span></span>
+</a>
+</div>
+<div class="pb-6">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-bold text-gray-900 dark:text-white">Noticias Destacadas</h2>
+</div>
+<div class="space-y-4 mt-3">
+<div class="p-4 rounded-lg bg-white dark:bg-gray-800 shadow-sm">
+<h3 class="font-bold text-gray-900 dark:text-white">El Banco Central mantiene la tasa de interés en medio de presiones inflacionarias</h3>
+<p class="text-sm text-gray-600 dark:text-gray-300 mt-1.5">La autoridad monetaria decidió no alterar la política actual, citando la necesidad de observar más datos antes de actuar. Analistas esperan el próximo informe de inflación.</p>
+</div>
+<div class="p-4 rounded-lg bg-white dark:bg-gray-800 shadow-sm">
+<h3 class="font-bold text-gray-900 dark:text-white">El Merval cierra en alza impulsado por el sector energético y bancario</h3>
+<p class="text-sm text-gray-600 dark:text-gray-300 mt-1.5">Las acciones líderes experimentaron una jornada positiva, con un volumen de negocios que superó las expectativas del mercado.</p>
+</div>
+</div>
+<a class="mt-4 block w-full text-center py-2.5 bg-gray-200/50 dark:bg-gray-800/50 rounded-lg text-sm font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/60 transition-colors" href="#">
+<span class="flex items-center justify-center">Ver más <span class="material-icons-outlined text-base ml-1.5">arrow_forward_ios</span></span>
+</a>
+</div>
+</main>
+<footer class="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700">
+<nav class="flex justify-around items-center h-20">
+<a class="flex flex-col items-center justify-center text-primary" href="#">
+<span class="material-icons-outlined">home</span>
+<span class="text-xs font-medium">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400" href="#">
+<span class="material-icons-outlined">bar_chart</span>
+<span class="text-xs font-medium">Mercados</span>
+</a>
+<a class="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400" href="#">
+<span class="material-icons-outlined">article</span>
+<span class="text-xs font-medium">Noticias</span>
+</a>
+<a class="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400" href="#">
+<span class="material-icons-outlined">person</span>
+<span class="text-xs font-medium">Perfil</span>
+</a>
+</nav>
+</footer>
+</div>
+</body></html>

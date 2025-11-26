@@ -11,6 +11,8 @@ export {
   Skeleton,
   IndicatorCardSkeleton,
   QuoteCardSkeleton,
+  CompactIndicatorCardSkeleton,
+  CompactQuoteCardSkeleton,
   StatCardSkeleton,
   ChartSkeleton,
 } from './Skeleton';

@@ -10,7 +10,7 @@ interface CardProps extends ViewProps {
   children: ReactNode;
   onPress?: () => void;
   variant?: 'default' | 'elevated' | 'outlined' | 'flat';
-  padding?: 'none' | 'sm' | 'base' | 'lg' | 'xl';
+  padding?: 'none' | 'sm' | 'md' | 'base' | 'lg' | 'xl';
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -29,6 +29,8 @@ export const Card: React.FC<CardProps> = ({
         return 0;
       case 'sm':
         return theme.spacing.sm;
+      case 'md':
+        return theme.spacing.md;
       case 'base':
         return theme.spacing.base;
       case 'lg':
@@ -42,7 +44,7 @@ export const Card: React.FC<CardProps> = ({
 
   const cardStyle = {
     backgroundColor: variant === 'flat' ? 'transparent' : theme.colors.surface,
-    borderRadius: theme.radii.xl,
+    borderRadius: theme.radii.base,
     ...(variant !== 'flat' && {
       borderWidth: variant === 'outlined' ? 1 : variant === 'default' ? 1 : 0,
       borderColor: theme.colors.border,

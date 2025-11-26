@@ -38,11 +38,11 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 const SwipeableTabsWrapper: React.FC = () => {
   return (
     <SwipeableTabView
-      tabNames={['Home', 'Indicators', 'Quotes', 'Settings']}
+      tabNames={['Home', 'Indicators', 'News', 'Settings']}
       children={[
         <HomeScreen key="home" />,
         <IndicatorsScreen key="indicators" />,
-        <NewsScreen key="quotes" />,
+        <NewsScreen key="news" />,
         <ProfileScreen key="settings" />,
       ]}
     />
@@ -93,7 +93,7 @@ const MainTabs = () => {
         }}
       />
       <Tab.Screen
-        name="Quotes"
+        name="News"
         component={SwipeableTabsWrapper}
         options={{
           tabBarLabel: 'Noticias',
@@ -134,6 +134,13 @@ const RootStack: React.FC = () => {
       ) : (
         <>
           <Stack.Screen name="MainTabs" component={MainTabs} />
+          <Stack.Screen
+            name="Quotes"
+            component={QuotesScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
           <Stack.Screen
             name="IndicatorDetail"
             component={IndicatorDetailScreen}

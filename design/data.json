@@ -1,0 +1,10 @@
+[
+  {
+    "obs_time": "2025-10-01T00:00:00-03:00",
+    "internal_series_code": "INDEC_IPC_VARIACION_INTERANUAL_PCT_M",
+    "value": 31.3,
+    "unit": "pct",
+    "frequency": "M",
+    "collection_date": "2025-11-25T14:12:01.536691+00:00"
+  }
+]
