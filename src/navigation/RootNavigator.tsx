@@ -87,7 +87,7 @@ const MainTabs = () => {
         name="Indicators"
         component={SwipeableTabsWrapper}
         options={{
-          tabBarLabel: 'Gráficos',
+          tabBarLabel: 'Mercados',
           tabBarIcon: ({ focused, size }) => <TabIcon name="chart" focused={focused} size={size} />,
         }}
       />
