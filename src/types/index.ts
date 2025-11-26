@@ -68,3 +68,19 @@ export interface SeriesMetadataApiResponse {
   success: boolean;
   data: SeriesMetadata;
 }
+
+/**
+ * News Types
+ */
+export interface News {
+  id: string;
+  sourceId: string;
+  sourceName: string;
+  title: string;
+  summary: string;
+  link: string;
+  publishedAt: string;
+  fetchedAt: string;
+  categories: string[];
+  imageUrl?: string;
+}

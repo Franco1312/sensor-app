@@ -23,6 +23,7 @@ import { HomeScreen } from '@/screens/HomeScreen';
 import { IndicatorsScreen } from '@/screens/IndicatorsScreen';
 import { IndicatorDetailScreen } from '@/screens/IndicatorDetailScreen';
 import { QuotesScreen } from '@/screens/QuotesScreen';
+import { NewsScreen } from '@/screens/NewsScreen';
 import { QuoteDetailScreen } from '@/screens/QuoteDetailScreen';
 import { ProfileScreen } from '@/screens/ProfileScreen';
 import { LoginScreen } from '@/screens/LoginScreen';
@@ -41,7 +42,7 @@ const SwipeableTabsWrapper: React.FC = () => {
       children={[
         <HomeScreen key="home" />,
         <IndicatorsScreen key="indicators" />,
-        <QuotesScreen key="quotes" />,
+        <NewsScreen key="quotes" />,
         <ProfileScreen key="settings" />,
       ]}
     />
