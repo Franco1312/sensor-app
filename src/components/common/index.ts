@@ -1,42 +1,20 @@
 /**
  * Common components exports
- * Re-exports from ui/, features/, and shared components
+ * Re-exports from design-system and feature components
+ * This file maintains backward compatibility during migration
  */
 
-// UI components (atoms)
-export * from '../ui';
+// Design System components (atoms, molecules, organisms)
+export * from '@/design-system/components';
 
 // Feature components
 export { IndicatorCard, CompactIndicatorCard } from '../features/indicators';
 export { QuoteCard, CompactQuoteCard } from '../features/quotes';
+export { CompactCryptoCard } from '../features/crypto';
 export { NewsCard } from '../features/news';
 export { Chart, MiniChart, ChartWithLabels } from '../features/charts';
 
-// Shared/common components (molecules)
-export { ChangeDisplay } from './ChangeDisplay';
+// Legacy components (still in common folder, will be moved later)
 export { DataCard } from './DataCard';
-export { EmptyState } from './EmptyState';
-export { FilterButton } from './FilterButton';
-export { HamburgerIcon } from './HamburgerIcon';
-export { InfoIcon } from './InfoIcon';
-export { InfoModal } from './InfoModal';
-export { InfoSection } from './InfoSection';
-export { InputIcon } from './InputIcon';
-export { ChartIcon } from './ChartIcon';
-export { ChevronIcon } from './ChevronIcon';
 export { MetaRow } from './MetaRow';
-export { MenuIcon } from './MenuIcon';
-export { StatCard } from './StatCard';
-export { TrendIcon } from './TrendIcon';
-export { ValueHeader } from './ValueHeader';
 export { VerMasButton } from './VerMasButton';
-export { NotificationIcon } from './NotificationIcon';
-export {
-  Skeleton,
-  IndicatorCardSkeleton,
-  QuoteCardSkeleton,
-  CompactIndicatorCardSkeleton,
-  CompactQuoteCardSkeleton,
-  StatCardSkeleton,
-  ChartSkeleton,
-} from '../ui/Skeleton';

@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Card, Text } from '@/components/ui';
+import { Card, Text } from '@/design-system/components';
 import { MiniChart } from '@/components/features/charts';
 import { MetaRow } from './MetaRow';
 import { useTheme } from '@/theme/ThemeProvider';

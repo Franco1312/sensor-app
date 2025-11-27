@@ -4,10 +4,12 @@
 
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { Card, Text, InfoIcon } from '@/components/common';
+import { Text } from '../atoms';
+import { Card } from '../molecules';
+import { InfoIcon } from '../atoms/icons';
 import { useTheme } from '@/theme/ThemeProvider';
 
-interface StatCardProps {
+export interface StatCardProps {
   title: string;
   value: string;
   subtitle?: string;

@@ -5,13 +5,15 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native';
 import { Screen } from '@/components/layout';
-import { Text, Button, Input, ChartIcon } from '@/components/common';
+import { Text, Button, Input, ChartIcon } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/context/AuthContext';
 import { login, requestPasswordReset, LoginRequest } from '@/services/auth-api';
+import { useTranslation } from '@/i18n';
 
 export const LoginScreen: React.FC = () => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const { login: loginUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -22,7 +24,7 @@ export const LoginScreen: React.FC = () => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Por favor completa todos los campos');
+      Alert.alert(t('components.common.error'), t('screens.login.errors.emptyFields'));
       return;
     }
 
@@ -32,7 +34,7 @@ export const LoginScreen: React.FC = () => {
       const response = await login(credentials);
       loginUser(response.data.user, response.data.token);
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Error al iniciar sesión');
+      Alert.alert(t('components.common.error'), error.message || t('screens.login.errors.loginFailed'));
     } finally {
       setLoading(false);
     }
@@ -40,16 +42,16 @@ export const LoginScreen: React.FC = () => {
 
   const handleForgotPassword = async () => {
     if (!email) {
-      Alert.alert('Error', 'Por favor ingresa tu email primero');
+      Alert.alert(t('components.common.error'), t('screens.login.errors.emailRequired'));
       return;
     }
 
     setLoading(true);
     try {
       await requestPasswordReset({ email });
-      Alert.alert('Éxito', 'Se ha enviado un email con las instrucciones para recuperar tu contraseña');
+      Alert.alert(t('components.common.success'), t('screens.login.errors.resetSuccess'));
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Error al solicitar recuperación');
+      Alert.alert(t('components.common.error'), error.message || t('screens.login.errors.resetFailed'));
     } finally {
       setLoading(false);
     }
@@ -85,10 +87,10 @@ export const LoginScreen: React.FC = () => {
                 <ChartIcon size={32} />
               </View>
               <Text variant="3xl" weight="bold" style={{ marginBottom: theme.spacing.sm, textAlign: 'center' }}>
-                Bienvenido de vuelta
+                {t('screens.login.title')}
               </Text>
               <Text variant="base" color="textSecondary" style={{ textAlign: 'center' }}>
-                Inicia sesión para continuar en Radar Económico
+                {t('screens.login.subtitle')}
               </Text>
             </View>
 
@@ -96,9 +98,9 @@ export const LoginScreen: React.FC = () => {
             <View style={styles.form}>
               {/* Email or User Field */}
               <Input
-                label="Email o Usuario"
+                label={t('screens.login.emailLabel')}
                 leftIcon="person"
-                placeholder="Ingresa tu email o usuario"
+                placeholder={t('screens.login.emailPlaceholder')}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -110,11 +112,11 @@ export const LoginScreen: React.FC = () => {
 
               {/* Password Field */}
               <Input
-                label="Contraseña"
+                label={t('screens.login.passwordLabel')}
                 leftIcon="lock"
                 rightIcon={showPassword ? 'visibility_off' : 'visibility'}
                 onRightIconPress={() => setShowPassword(!showPassword)}
-                placeholder="Ingresa tu contraseña"
+                placeholder={t('screens.login.passwordPlaceholder')}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
@@ -129,13 +131,13 @@ export const LoginScreen: React.FC = () => {
                 activeOpacity={0.7}
                 style={{ alignSelf: 'flex-end', marginBottom: theme.spacing.base }}>
                 <Text variant="sm" weight="medium" style={{ color: theme.colors.primary }}>
-                  ¿Olvidaste tu contraseña?
+                  {t('screens.login.forgotPassword')}
                 </Text>
               </TouchableOpacity>
 
               {/* Login Button */}
               <Button
-                title="Iniciar Sesión"
+                title={t('screens.login.loginButton')}
                 variant="primary"
                 onPress={handleLogin}
                 disabled={loading}
@@ -148,7 +150,7 @@ export const LoginScreen: React.FC = () => {
             <View style={[styles.divider, { marginVertical: theme.spacing.lg }]}>
               <View style={[styles.dividerLine, { backgroundColor: theme.colors.border }]} />
               <Text variant="xs" weight="medium" color="textSecondary" style={{ paddingHorizontal: theme.spacing.base }}>
-                O
+                {t('screens.login.divider')}
               </Text>
               <View style={[styles.dividerLine, { backgroundColor: theme.colors.border }]} />
             </View>
@@ -167,10 +169,10 @@ export const LoginScreen: React.FC = () => {
                 activeOpacity={0.7}
                 onPress={() => {
                   // TODO: Implement Google login
-                  Alert.alert('Info', 'Login con Google - Próximamente');
+                  Alert.alert(t('components.common.info'), t('screens.login.alerts.googleComingSoon'));
                 }}>
                 <Text variant="sm" weight="medium" style={{ color: theme.colors.textPrimary }}>
-                  Continuar con Google
+                  {t('screens.login.googleLogin')}
                 </Text>
               </TouchableOpacity>
 
@@ -185,10 +187,10 @@ export const LoginScreen: React.FC = () => {
                 activeOpacity={0.7}
                 onPress={() => {
                   // TODO: Implement Apple login
-                  Alert.alert('Info', 'Login con Apple - Próximamente');
+                  Alert.alert(t('components.common.info'), t('screens.login.alerts.appleComingSoon'));
                 }}>
                 <Text variant="sm" weight="medium" style={{ color: theme.colors.textPrimary }}>
-                  Continuar con Apple
+                  {t('screens.login.appleLogin')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -196,16 +198,16 @@ export const LoginScreen: React.FC = () => {
             {/* Sign Up Link */}
             <View style={[styles.signUpContainer, { marginTop: theme.spacing.xl }]}>
               <Text variant="sm" color="textSecondary" style={{ textAlign: 'center' }}>
-                ¿No tienes una cuenta?{' '}
+                {t('screens.login.signUp.question')}{' '}
                 <Text
                   variant="sm"
                   weight="semibold"
                   style={{ color: theme.colors.primary }}
                   onPress={() => {
                     // TODO: Navigate to register screen
-                    Alert.alert('Info', 'Registro - Próximamente');
+                    Alert.alert(t('components.common.info'), t('screens.login.alerts.registerComingSoon'));
                   }}>
-                  Regístrate ahora
+                  {t('screens.login.signUp.link')}
                 </Text>
               </Text>
             </View>

@@ -2,7 +2,7 @@
  * Button - Button component with theme support
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   TouchableOpacity,
   TouchableOpacityProps,
@@ -12,10 +12,13 @@ import {
 import { Text } from './Text';
 import { useTheme } from '@/theme/ThemeProvider';
 
-interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
+export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
+export type ButtonSize = 'sm' | 'md' | 'lg';
+
+export interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
   title: string;
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   loading?: boolean;
   style?: ViewStyle;
 }
@@ -31,7 +34,7 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const { theme } = useTheme();
 
-  const getButtonStyle = (): ViewStyle => {
+  const buttonStyle = useMemo((): ViewStyle => {
     const baseStyle: ViewStyle = {
       borderRadius: theme.radii.base,
       paddingVertical:
@@ -68,38 +71,33 @@ export const Button: React.FC<ButtonProps> = ({
       default:
         return baseStyle;
     }
-  };
+  }, [variant, size, theme.radii.base, theme.spacing, theme.colors]);
 
-  const getTextColor = (): 'primary' | 'textPrimary' | 'textSecondary' => {
-    switch (variant) {
-      case 'primary':
-        return 'textPrimary';
-      case 'secondary':
-        return 'textPrimary';
-      case 'outline':
-        return 'textPrimary';
-      case 'ghost':
-        return 'textPrimary';
-      default:
-        return 'textPrimary';
-    }
-  };
+  const textColor = useMemo((): 'primary' | 'textPrimary' | 'textSecondary' => {
+    // All variants use textPrimary for consistency
+    return 'textPrimary';
+  }, []);
+
+  const textWeight = useMemo(() => {
+    return variant === 'primary' ? 'bold' : 'medium';
+  }, [variant]);
+
+  const indicatorColor = useMemo(() => {
+    return variant === 'primary' ? theme.colors.textPrimary : theme.colors.primary;
+  }, [variant, theme.colors]);
 
   const isDisabled = disabled || loading;
 
   return (
     <TouchableOpacity
-      style={[getButtonStyle(), isDisabled && { opacity: 0.5 }, style]}
+      style={[buttonStyle, isDisabled && { opacity: 0.5 }, style]}
       disabled={isDisabled}
       activeOpacity={0.7}
       {...props}>
       {loading ? (
-        <ActivityIndicator
-          size="small"
-          color={variant === 'primary' ? theme.colors.textPrimary : theme.colors.primary}
-        />
+        <ActivityIndicator size="small" color={indicatorColor} />
       ) : (
-        <Text weight={variant === 'primary' ? 'bold' : 'medium'} color={getTextColor()}>
+        <Text weight={textWeight} color={textColor}>
           {title}
         </Text>
       )}

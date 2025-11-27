@@ -5,7 +5,7 @@
 import React, { ReactNode } from 'react';
 import { View, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
-import { Text } from '@/components/ui';
+import { Text } from '@/design-system/components';
 
 interface ListItemProps extends Omit<TouchableOpacityProps, 'style'> {
   title: string;
@@ -58,7 +58,7 @@ export const ListItem: React.FC<ListItemProps> = ({
         )}
       </View>
 
-      {rightContent && <View style={{ flexShrink: 0 }}>{rightContent}</View>}
+      {rightContent && <View style={{ flexShrink: 0, maxWidth: '50%' }}>{rightContent}</View>}
     </View>
   );
 

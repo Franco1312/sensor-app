@@ -3,192 +3,132 @@
  * Based on stitch_home_screen_revamp design
  */
 
-import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import React, { useCallback } from 'react';
+import { ScrollView, StyleSheet, Linking } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Screen, Header, Section } from '@/components/layout';
-import {
-  CompactIndicatorCard,
-  CompactQuoteCard,
-  VerMasButton,
-  NotificationIcon,
-  CompactIndicatorCardSkeleton,
-  CompactQuoteCardSkeleton,
-} from '@/components/common';
-import { NewsCard } from '@/components/features/news';
-import { Skeleton } from '@/components/ui';
-import { Card } from '@/components/common';
+import { Screen, Header } from '@/components/layout';
+import { NotificationIcon } from '@/components/common';
+import { DailyQuotesSection, MainIndicatorsSection, FeaturedNewsSection } from '@/components/features/home';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useQuotes } from '@/hooks/useQuotes';
+import { useCrypto } from '@/hooks/useCrypto';
 import { useIndicators } from '@/hooks/useIndicators';
 import { useNews } from '@/hooks/useNews';
+import { useIndicatorsFilter } from '@/context/IndicatorsFilterContext';
 import { RootStackParamList } from '@/navigation/types';
-import { SERIES_CODES } from '@/constants/series';
-import { Linking } from 'react-native';
+import { DEFAULT_POLLING_INTERVAL } from '@/constants/crypto';
+import { QUOTE_CATEGORIES } from '@/constants/quotes';
+import { useTranslation } from '@/i18n';
+import { News } from '@/types';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export const HomeScreen: React.FC = () => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp>();
+  const { setSelectedQuoteCategory } = useIndicatorsFilter();
   const { indicators, loading: indicatorsLoading } = useIndicators();
   const { quotes, loading: quotesLoading } = useQuotes();
+  const { cryptos, loading: cryptosLoading } = useCrypto(true, DEFAULT_POLLING_INTERVAL);
   const { news, loading: newsLoading } = useNews();
 
   // Obtener las dos primeras noticias
   const featuredNews = news.slice(0, 2);
 
-  const handleVerMasQuotes = () => {
+  // Filtrar quotes para mostrar solo dólares
+  const dollarQuotes = quotes.filter(quote => quote.category === QUOTE_CATEGORIES.DOLARES);
+  
+  // Obtener las primeras 2 cryptos
+  const featuredCryptos = cryptos.slice(0, 2);
+
+  const handleVerMasDolares = useCallback(() => {
+    setSelectedQuoteCategory(QUOTE_CATEGORIES.DOLARES);
     navigation.navigate('Quotes');
-  };
+  }, [setSelectedQuoteCategory, navigation]);
 
-  const handleVerMasIndicators = () => {
+  const handleVerMasCrypto = useCallback(() => {
+    setSelectedQuoteCategory(QUOTE_CATEGORIES.CRIPTO);
+    navigation.navigate('Quotes');
+  }, [setSelectedQuoteCategory, navigation]);
+
+  const handleVerMasIndicators = useCallback(() => {
     navigation.navigate('MainTabs', { screen: 'Indicators' });
-  };
+  }, [navigation]);
 
-  const handleVerMasNews = () => {
+  const handleVerMasNews = useCallback(() => {
     navigation.navigate('MainTabs', { screen: 'News' });
-  };
+  }, [navigation]);
 
-  const handleNewsPress = (newsItem: typeof news[0]) => {
+  const handleNewsPress = useCallback((newsItem: News) => {
     if (newsItem.link) {
       Linking.openURL(newsItem.link).catch(err => {
         console.error('Error opening link:', err);
       });
     }
-  };
+  }, []);
+
+  const handleQuotePress = useCallback(
+    (quoteId: string, quoteName: string) => {
+      navigation.navigate('QuoteDetail', { quoteId, quoteName });
+    },
+    [navigation]
+  );
+
+  const handleCryptoPress = useCallback(
+    (cryptoId: string, cryptoName: string) => {
+      navigation.navigate('CryptoDetail', { cryptoId, cryptoName });
+    },
+    [navigation]
+  );
+
+  const handleIndicatorPress = useCallback(
+    (indicatorId: string, indicatorName: string) => {
+      navigation.navigate('IndicatorDetail', { indicatorId, indicatorName });
+    },
+    [navigation]
+  );
 
   return (
     <Screen scrollable={false}>
       <Header
-        title="Radar Económico"
+        title={t('screens.home.title')}
         rightIcon={<NotificationIcon size={24} />}
-        onRightPress={() => {
+        onRightPress={useCallback(() => {
           // TODO: Handle notifications
           console.log('Notifications pressed');
-        }}
+        }, [])}
       />
 
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={[styles.scrollContent, { paddingBottom: theme.spacing.xl, paddingTop: theme.spacing.base }]}
         showsVerticalScrollIndicator={false}>
-        {/* Cotizaciones del Día */}
-        <View style={styles.section}>
-          <Section title="Cotizaciones del Día" />
-          <View style={styles.gridContainer}>
-            {quotesLoading ? (
-              // Show 2 skeleton cards while loading
-              Array.from({ length: 2 }).map((_, index) => (
-                <View key={`quote-skeleton-${index}`} style={styles.gridItem}>
-                  <Card variant="elevated" padding="md">
-                    <CompactQuoteCardSkeleton />
-                  </Card>
-                </View>
-              ))
-            ) : (
-              quotes.slice(0, 2).map(quote => (
-                <View key={quote.id} style={styles.gridItem}>
-                  <CompactQuoteCard
-                    quote={quote}
-                    onPress={() => {
-                      const casa = quote.id.replace('quote-', '');
-                      navigation.navigate('QuoteDetail', {
-                        quoteId: casa,
-                        quoteName: quote.name,
-                      });
-                    }}
-                  />
-                </View>
-              ))
-            )}
-          </View>
-          <View style={styles.verMasContainer}>
-            <VerMasButton onPress={handleVerMasQuotes} />
-          </View>
-        </View>
+        <DailyQuotesSection
+          dollarQuotes={dollarQuotes}
+          featuredCryptos={featuredCryptos}
+          quotesLoading={quotesLoading}
+          cryptosLoading={cryptosLoading}
+          onVerMasDolares={handleVerMasDolares}
+          onVerMasCrypto={handleVerMasCrypto}
+          onQuotePress={handleQuotePress}
+          onCryptoPress={handleCryptoPress}
+        />
 
-        {/* Indicadores Principales */}
-        <View style={styles.section}>
-          <Section title="Indicadores Principales" />
-          <View style={styles.gridContainer}>
-            {indicatorsLoading ? (
-              // Show 2 skeleton cards while loading
-              Array.from({ length: 2 }).map((_, index) => (
-                <View key={`indicator-skeleton-${index}`} style={styles.gridItem}>
-                  <Card variant="elevated" padding="md">
-                    <CompactIndicatorCardSkeleton />
-                  </Card>
-                </View>
-              ))
-            ) : (
-              indicators
-                .filter(
-                  indicator =>
-                    indicator.id === SERIES_CODES.IPC_VARIACION_MENSUAL ||
-                    indicator.id === SERIES_CODES.RESERVAS_INTERNACIONALES
-                )
-                .map(indicator => (
-                  <View key={indicator.id} style={styles.gridItem}>
-                    <CompactIndicatorCard
-                      indicator={indicator}
-                      onPress={() => {
-                        navigation.navigate('IndicatorDetail', {
-                          indicatorId: indicator.id,
-                          indicatorName: indicator.name,
-                        });
-                      }}
+        <MainIndicatorsSection
+          indicators={indicators}
+          loading={indicatorsLoading}
+          onVerMas={handleVerMasIndicators}
+          onIndicatorPress={handleIndicatorPress}
                     />
-                  </View>
-                ))
-            )}
-          </View>
-          <View style={styles.verMasContainer}>
-            <VerMasButton onPress={handleVerMasIndicators} />
-          </View>
-        </View>
 
-        {/* Noticias Destacadas */}
-        <View style={styles.section}>
-          <Section title="Noticias Destacadas" />
-          <View style={styles.newsContainer}>
-            {newsLoading ? (
-              // Show 2 skeleton cards while loading
-              Array.from({ length: 2 }).map((_, index) => (
-                <View key={`news-skeleton-${index}`} style={styles.newsItem}>
-                  <Card variant="elevated" padding="base">
-                    <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: theme.spacing.base }}>
-                      <View style={{ flex: 1, gap: theme.spacing.xs }}>
-                        <Skeleton width="30%" height={12} />
-                        <Skeleton width="90%" height={16} />
-                        <Skeleton width="100%" height={14} />
-                        <Skeleton width="80%" height={14} />
-                      </View>
-                      <Skeleton width={96} height={96} borderRadius={theme.radii.base} />
-                    </View>
-                    <Skeleton width="100%" height={40} borderRadius={theme.radii.base} style={{ marginTop: theme.spacing.sm }} />
-                  </Card>
-                </View>
-              ))
-            ) : featuredNews.length > 0 ? (
-              featuredNews.map(newsItem => (
-                <View key={newsItem.id} style={styles.newsItem}>
-                  <NewsCard
-                    news={newsItem}
-                    onVerMasPress={() => handleNewsPress(newsItem)}
-                    showVisitButton={false}
+        <FeaturedNewsSection
+          featuredNews={featuredNews}
+          loading={newsLoading}
+          onVerMas={handleVerMasNews}
+          onNewsPress={handleNewsPress}
                   />
-                </View>
-              ))
-            ) : null}
-          </View>
-          {featuredNews.length > 0 && (
-            <View style={styles.verMasContainer}>
-              <VerMasButton onPress={handleVerMasNews} />
-            </View>
-          )}
-        </View>
       </ScrollView>
     </Screen>
   );
@@ -197,30 +137,5 @@ export const HomeScreen: React.FC = () => {
 const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
-  },
-  section: {
-    marginBottom: 16, // Reducido de 24 a 16
-    paddingBottom: 16, // Reducido de 24 a 16
-  },
-  gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16, // gap-4 = 16px
-    marginTop: 12, // mt-3 = 12px
-  },
-  gridItem: {
-    flex: 1,
-    minWidth: '45%',
-    maxWidth: '48%',
-  },
-  newsContainer: {
-    gap: 16, // gap-4 = 16px (space-y-4)
-    marginTop: 12, // mt-3 = 12px
-  },
-  newsItem: {
-    width: '100%',
-  },
-  verMasContainer: {
-    marginTop: 0, // El botón ya tiene su propio marginTop
   },
 });

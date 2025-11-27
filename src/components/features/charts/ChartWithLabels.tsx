@@ -5,8 +5,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Chart } from './Chart';
-import { ChartSkeleton } from '@/components/ui/Skeleton';
-import { Text } from '@/components/ui/Text';
+import { ChartSkeleton, Text } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
 import { LABELS } from '@/constants/labels';
 import { ChartDataPoint } from '@/utils/seriesTransform';

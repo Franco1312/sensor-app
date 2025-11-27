@@ -3,10 +3,11 @@
  */
 
 import React from 'react';
-import { Card, Text } from '@/components/common';
+import { Text } from '../atoms';
+import { Card } from './Card';
 import { useTheme } from '@/theme/ThemeProvider';
 
-interface InfoSectionProps {
+export interface InfoSectionProps {
   title: string;
   content: string;
   marginBottom?: boolean;

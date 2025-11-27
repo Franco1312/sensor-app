@@ -5,7 +5,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getCurrentQuotes, QuoteApiData } from '@/services/quotes-api';
 import { ApiError } from '@/services/common/ApiError';
-import { transformQuotesApiData, Quote } from '@/utils/quotesTransform';
+import { transformQuotesApiData } from '@/utils/quotesTransform';
+import { Quote } from '@/types';
 
 interface UseQuotesResult {
   quotes: Quote[];

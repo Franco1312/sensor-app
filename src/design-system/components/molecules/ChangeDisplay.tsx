@@ -4,11 +4,11 @@
 
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text } from '@/components/ui';
+import { Text } from '../atoms';
 import { useTheme } from '@/theme/ThemeProvider';
 import { getTrendColor, getTrendArrow } from '@/utils/formatting';
 
-interface ChangeDisplayProps {
+export interface ChangeDisplayProps {
   changePercent: number;
   trend: 'up' | 'down' | 'neutral';
   variant?: 'base' | 'sm';

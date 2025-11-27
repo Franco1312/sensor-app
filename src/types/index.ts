@@ -84,3 +84,25 @@ export interface News {
   categories: string[];
   imageUrl?: string;
 }
+
+/**
+ * Crypto Types
+ */
+export type PriceDirection = 'up' | 'down' | 'neutral';
+
+export interface Crypto {
+  id: string;
+  symbol: string;
+  name: string;
+  lastPrice: string;
+  lastPriceValue: number; // Numeric value for comparison
+  openPrice: string;
+  highPrice: string;
+  lowPrice: string;
+  volume: string;
+  quoteVolume: string;
+  change: number;
+  changePercent: number;
+  lastUpdate: string;
+  priceDirection?: PriceDirection; // Direction of price change compared to previous value
+}

@@ -4,11 +4,12 @@
 
 import React from 'react';
 import { View, StyleSheet, Modal, Pressable } from 'react-native';
-import { Card, Text, Button } from '@/components/common';
+import { Text, Button } from '../atoms';
+import { Card } from './Card';
 import { useTheme } from '@/theme/ThemeProvider';
-import { LABELS } from '@/constants/labels';
+import { useTranslation } from '@/i18n';
 
-interface InfoModalProps {
+export interface InfoModalProps {
   visible: boolean;
   onClose: () => void;
   title: string;
@@ -17,6 +18,7 @@ interface InfoModalProps {
 
 export const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose, title, message }) => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Modal
@@ -38,7 +40,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose, title, m
               </Text>
               <View style={styles.modalButtonContainer}>
                 <Button
-                  title={LABELS.UNDERSTOOD}
+                  title={t('components.button.understood')}
                   variant="primary"
                   onPress={onClose}
                 />

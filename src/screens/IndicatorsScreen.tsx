@@ -3,14 +3,14 @@
  * Based on SECCION_INDICADORES design
  */
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { View, FlatList, ScrollView, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { RootStackParamList, MainTabParamList } from '@/navigation/types';
 import { Header, ListItem } from '@/components/layout';
-import { Text, TrendIcon, Skeleton, Card, FilterButton, ChangeDisplay } from '@/components/common';
+import { Text, Skeleton, Card, FilterButton, ChangeDisplay, TrendIcon } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Theme } from '@/theme/theme';
 import { formatUpdatedLabel } from '@/constants/labels';
@@ -21,6 +21,7 @@ import {
 import { Indicator } from '@/types';
 import { useIndicators } from '@/hooks/useIndicators';
 import { useIndicatorsFilter } from '@/context/IndicatorsFilterContext';
+import { useTranslation } from '@/i18n';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 type TabNavigationProp = BottomTabNavigationProp<MainTabParamList, 'Indicators'>;
@@ -62,6 +63,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({ selected, onSelect, the
 
 export const IndicatorsScreen: React.FC = () => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp>();
   const { selectedCategory, setSelectedCategory, setCurrentCategory } = useIndicatorsFilter();
   const [categoryFilter, setCategoryFilter] = useState<string>(DEFAULT_CATEGORY);
@@ -96,7 +98,7 @@ export const IndicatorsScreen: React.FC = () => {
       : indicators;
   }, [indicators, categoryFilter]);
 
-  const renderIndicator = ({ item }: { item: Indicator }) => {
+  const renderIndicator = useCallback(({ item }: { item: Indicator }) => {
     return (
       <ListItem
         title={item.name}
@@ -119,11 +121,11 @@ export const IndicatorsScreen: React.FC = () => {
         style={{ marginBottom: theme.spacing.md }}
       />
     );
-  };
+  }, [navigation, theme.spacing.md]);
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <Header title="Indicadores Económicos" />
+      <Header title={t('screens.indicators.title')} />
 
       <CategoryFilter selected={categoryFilter} onSelect={setCategoryFilter} theme={theme} />
 

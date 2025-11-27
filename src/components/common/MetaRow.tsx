@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Badge } from '@/components/ui';
+import { Text, Badge } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
 import { LABELS, formatUpdatedLabel } from '@/constants/labels';
 

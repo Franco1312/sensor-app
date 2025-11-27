@@ -10,7 +10,7 @@ import { formatTime } from './dateFormat';
 /**
  * Maps API casa values to quote categories
  */
-const getQuoteCategory = (casa: string): Quote['category'] => {
+const getQuoteCategory = (casa: string): 'dolares' | 'acciones' | 'bonos' | 'cripto' => {
   // All quotes from this API are USD dollars
   return 'dolares';
 };

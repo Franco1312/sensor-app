@@ -4,10 +4,10 @@
 
 import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
-import { Text } from '@/components/ui';
+import { Text } from '../atoms';
 import { useTheme } from '@/theme/ThemeProvider';
 
-interface FilterButtonProps {
+export interface FilterButtonProps {
   label: string;
   isSelected: boolean;
   onPress: () => void;

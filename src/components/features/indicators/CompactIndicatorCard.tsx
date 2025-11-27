@@ -3,9 +3,9 @@
  * Used in HomeScreen grid of 2 columns
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
-import { Card, Text } from '@/components/ui';
+import { Card, Text } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Indicator } from '@/types';
 import { formatChangePercent } from '@/utils/formatting';
@@ -15,18 +15,24 @@ interface CompactIndicatorCardProps {
   onPress?: () => void;
 }
 
-export const CompactIndicatorCard: React.FC<CompactIndicatorCardProps> = ({
+const CompactIndicatorCardComponent: React.FC<CompactIndicatorCardProps> = ({
   indicator,
   onPress,
 }) => {
   const { theme } = useTheme();
   const isPositive = indicator.trend === 'up';
-  const changeLabel = formatChangePercent(indicator.changePercent, isPositive, 2);
-  const trendColor = isPositive
-    ? theme.colors.success
-    : indicator.trend === 'down'
-    ? theme.colors.error
-    : theme.colors.textSecondary;
+  const changeLabel = useMemo(
+    () => formatChangePercent(indicator.changePercent, isPositive, 2),
+    [indicator.changePercent, isPositive]
+  );
+  const trendColor = useMemo(
+    () => isPositive
+      ? theme.colors.success
+      : indicator.trend === 'down'
+      ? theme.colors.error
+      : theme.colors.textSecondary,
+    [isPositive, indicator.trend, theme.colors.success, theme.colors.error, theme.colors.textSecondary]
+  );
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
@@ -48,6 +54,12 @@ export const CompactIndicatorCard: React.FC<CompactIndicatorCardProps> = ({
     </TouchableOpacity>
   );
 };
+
+// Memoize component to prevent unnecessary re-renders
+export const CompactIndicatorCard = React.memo(CompactIndicatorCardComponent, (prevProps, nextProps) => {
+  // Custom comparison: only re-render if indicator id or onPress changes
+  return prevProps.indicator.id === nextProps.indicator.id && prevProps.onPress === nextProps.onPress;
+});
 
 const styles = StyleSheet.create({
   container: {

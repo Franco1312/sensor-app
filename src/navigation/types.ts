@@ -8,6 +8,7 @@ export type RootStackParamList = {
   Quotes: undefined;
   IndicatorDetail: { indicatorId: string; indicatorName: string };
   QuoteDetail: { quoteId: string; quoteName: string };
+  CryptoDetail: { cryptoId: string; cryptoName: string };
 };
 
 export type MainTabParamList = {

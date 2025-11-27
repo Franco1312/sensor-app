@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { Text } from '@/components/common';
+import { Text } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
 
 interface CategoryTab<T extends string> {

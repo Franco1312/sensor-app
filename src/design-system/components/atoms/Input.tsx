@@ -2,20 +2,23 @@
  * Input - Reusable input component with icon support
  */
 
-import React from 'react';
-import { View, TextInput, TextInputProps, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, TextInput, TextInputProps, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import { Text } from './Text';
-import { InputIcon } from '@/components/common/InputIcon';
+import { InputIcon } from './icons';
 import { useTheme } from '@/theme/ThemeProvider';
 
-interface InputProps extends Omit<TextInputProps, 'style'> {
+export type InputIconType = 'person' | 'lock';
+export type InputRightIconType = 'visibility' | 'visibility_off';
+
+export interface InputProps extends Omit<TextInputProps, 'style'> {
   label?: string;
-  leftIcon?: 'person' | 'lock';
-  rightIcon?: 'visibility' | 'visibility_off';
+  leftIcon?: InputIconType;
+  rightIcon?: InputRightIconType;
   onRightIconPress?: () => void;
   error?: string;
-  containerStyle?: object;
-  inputStyle?: object;
+  containerStyle?: ViewStyle;
+  inputStyle?: TextStyle;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -29,6 +32,16 @@ export const Input: React.FC<InputProps> = ({
   ...textInputProps
 }) => {
   const { theme } = useTheme();
+
+  const inputContainerStyle = useMemo((): TextStyle => {
+    return {
+      backgroundColor: theme.colors.background,
+      borderColor: error ? theme.colors.error : theme.colors.border,
+      color: theme.colors.textPrimary,
+      paddingLeft: leftIcon ? 40 : theme.spacing.base,
+      paddingRight: rightIcon ? 40 : theme.spacing.base,
+    };
+  }, [theme.colors, error, leftIcon, rightIcon, theme.spacing.base]);
 
   return (
     <View style={[containerStyle]}>
@@ -47,17 +60,7 @@ export const Input: React.FC<InputProps> = ({
           </View>
         )}
         <TextInput
-          style={[
-            styles.input,
-            {
-              backgroundColor: theme.colors.background,
-              borderColor: error ? theme.colors.error : theme.colors.border,
-              color: theme.colors.textPrimary,
-              paddingLeft: leftIcon ? 40 : theme.spacing.base,
-              paddingRight: rightIcon ? 40 : theme.spacing.base,
-            },
-            inputStyle,
-          ]}
+          style={[styles.input, inputContainerStyle, inputStyle]}
           placeholderTextColor={theme.colors.textSecondary}
           {...textInputProps}
         />

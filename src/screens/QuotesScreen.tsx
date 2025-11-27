@@ -3,44 +3,51 @@
  * Based on detalle_cotizacion design
  */
 
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useCallback } from 'react';
 import { View, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Screen, Header, ListItem } from '@/components/layout';
-import { Text, Skeleton, Card, EmptyState } from '@/components/common';
+import { Screen, Header } from '@/components/layout';
+import { Text, Skeleton, Card, EmptyState } from '@/design-system/components';
+import { QuoteItem } from '@/components/features/quotes/QuoteItem';
 import { CategoryTabs } from '@/components/navigation/CategoryTabs';
 import { CategoryPager } from '@/components/navigation/CategoryPager';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useCategoryPager } from '@/hooks/useCategoryPager';
 import { useIndicatorsFilter } from '@/context/IndicatorsFilterContext';
 import { useQuotes } from '@/hooks/useQuotes';
+import { useCrypto } from '@/hooks/useCrypto';
 import { QUOTE_CATEGORY_TABS, DEFAULT_QUOTE_CATEGORY, QuoteCategory } from '@/constants/quotes';
 import { Quote } from '@/types';
-import { formatTime } from '@/utils/dateFormat';
 import { RootStackParamList } from '@/navigation/types';
+import { cryptosToQuotes, CryptoQuote } from '@/utils/cryptoToQuote';
+import { DEFAULT_POLLING_INTERVAL } from '@/constants/crypto';
+import { useTranslation } from '@/i18n';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export const QuotesScreen: React.FC = () => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp>();
   const { selectedQuoteCategory, setSelectedQuoteCategory, setCurrentQuoteCategory } =
     useIndicatorsFilter();
-  const { quotes, loading, error } = useQuotes();
+  const { quotes, loading: quotesLoading, error: quotesError } = useQuotes();
+  const { cryptos, loading: cryptosLoading, error: cryptosError } = useCrypto(
+    true,
+    DEFAULT_POLLING_INTERVAL
+  );
+
   const categories = useMemo(
     () => QUOTE_CATEGORY_TABS.map(tab => tab.value),
     []
   );
 
-  // Get the most recent update time from quotes
-  const lastUpdateTime = useMemo(() => {
-    if (quotes.length === 0) return null;
-    // Find the most recent time from all quotes
-    // Since all quotes have the same format (HH:MM), we can use any of them
-    // In a real scenario, we'd parse the actual dates and find the latest
-    return quotes[0]?.lastUpdate || null;
-  }, [quotes]);
+  // Use selectedQuoteCategory if available, otherwise use default
+  // This ensures the correct category is set on initial mount
+  const initialCategory = selectedQuoteCategory 
+    ? (selectedQuoteCategory as QuoteCategory)
+    : DEFAULT_QUOTE_CATEGORY;
 
   const {
     pagerRef,
@@ -53,68 +60,76 @@ export const QuotesScreen: React.FC = () => {
     scrollEnabled,
   } = useCategoryPager({
     categories,
-    defaultCategory: DEFAULT_QUOTE_CATEGORY,
+    defaultCategory: initialCategory,
   });
 
-  // Update category when context category changes
+  // Combine quotes and cryptos
+  const allQuotes = useMemo(() => {
+    const cryptoQuotes = cryptosToQuotes(cryptos);
+    return [...quotes, ...cryptoQuotes];
+  }, [quotes, cryptos]);
+
+  // Determine loading and error state based on active category
+  const loading = useMemo(() => {
+    return activeCategory === 'cripto' ? cryptosLoading : quotesLoading;
+  }, [activeCategory, cryptosLoading, quotesLoading]);
+
+  const error = useMemo(() => {
+    return activeCategory === 'cripto' ? cryptosError : quotesError;
+  }, [activeCategory, cryptosError, quotesError]);
+
+  // Get the most recent update time from quotes or cryptos
+  const lastUpdateTime = useMemo(() => {
+    if (activeCategory === 'cripto' && cryptos.length > 0) {
+      return cryptos[0]?.lastUpdate || null;
+    }
+    if (quotes.length === 0) return null;
+    return quotes[0]?.lastUpdate || null;
+  }, [activeCategory, quotes, cryptos]);
+
+  // Clear the context after initial load (category was already applied via defaultCategory)
+  // Also handle case where selectedQuoteCategory changes after mount
   useEffect(() => {
     if (selectedQuoteCategory !== null) {
-      handleCategoryChange(selectedQuoteCategory as QuoteCategory);
-      // Clear the context after applying
+      // If category is different from current, apply it
+      if (selectedQuoteCategory !== activeCategory) {
+        handleCategoryChange(selectedQuoteCategory as QuoteCategory);
+      }
+      // Clear the context to prevent re-triggering
       setSelectedQuoteCategory(null);
     }
-  }, [selectedQuoteCategory, setSelectedQuoteCategory, handleCategoryChange]);
+  }, [selectedQuoteCategory, activeCategory, handleCategoryChange, setSelectedQuoteCategory]);
 
   // Update current category in context when active category changes
   useEffect(() => {
     setCurrentQuoteCategory(activeCategory);
   }, [activeCategory, setCurrentQuoteCategory]);
 
-  const renderQuote = ({ item }: { item: Quote }) => {
-    const isPositive = item.changePercent >= 0;
-    const changeLabel = `${isPositive ? '+' : ''}${item.changePercent.toFixed(2)}%`;
+  const handleQuotePress = useCallback((item: Quote | CryptoQuote) => {
+    const isCrypto = item.category === 'cripto';
+    const cryptoItem = isCrypto ? (item as CryptoQuote) : null;
 
-    return (
-      <ListItem
-        title={item.name}
-        rightContent={
-          <View style={{ alignItems: 'flex-end', gap: 4 }}>
-            <Text
-              variant="base"
-              weight="medium"
-              style={{
-                color: theme.colors.textPrimary,
-              }}>
-              {item.sellPrice}
-            </Text>
-            <Text
-              variant="xs"
-              style={{
-                color: isPositive ? theme.colors.success : theme.colors.error,
-              }}>
-              {changeLabel}
-            </Text>
-          </View>
-        }
-        style={{
-          marginBottom: theme.spacing.md,
-          backgroundColor: theme.colors.surface,
-        }}
-        onPress={() => {
-          // Extract casa from quote id (format: "quote-blue")
-          const casa = item.id.replace('quote-', '');
-          navigation.navigate('QuoteDetail', {
-            quoteId: casa,
-            quoteName: item.name,
-          });
-        }}
-      />
-    );
-  };
+    if (isCrypto && cryptoItem?.symbol) {
+      navigation.navigate('CryptoDetail', {
+        cryptoId: cryptoItem.symbol,
+        cryptoName: item.name,
+      });
+    } else {
+      const casa = item.id.replace('quote-', '');
+      navigation.navigate('QuoteDetail', {
+        quoteId: casa,
+        quoteName: item.name,
+      });
+    }
+  }, [navigation]);
+
+  const renderQuote = useCallback(({ item }: { item: Quote | CryptoQuote }) => {
+    return <QuoteItem item={item} onPress={handleQuotePress} />;
+  }, [handleQuotePress]);
 
   return (
     <Screen scrollable={false}>
-      <Header title="Cotizaciones" />
+      <Header title={t('screens.quotes.title')} />
 
       <CategoryTabs
         tabs={QUOTE_CATEGORY_TABS}
@@ -126,7 +141,7 @@ export const QuotesScreen: React.FC = () => {
       {lastUpdateTime && (
         <View style={{ padding: theme.spacing.base, alignItems: 'center' }}>
           <Text variant="xs" color="textSecondary">
-            Actualizado: {lastUpdateTime} hs
+            {t('screens.quotes.lastUpdate', { time: lastUpdateTime })}
           </Text>
         </View>
       )}
@@ -141,7 +156,7 @@ export const QuotesScreen: React.FC = () => {
         onPageScroll={handlePageScroll}
         onPageScrollStateChanged={handlePageScrollStateChanged}
         renderPage={(category: QuoteCategory) => {
-          const categoryQuotes = quotes.filter(quote => quote.category === category);
+          const categoryQuotes = allQuotes.filter(quote => quote.category === category);
           
           if (loading) {
             return (
@@ -169,8 +184,8 @@ export const QuotesScreen: React.FC = () => {
             return (
               <View style={{ flex: 1, paddingHorizontal: theme.spacing.base }}>
                 <EmptyState
-                  title="Error al cargar cotizaciones"
-                  message={error}
+                  title={t('screens.quotes.error.title')}
+                  message={t('screens.quotes.error.message', { error })}
                 />
               </View>
             );
@@ -180,8 +195,8 @@ export const QuotesScreen: React.FC = () => {
             return (
               <View style={{ flex: 1, paddingHorizontal: theme.spacing.base }}>
                 <EmptyState
-                  title="No hay cotizaciones disponibles"
-                  message="No se encontraron cotizaciones para esta categoría."
+                  title={t('screens.quotes.empty.title')}
+                  message={t('screens.quotes.empty.message')}
                 />
               </View>
             );

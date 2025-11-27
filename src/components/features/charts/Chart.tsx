@@ -9,7 +9,7 @@ import Svg, { Path, Defs, LinearGradient, Stop, Line, Circle, Text as SvgText } 
 import { useTheme } from '@/theme/ThemeProvider';
 import { ChartDataPoint, formatValueForSeries } from '@/utils/seriesTransform';
 import { SeriesCode } from '@/constants/series';
-import { formatDate } from '@/utils/dateFormat';
+import { formatDateTime } from '@/utils/dateFormat';
 
 interface ChartProps {
   height?: number;
@@ -283,7 +283,7 @@ export const Chart: React.FC<ChartProps> = ({ height = 180, data, seriesCode, on
                   fill={theme.colors.textPrimary}
                   textAnchor={labelPosition.textAnchor}
                   opacity={1}>
-                  {formatDate(selectedDataPoint.date)}
+                  {formatDateTime(selectedDataPoint.date)}
                 </SvgText>
                 
                 {/* Value text */}

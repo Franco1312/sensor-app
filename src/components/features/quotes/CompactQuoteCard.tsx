@@ -3,9 +3,9 @@
  * Used in HomeScreen grid of 2 columns
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
-import { Card, Text } from '@/components/ui';
+import { Card, Text } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Quote } from '@/types';
 import { formatChangePercent } from '@/utils/formatting';
@@ -15,11 +15,17 @@ interface CompactQuoteCardProps {
   onPress?: () => void;
 }
 
-export const CompactQuoteCard: React.FC<CompactQuoteCardProps> = ({ quote, onPress }) => {
+const CompactQuoteCardComponent: React.FC<CompactQuoteCardProps> = ({ quote, onPress }) => {
   const { theme } = useTheme();
   const isPositive = quote.changePercent >= 0;
-  const changeLabel = formatChangePercent(quote.changePercent, isPositive, 2);
-  const trendColor = isPositive ? theme.colors.success : theme.colors.error;
+  const changeLabel = useMemo(
+    () => formatChangePercent(quote.changePercent, isPositive, 2),
+    [quote.changePercent, isPositive]
+  );
+  const trendColor = useMemo(
+    () => isPositive ? theme.colors.success : theme.colors.error,
+    [isPositive, theme.colors.success, theme.colors.error]
+  );
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
@@ -41,6 +47,12 @@ export const CompactQuoteCard: React.FC<CompactQuoteCardProps> = ({ quote, onPre
     </TouchableOpacity>
   );
 };
+
+// Memoize component to prevent unnecessary re-renders
+export const CompactQuoteCard = React.memo(CompactQuoteCardComponent, (prevProps, nextProps) => {
+  // Custom comparison: only re-render if quote id or onPress changes
+  return prevProps.quote.id === nextProps.quote.id && prevProps.onPress === nextProps.onPress;
+});
 
 const styles = StyleSheet.create({
   container: {

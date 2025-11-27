@@ -4,9 +4,8 @@
 
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import { Text } from '@/components/ui';
-import { MenuIcon } from '@/components/common/MenuIcon';
-import { ChevronIcon } from '@/components/common/ChevronIcon';
+import { Text } from '@/design-system/components';
+import { MenuIcon, ChevronIcon } from '@/design-system/components/atoms/icons';
 import { useTheme } from '@/theme/ThemeProvider';
 
 interface DrawerMenuItemProps {

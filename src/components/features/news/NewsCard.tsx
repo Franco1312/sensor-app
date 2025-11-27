@@ -3,10 +3,11 @@
  * Based on design/newsScreen design
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { Text } from '@/components/ui';
+import { Text } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
+import { useTranslation } from '@/i18n';
 import { News } from '@/types';
 import Svg, { Path } from 'react-native-svg';
 
@@ -17,8 +18,9 @@ interface NewsCardProps {
   showVisitButton?: boolean;
 }
 
-export const NewsCard: React.FC<NewsCardProps> = ({ news, onPress, onVerMasPress, showVisitButton = true }) => {
+const NewsCardComponent: React.FC<NewsCardProps> = ({ news, onPress, onVerMasPress, showVisitButton = true }) => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
   const [isTextTruncated, setIsTextTruncated] = useState(false);
   const [hasMeasured, setHasMeasured] = useState(false);
@@ -27,17 +29,17 @@ export const NewsCard: React.FC<NewsCardProps> = ({ news, onPress, onVerMasPress
     return null;
   }
 
-  const handleVerMas = () => {
+  const handleVerMas = useCallback(() => {
     if (onVerMasPress) {
       onVerMasPress();
     } else if (onPress) {
       onPress();
     }
-  };
+  }, [onVerMasPress, onPress]);
 
-  const toggleSummary = () => {
-    setIsSummaryExpanded(!isSummaryExpanded);
-  };
+  const toggleSummary = useCallback(() => {
+    setIsSummaryExpanded(prev => !prev);
+  }, []);
 
   const handleTextLayout = (event: any) => {
     if (hasMeasured) {
@@ -54,26 +56,20 @@ export const NewsCard: React.FC<NewsCardProps> = ({ news, onPress, onVerMasPress
     }
   };
 
-  const hasSummary = news.summary && news.summary.trim().length > 0;
+  const hasSummary = useMemo(() => news.summary && news.summary.trim().length > 0, [news.summary]);
   // Solo mostrar botón si realmente detectamos que el texto está truncado (más de 3 líneas)
   // No usar longitud de caracteres porque no es preciso
-  const shouldShowExpandButton = hasSummary && isTextTruncated;
+  const shouldShowExpandButton = useMemo(() => hasSummary && isTextTruncated, [hasSummary, isTextTruncated]);
   
-  const handleSummaryPress = () => {
+  const handleSummaryPress = useCallback(() => {
     if (shouldShowExpandButton) {
-      if (isSummaryExpanded) {
-        // Colapsar si está expandido
-        setIsSummaryExpanded(false);
-      } else {
-        // Expandir si está colapsado
-        setIsSummaryExpanded(true);
-      }
+      setIsSummaryExpanded(prev => !prev);
     }
-  };
+  }, [shouldShowExpandButton]);
 
   // Truncar texto manualmente para mostrar "Ver más" inline
   // Solo truncar si realmente detectamos que está truncado
-  const getTruncatedText = () => {
+  const getTruncatedText = useMemo(() => {
     if (isSummaryExpanded) {
       return news.summary;
     }
@@ -91,7 +87,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({ news, onPress, onVerMasPress
       return truncated;
     }
     return news.summary;
-  };
+  }, [news.summary, isSummaryExpanded, shouldShowExpandButton]);
 
 
   return (
@@ -99,10 +95,10 @@ export const NewsCard: React.FC<NewsCardProps> = ({ news, onPress, onVerMasPress
       <View style={styles.content}>
         <View style={styles.textContainer}>
           <Text variant="xs" weight="medium" style={{ color: theme.colors.primary, marginBottom: theme.spacing.xs }}>
-            {news.sourceName || 'Sin fuente'}
+            {news.sourceName || t('components.common.noSource')}
           </Text>
           <Text variant="base" weight="bold" style={styles.title} numberOfLines={4}>
-            {news.title || 'Sin título'}
+            {news.title || t('components.common.noTitle')}
           </Text>
           {hasSummary && (
             <View style={styles.summaryTouchable}>
@@ -126,7 +122,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({ news, onPress, onVerMasPress
                   variant="sm"
                   color="textSecondary"
                   style={styles.summary}>
-                  {getTruncatedText()}
+                  {getTruncatedText}
                   {shouldShowExpandButton && !isSummaryExpanded && (
                     <>
                       <Text variant="sm" color="textSecondary">...</Text>
@@ -135,7 +131,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({ news, onPress, onVerMasPress
                         variant="sm"
                         weight="semibold"
                         style={{ color: theme.colors.primary }}>
-                        {' '}Ver más
+                        {' '}{t('components.common.verMas')}
                       </Text>
                     </>
                   )}
@@ -145,7 +141,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({ news, onPress, onVerMasPress
                       variant="sm"
                       weight="semibold"
                       style={{ color: theme.colors.primary }}>
-                      {'\n'}Ver menos
+                      {'\n'}{t('components.common.verMenos')}
                     </Text>
                   )}
                 </Text>
@@ -167,7 +163,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({ news, onPress, onVerMasPress
           activeOpacity={0.7}
           style={[styles.visitButton, { backgroundColor: theme.colors.surfaceSecondary }]}>
           <Text variant="sm" weight="semibold" color="textSecondary">
-            Visitar noticia
+            {t('components.common.visitNews')}
           </Text>
           <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
             <Path
@@ -183,6 +179,15 @@ export const NewsCard: React.FC<NewsCardProps> = ({ news, onPress, onVerMasPress
     </View>
   );
 };
+
+// Memoize component to prevent unnecessary re-renders
+export const NewsCard = React.memo(NewsCardComponent, (prevProps, nextProps) => {
+  // Custom comparison: only re-render if news id or callbacks change
+  return prevProps.news.id === nextProps.news.id &&
+    prevProps.onPress === nextProps.onPress &&
+    prevProps.onVerMasPress === nextProps.onVerMasPress &&
+    prevProps.showVisitButton === nextProps.showVisitButton;
+});
 
 const styles = StyleSheet.create({
   container: {

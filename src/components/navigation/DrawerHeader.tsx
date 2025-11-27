@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text } from '@/components/ui';
+import { Text } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
 
 export const DrawerHeader: React.FC = () => {

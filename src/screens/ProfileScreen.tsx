@@ -5,10 +5,11 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { Screen, Header, Section } from '@/components/layout';
-import { Text, Card } from '@/components/common';
+import { Text, Card } from '@/design-system/components';
 import { ListItem } from '@/components/layout';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/i18n';
 import Svg, { Path } from 'react-native-svg';
 
 /**
@@ -42,6 +43,7 @@ const UserAvatar: React.FC<{ size?: number }> = ({ size = 80 }) => {
 export const ProfileScreen: React.FC = () => {
   const { theme, isDarkMode, setThemeMode } = useTheme();
   const { user, logout } = useAuth();
+  const { t } = useTranslation();
   const userData = user || {
     name: 'Usuario',
     email: 'usuario@ejemplo.com',
@@ -49,7 +51,7 @@ export const ProfileScreen: React.FC = () => {
 
   return (
     <Screen scrollable>
-      <Header title="Perfil" />
+      <Header title={t('screens.profile.title')} />
 
       <ScrollView
         style={{ flex: 1 }}
@@ -66,11 +68,11 @@ export const ProfileScreen: React.FC = () => {
         </Card>
 
         {/* Account Section */}
-        <Section title="Cuenta" />
+        <Section title={t('screens.profile.account')} />
 
         <ListItem
-          title="Editar Perfil"
-          subtitle="Actualiza tu información personal"
+          title={t('screens.profile.editProfile')}
+          subtitle={t('screens.profile.editProfileSubtitle')}
           onPress={() => {
             // TODO: Navigate to edit profile screen
           }}
@@ -78,8 +80,8 @@ export const ProfileScreen: React.FC = () => {
         />
 
         <ListItem
-          title="Cambiar Contraseña"
-          subtitle="Actualiza tu contraseña de acceso"
+          title={t('screens.profile.changePassword')}
+          subtitle={t('screens.profile.changePasswordSubtitle')}
           onPress={() => {
             // TODO: Navigate to change password screen
           }}
@@ -87,11 +89,11 @@ export const ProfileScreen: React.FC = () => {
         />
 
         {/* Preferences Section */}
-        <Section title="Preferencias" />
+        <Section title={t('screens.profile.preferences')} />
 
         <ListItem
-          title="Modo Oscuro"
-          subtitle={isDarkMode ? 'Activado' : 'Desactivado'}
+          title={t('screens.profile.darkMode')}
+          subtitle={isDarkMode ? t('screens.profile.darkModeActive') : t('screens.profile.darkModeInactive')}
           rightContent={
             <Switch
               value={isDarkMode}
@@ -104,8 +106,8 @@ export const ProfileScreen: React.FC = () => {
         />
 
         <ListItem
-          title="Notificaciones"
-          subtitle="Gestiona tus notificaciones"
+          title={t('screens.profile.notifications')}
+          subtitle={t('screens.profile.notificationsSubtitle')}
           rightContent={
             <Switch
               value={true}
@@ -120,23 +122,23 @@ export const ProfileScreen: React.FC = () => {
         />
 
         {/* About Section */}
-        <Section title="Acerca de" />
+        <Section title={t('screens.profile.about')} />
 
         <Card style={{ marginBottom: theme.spacing.md }}>
           <Text variant="base" weight="bold" style={{ marginBottom: theme.spacing.sm }}>
-            Radar Económico
+            {t('screens.profile.appName')}
           </Text>
           <Text variant="sm" color="textSecondary" style={{ marginBottom: theme.spacing.sm }}>
-            Versión 1.0.0
+            {t('screens.profile.version')}
           </Text>
           <Text variant="sm" color="textSecondary" style={{ marginBottom: theme.spacing.sm }}>
-            Aplicación para seguimiento de indicadores económicos y cotizaciones de mercado.
+            {t('screens.profile.appDescription')}
           </Text>
         </Card>
 
         <ListItem
-          title="Términos y Condiciones"
-          subtitle="Lee nuestros términos de uso"
+          title={t('screens.profile.terms')}
+          subtitle={t('screens.profile.termsSubtitle')}
           onPress={() => {
             // TODO: Navigate to terms screen
           }}
@@ -144,8 +146,8 @@ export const ProfileScreen: React.FC = () => {
         />
 
         <ListItem
-          title="Política de Privacidad"
-          subtitle="Conoce cómo protegemos tus datos"
+          title={t('screens.profile.privacy')}
+          subtitle={t('screens.profile.privacySubtitle')}
           onPress={() => {
             // TODO: Navigate to privacy policy screen
           }}
@@ -167,7 +169,7 @@ export const ProfileScreen: React.FC = () => {
           }}
           activeOpacity={0.7}>
           <Text variant="base" weight="semibold" style={{ color: theme.colors.error }}>
-            Cerrar Sesión
+            {t('screens.profile.logout')}
           </Text>
         </TouchableOpacity>
       </ScrollView>

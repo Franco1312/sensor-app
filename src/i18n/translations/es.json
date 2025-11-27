@@ -1,0 +1,161 @@
+{
+  "screens": {
+    "home": {
+      "title": "Radar Económico",
+      "sections": {
+        "dailyQuotes": "Cotizaciones del Día",
+        "mainIndicators": "Indicadores Principales",
+        "featuredNews": "Noticias Destacadas"
+      },
+      "subsections": {
+        "dollar": "Dólar",
+        "crypto": "Crypto"
+      }
+    },
+    "quotes": {
+      "title": "Cotizaciones",
+      "lastUpdate": "Actualizado: {{time}} hs",
+      "empty": {
+        "title": "No hay cotizaciones disponibles",
+        "message": "No se encontraron cotizaciones para esta categoría."
+      },
+      "error": {
+        "title": "Error al cargar cotizaciones",
+        "message": "{{error}}"
+      }
+    },
+    "indicators": {
+      "title": "Indicadores Económicos"
+    },
+    "news": {
+      "title": "Noticias",
+      "empty": {
+        "title": "No hay noticias disponibles",
+        "message": "No se encontraron noticias en este momento."
+      },
+      "error": {
+        "title": "Error al cargar noticias",
+        "message": "{{error}}"
+      }
+    },
+    "login": {
+      "title": "Bienvenido de vuelta",
+      "subtitle": "Inicia sesión para continuar en Radar Económico",
+      "emailLabel": "Email o Usuario",
+      "emailPlaceholder": "Ingresa tu email o usuario",
+      "passwordLabel": "Contraseña",
+      "passwordPlaceholder": "Ingresa tu contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "loginButton": "Iniciar Sesión",
+      "divider": "O",
+      "googleLogin": "Continuar con Google",
+      "appleLogin": "Continuar con Apple",
+      "signUp": {
+        "question": "¿No tienes una cuenta?",
+        "link": "Regístrate ahora"
+      },
+      "errors": {
+        "emptyFields": "Por favor completa todos los campos",
+        "emailRequired": "Por favor ingresa tu email primero",
+        "loginFailed": "Error al iniciar sesión",
+        "resetFailed": "Error al solicitar recuperación",
+        "resetSuccess": "Se ha enviado un email con las instrucciones para recuperar tu contraseña"
+      },
+      "alerts": {
+        "googleComingSoon": "Login con Google - Próximamente",
+        "appleComingSoon": "Login con Apple - Próximamente",
+        "registerComingSoon": "Registro - Próximamente"
+      }
+    },
+    "profile": {
+      "title": "Perfil",
+      "account": "Cuenta",
+      "preferences": "Preferencias",
+      "about": "Acerca de",
+      "editProfile": "Editar Perfil",
+      "editProfileSubtitle": "Actualiza tu información personal",
+      "changePassword": "Cambiar Contraseña",
+      "changePasswordSubtitle": "Actualiza tu contraseña de acceso",
+      "darkMode": "Modo Oscuro",
+      "darkModeActive": "Activado",
+      "darkModeInactive": "Desactivado",
+      "notifications": "Notificaciones",
+      "notificationsSubtitle": "Gestiona tus notificaciones",
+      "appName": "Radar Económico",
+      "version": "Versión 1.0.0",
+      "appDescription": "Aplicación para seguimiento de indicadores económicos y cotizaciones de mercado.",
+      "terms": "Términos y Condiciones",
+      "termsSubtitle": "Lee nuestros términos de uso",
+      "privacy": "Política de Privacidad",
+      "privacySubtitle": "Conoce cómo protegemos tus datos",
+      "logout": "Cerrar Sesión"
+    },
+    "detail": {
+      "historicalEvolution": "Evolución Histórica",
+      "lastValue": "Último Valor",
+      "monthlyVariation": "Variación Mensual",
+      "lastUpdate": "Última Actualización",
+      "description": "Descripción",
+      "methodology": "Metodología y Notas",
+      "source": "Fuente",
+      "notFound": {
+        "indicator": "Indicador no encontrado",
+        "quote": "Cotización no encontrada",
+        "crypto": "Criptomoneda no encontrada"
+      },
+      "error": {
+        "message": "No se pudo cargar la información. Por favor, intenta nuevamente."
+      },
+      "crypto": {
+        "currentPrice": "Precio Actual",
+        "variation24h": "Variación 24h",
+        "openPrice24h": "Precio de Apertura (24h)",
+        "high24h": "Máximo (24h)",
+        "low24h": "Mínimo (24h)",
+        "volume24h": "Volumen (24h)"
+      },
+      "quote": {
+        "buyPrice": "Precio de Compra"
+      }
+    }
+  },
+  "components": {
+    "button": {
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "understood": "Entendido"
+    },
+    "common": {
+      "verMas": "Ver más",
+      "verMenos": "Ver menos",
+      "updated": "Actualizado",
+      "noDescription": "Sin descripción disponible",
+      "dataInfoTitle": "Información sobre los datos",
+      "dataInfoMessage": "Los datos provienen de publicaciones oficiales de {{source}}.\n\nLa actualización de los valores depende exclusivamente de la frecuencia de publicación establecida por la fuente oficial.",
+      "visitNews": "Visitar noticia",
+      "noSource": "Sin fuente",
+      "noTitle": "Sin título",
+      "error": "Error",
+      "success": "Éxito",
+      "info": "Info",
+      "emptyTitle": "No hay elementos disponibles",
+      "emptyMessage": "No se encontraron elementos para mostrar."
+    }
+  },
+  "navigation": {
+    "tabs": {
+      "home": "Inicio",
+      "indicators": "Mercados",
+      "news": "Noticias",
+      "settings": "Perfil"
+    }
+  },
+  "common": {
+    "timeRanges": {
+      "1M": "1M",
+      "3M": "3M",
+      "1A": "1A"
+    }
+  }
+}
+

@@ -1,19 +1,11 @@
 /**
  * UI components exports (atoms - base components)
+ * Re-exports from design-system for backward compatibility
  */
 
-export { Button } from './Button';
-export { Text } from './Text';
-export { Card } from './Card';
-export { Input } from './Input';
-export { Badge } from './Badge';
-export {
-  Skeleton,
-  IndicatorCardSkeleton,
-  QuoteCardSkeleton,
-  CompactIndicatorCardSkeleton,
-  CompactQuoteCardSkeleton,
-  StatCardSkeleton,
-  ChartSkeleton,
-} from './Skeleton';
+// Re-export from design-system atoms
+export * from '@/design-system/components/atoms';
+// Card is a molecule but commonly used, re-export for convenience
+export { Card } from '@/design-system/components/molecules';
+export type { CardProps, CardVariant, CardPadding } from '@/design-system/components/molecules';
 

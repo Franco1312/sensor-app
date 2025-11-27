@@ -38,17 +38,29 @@ export const formatTime = (dateString: string): string => {
 
 /**
  * Formats a date string to full date and time format (DD/MM/YYYY HH:MM)
- * @param dateString - ISO date string
- * @returns Formatted date and time string or original string if invalid
+ * Always includes time. If the original string doesn't have time information,
+ * it will default to 00:00 (midnight)
+ * @param dateString - ISO date string (with or without time)
+ * @returns Formatted date and time string (DD/MM/YYYY HH:MM) or original string if invalid
  */
 export const formatDateTime = (dateString: string): string => {
   try {
     const date = new Date(dateString);
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return dateString;
+    }
+    
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
+    
+    // Always show hours and minutes
+    // If original string didn't have time, Date will be at midnight (00:00)
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
+    
     return `${day}/${month}/${year} ${hours}:${minutes}`;
   } catch {
     return dateString;

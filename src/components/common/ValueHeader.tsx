@@ -5,15 +5,16 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Row } from '@/components/layout';
-import { Text } from '@/components/ui';
+import { Text } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
-import { LABELS } from '@/constants/labels';
+import { useTranslation } from '@/i18n';
 
 interface ValueHeaderProps {
   title?: string;
   value: string;
   changeLabel: string;
   changeColor?: string;
+  valueColor?: string;
   subtitle?: string;
 }
 
@@ -22,9 +23,11 @@ export const ValueHeader: React.FC<ValueHeaderProps> = ({
   value,
   changeLabel,
   changeColor,
+  valueColor,
   subtitle,
 }) => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View style={{ gap: theme.spacing.sm }}>
@@ -33,7 +36,7 @@ export const ValueHeader: React.FC<ValueHeaderProps> = ({
           {title}
         </Text>
       )}
-      <Text variant="5xl" weight="bold" style={{ lineHeight: 48 }}>
+      <Text variant="5xl" weight="bold" style={{ lineHeight: 48, color: valueColor || theme.colors.textPrimary }}>
         {value}
       </Text>
       <Row gap={theme.spacing.sm}>
@@ -43,7 +46,7 @@ export const ValueHeader: React.FC<ValueHeaderProps> = ({
           </Text>
         ) : (
           <Text variant="base" color="textSecondary">
-            {LABELS.LAST_YEAR}
+            {t('screens.detail.lastValue')}
           </Text>
         )}
         <Text variant="base" weight="medium" style={{ color: changeColor || theme.colors.success }}>

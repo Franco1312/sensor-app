@@ -4,10 +4,10 @@
 
 import React, { ReactNode } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text } from '@/components/ui';
+import { Text } from '../atoms';
 import { useTheme } from '@/theme/ThemeProvider';
 
-interface EmptyStateProps {
+export interface EmptyStateProps {
   title: string;
   message?: string;
   icon?: ReactNode;

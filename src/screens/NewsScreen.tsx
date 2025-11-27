@@ -3,35 +3,36 @@
  * Based on design/newsScreen design
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, FlatList, Linking, ActivityIndicator } from 'react-native';
 import { Screen, Header } from '@/components/layout';
 import { NewsCard } from '@/components/features/news';
-import { Text, Skeleton } from '@/components/ui';
-import { EmptyState, NotificationIcon } from '@/components/common';
+import { Text, Skeleton, EmptyState, NotificationIcon } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useNews } from '@/hooks/useNews';
 import { News } from '@/types';
+import { useTranslation } from '@/i18n';
 
 export const NewsScreen: React.FC = () => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const { news, loading, error, hasMore, loadMore } = useNews();
 
-  const handleNewsPress = (newsItem: News) => {
+  const handleNewsPress = useCallback((newsItem: News) => {
     if (newsItem.link) {
       Linking.openURL(newsItem.link).catch(err => {
         console.error('Error opening link:', err);
       });
     }
-  };
+  }, []);
 
-  const handleEndReached = () => {
+  const handleEndReached = useCallback(() => {
     if (hasMore && !loading) {
       loadMore();
     }
-  };
+  }, [hasMore, loading, loadMore]);
 
-  const renderNewsItem = ({ item }: { item: News }) => {
+  const renderNewsItem = useCallback(({ item }: { item: News }) => {
     return (
       <NewsCard
         news={item}
@@ -39,7 +40,7 @@ export const NewsScreen: React.FC = () => {
         onVerMasPress={() => handleNewsPress(item)}
       />
     );
-  };
+  }, [handleNewsPress]);
 
   const renderFooter = () => {
     if (!loading || !hasMore) {
@@ -78,8 +79,8 @@ export const NewsScreen: React.FC = () => {
       return (
         <View style={{ flex: 1, paddingHorizontal: theme.spacing.base, paddingTop: theme.spacing.lg }}>
           <EmptyState
-            title="Error al cargar noticias"
-            message={error}
+            title={t('screens.news.error.title')}
+            message={t('screens.news.error.message', { error })}
           />
         </View>
       );
@@ -88,8 +89,8 @@ export const NewsScreen: React.FC = () => {
     return (
       <View style={{ flex: 1, paddingHorizontal: theme.spacing.base, paddingTop: theme.spacing.lg }}>
         <EmptyState
-          title="No hay noticias disponibles"
-          message="No se encontraron noticias en este momento."
+          title={t('screens.news.empty.title')}
+          message={t('screens.news.empty.message')}
         />
       </View>
     );
@@ -98,7 +99,7 @@ export const NewsScreen: React.FC = () => {
   return (
     <Screen scrollable={false}>
       <Header
-        title="Noticias"
+        title={t('screens.news.title')}
         rightIcon={<NotificationIcon size={24} />}
       />
 

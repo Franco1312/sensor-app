@@ -4,8 +4,9 @@
 
 import React from 'react';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
-import { Text } from '@/components/ui';
+import { Text } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
+import { useTranslation } from '@/i18n';
 import Svg, { Path } from 'react-native-svg';
 
 interface VerMasButtonProps {
@@ -14,6 +15,7 @@ interface VerMasButtonProps {
 
 export const VerMasButton: React.FC<VerMasButtonProps> = ({ onPress }) => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <TouchableOpacity
@@ -30,7 +32,7 @@ export const VerMasButton: React.FC<VerMasButtonProps> = ({ onPress }) => {
       ]}>
       <View style={styles.content}>
         <Text variant="sm" weight="semibold" color="textPrimary">
-          Ver más
+          {t('components.common.verMas')}
         </Text>
         <Svg width={14} height={14} viewBox="0 0 24 24" fill="none">
           <Path

@@ -10,21 +10,23 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
-import { TabIcon } from '@/components/common/TabIcon';
+import { TabIcon } from '@/design-system/components/atoms/icons';
 import { SwipeableTabView } from '@/components/navigation/SwipeableTabView';
 import { CustomDrawer } from '@/components/navigation/CustomDrawer';
 import { DrawerProvider, useDrawerContext } from '@/context/DrawerContext';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { IndicatorsFilterProvider } from '@/context/IndicatorsFilterContext';
 import { RootStackParamList, MainTabParamList } from './types';
+import { useTranslation } from '@/i18n';
 
 // Screens
 import { HomeScreen } from '@/screens/HomeScreen';
 import { IndicatorsScreen } from '@/screens/IndicatorsScreen';
 import { IndicatorDetailScreen } from '@/screens/IndicatorDetailScreen';
 import { QuotesScreen } from '@/screens/QuotesScreen';
-import { NewsScreen } from '@/screens/NewsScreen';
 import { QuoteDetailScreen } from '@/screens/QuoteDetailScreen';
+import { CryptoDetailScreen } from '@/screens/CryptoDetailScreen';
+import { NewsScreen } from '@/screens/NewsScreen';
 import { ProfileScreen } from '@/screens/ProfileScreen';
 import { LoginScreen } from '@/screens/LoginScreen';
 
@@ -55,6 +57,7 @@ const SwipeableTabsWrapper: React.FC = () => {
  */
 const MainTabs = () => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
 
   return (
@@ -80,7 +83,7 @@ const MainTabs = () => {
         name="Home"
         component={SwipeableTabsWrapper}
         options={{
-          tabBarLabel: 'Inicio',
+          tabBarLabel: t('navigation.tabs.home'),
           tabBarIcon: ({ focused, size }) => <TabIcon name="home" focused={focused} size={size} />,
         }}
       />
@@ -88,7 +91,7 @@ const MainTabs = () => {
         name="Indicators"
         component={SwipeableTabsWrapper}
         options={{
-          tabBarLabel: 'Mercados',
+          tabBarLabel: t('navigation.tabs.indicators'),
           tabBarIcon: ({ focused, size }) => <TabIcon name="chart" focused={focused} size={size} />,
         }}
       />
@@ -96,7 +99,7 @@ const MainTabs = () => {
         name="News"
         component={SwipeableTabsWrapper}
         options={{
-          tabBarLabel: 'Noticias',
+          tabBarLabel: t('navigation.tabs.news'),
           tabBarIcon: ({ focused, size }) => <TabIcon name="news" focused={focused} size={size} />,
         }}
       />
@@ -104,7 +107,7 @@ const MainTabs = () => {
         name="Settings"
         component={SwipeableTabsWrapper}
         options={{
-          tabBarLabel: 'Perfil',
+          tabBarLabel: t('navigation.tabs.settings'),
           tabBarIcon: ({ focused, size }) => <TabIcon name="profile" focused={focused} size={size} />,
         }}
       />
@@ -164,6 +167,26 @@ const RootStack: React.FC = () => {
           <Stack.Screen
             name="QuoteDetail"
             component={QuoteDetailScreen}
+            options={{
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: theme.colors.background,
+              },
+              headerTintColor: theme.colors.textPrimary,
+              headerTitleStyle: {
+                fontWeight: theme.typography.fontWeight.bold,
+                fontSize: theme.typography.fontSize.lg,
+              },
+              headerShadowVisible: false,
+              headerTransparent: false,
+              contentStyle: {
+                backgroundColor: theme.colors.background,
+              },
+            }}
+          />
+          <Stack.Screen
+            name="CryptoDetail"
+            component={CryptoDetailScreen}
             options={{
               headerShown: true,
               headerStyle: {
