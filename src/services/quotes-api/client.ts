@@ -5,7 +5,7 @@
 
 import { ApiError } from '../common/ApiError';
 
-const API_BASE_URL = 'https://cotizaciones-api-connectors.onrender.com/api';
+const API_BASE_URL = 'https://cotizaciones-api-connectors-ws.onrender.com/api';
 
 /**
  * Quote data from the API

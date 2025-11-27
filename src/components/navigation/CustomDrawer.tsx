@@ -3,48 +3,39 @@
  * Compatible with Expo Go without react-native-reanimated
  */
 
-import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Modal, Animated, Pressable } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, StyleSheet, Modal, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Text } from '@/components/ui';
-import { DrawerMenuItem } from './DrawerMenuItem';
-import { DrawerSubItem } from './DrawerSubItem';
 import { useTheme } from '@/theme/ThemeProvider';
+import { useDrawerAnimations } from '@/hooks/useDrawerAnimations';
+import { useDrawerNavigation } from '@/hooks/useDrawerNavigation';
 import { useIndicatorsFilter } from '@/context/IndicatorsFilterContext';
-import { RootStackParamList, MainTabParamList } from '@/navigation/types';
+import { DrawerHeader } from './DrawerHeader';
+import { DrawerMenuList, DrawerMenuItemConfig } from './DrawerMenuList';
+import { DrawerOverlay } from './DrawerOverlay';
 import { INDICATOR_CATEGORIES } from '@/constants/indicators';
 import { QUOTE_CATEGORY_TABS } from '@/constants/quotes';
+import { CategoryConfig, ScreenType } from '@/types/navigation';
 
 const DRAWER_WIDTH = 280;
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 interface CustomDrawerProps {
   visible: boolean;
   onClose: () => void;
 }
 
-interface DrawerMenuItem {
-  label: string;
-  tabScreen: keyof MainTabParamList;
-  icon: 'home' | 'profile' | 'indicators' | 'quotes';
-  expandable?: boolean;
-  subItems?: Array<{ label: string; value: string }>;
-}
-
-const DRAWER_MENU_ITEMS: DrawerMenuItem[] = [
-  { label: 'Inicio', tabScreen: 'Home', icon: 'home' },
+const DRAWER_MENU_ITEMS: DrawerMenuItemConfig[] = [
+  { label: 'Inicio', screen: 'Home', icon: 'home' },
   {
     label: 'Indicadores',
-    tabScreen: 'Indicators',
+    screen: 'Indicators',
     icon: 'indicators',
     expandable: true,
     subItems: INDICATOR_CATEGORIES.map(cat => ({ label: cat.label, value: cat.value })),
   },
   {
     label: 'Cotizaciones',
-    tabScreen: 'Quotes',
+    screen: 'Quotes',
     icon: 'quotes',
     expandable: true,
     subItems: QUOTE_CATEGORY_TABS.map(tab => ({ label: tab.label, value: tab.value })),
@@ -54,67 +45,40 @@ const DRAWER_MENU_ITEMS: DrawerMenuItem[] = [
 export const CustomDrawer: React.FC<CustomDrawerProps> = ({ visible, onClose }) => {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation<NavigationProp>();
+  const { slideAnim, overlayOpacity } = useDrawerAnimations(visible);
   const {
     setSelectedCategory,
     currentCategory,
     setSelectedQuoteCategory,
     currentQuoteCategory,
   } = useIndicatorsFilter();
-  const slideAnim = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
-  const overlayOpacity = useRef(new Animated.Value(0)).current;
+
+  // Unified category configuration
+  const categoryConfigs = useMemo(() => {
+    const configs = new Map<ScreenType, CategoryConfig>();
+    
+    configs.set('Indicators', {
+      getCurrent: () => currentCategory,
+      setCurrent: setSelectedCategory,
+    });
+    
+    configs.set('Quotes', {
+      getCurrent: () => currentQuoteCategory,
+      setCurrent: setSelectedQuoteCategory,
+    });
+    
+    return configs;
+  }, [currentCategory, currentQuoteCategory, setSelectedCategory, setSelectedQuoteCategory]);
+
+  const {
+    getActiveScreen,
+    navigateToScreen,
+    navigateToSubItem,
+    getCurrentCategory,
+  } = useDrawerNavigation({ categoryConfigs });
+
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-
-  // Get current active screen from navigation state
-  const getActiveScreen = (): keyof MainTabParamList | 'Quotes' | null => {
-    const state = navigation.getState();
-    // Check if we're on Quotes screen (Stack screen)
-    const quotesRoute = state?.routes.find((r: any) => r.name === 'Quotes');
-    if (quotesRoute) {
-      return 'Quotes';
-    }
-    // Otherwise check MainTabs
-    const mainTabsState = state?.routes.find((r: any) => r.name === 'MainTabs')?.state;
-    if (mainTabsState && 'index' in mainTabsState && mainTabsState.routes) {
-      const activeRoute = mainTabsState.routes[mainTabsState.index as number];
-      return activeRoute?.name as keyof MainTabParamList;
-    }
-    return null;
-  };
-
   const activeScreen = getActiveScreen();
-
-  useEffect(() => {
-    if (visible) {
-      // Open animation
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-        Animated.timing(overlayOpacity, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      // Close animation
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: -DRAWER_WIDTH,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-        Animated.timing(overlayOpacity, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
-  }, [visible, slideAnim, overlayOpacity]);
 
   const toggleExpand = (itemLabel: string) => {
     setExpandedItems(prev => {
@@ -128,32 +92,17 @@ export const CustomDrawer: React.FC<CustomDrawerProps> = ({ visible, onClose }) 
     });
   };
 
-  const handleMenuItemPress = (item: DrawerMenuItem) => {
+  const handleMenuItemPress = (item: DrawerMenuItemConfig) => {
     if (item.expandable) {
       toggleExpand(item.label);
     } else {
-      // Quotes is now a Stack screen, not a Tab
-      if (item.tabScreen === 'Quotes') {
-        navigation.navigate('Quotes');
-      } else {
-        navigation.navigate('MainTabs', { screen: item.tabScreen });
-      }
+      navigateToScreen(item.screen);
       onClose();
     }
   };
 
-  const handleSubItemPress = (tabScreen: keyof MainTabParamList, categoryValue: string) => {
-    // Set the category filter in context and navigate
-    if (tabScreen === 'Indicators') {
-      setSelectedCategory(categoryValue);
-      navigation.navigate('MainTabs', { screen: tabScreen });
-    } else if (tabScreen === 'Quotes') {
-      setSelectedQuoteCategory(categoryValue);
-      // Quotes is now a Stack screen, not a Tab
-      navigation.navigate('Quotes');
-    } else {
-      navigation.navigate('MainTabs', { screen: tabScreen });
-    }
+  const handleSubItemPress = (screen: string, categoryValue: string) => {
+    navigateToSubItem(screen as any, categoryValue);
     onClose();
   };
 
@@ -164,20 +113,8 @@ export const CustomDrawer: React.FC<CustomDrawerProps> = ({ visible, onClose }) 
       animationType="none"
       onRequestClose={onClose}>
       <View style={styles.container}>
-        {/* Overlay */}
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose}>
-          <Animated.View
-              style={[
-                StyleSheet.absoluteFill,
-                {
-                  backgroundColor: theme.colors.overlay,
-                  opacity: overlayOpacity,
-                },
-              ]}
-          />
-        </Pressable>
+        <DrawerOverlay overlayOpacity={overlayOpacity} onPress={onClose} />
 
-        {/* Drawer Content */}
         <Animated.View
           style={[
             styles.drawer,
@@ -186,73 +123,20 @@ export const CustomDrawer: React.FC<CustomDrawerProps> = ({ visible, onClose }) 
               paddingTop: insets.top,
               transform: [{ translateX: slideAnim }],
               ...theme.shadows.md,
-              shadowOffset: { width: 2, height: 0 }, // Horizontal shadow for drawer
+              shadowOffset: { width: 2, height: 0 },
             },
           ]}>
-      <View style={[styles.header, { paddingBottom: theme.spacing.lg, borderBottomColor: theme.colors.border, paddingHorizontal: theme.spacing.base }]}>
-        <Text variant="2xl" weight="bold" style={{ color: theme.colors.textPrimary }}>
-          Radar Económico
-        </Text>
-      </View>
+          <DrawerHeader />
 
           <View style={[styles.menuContainer, { paddingTop: theme.spacing.md }]}>
-            {DRAWER_MENU_ITEMS.map((item, index) => {
-              const isActive = activeScreen === item.tabScreen;
-              const isExpanded = expandedItems.has(item.label);
-              const hasSubItems = item.expandable && item.subItems && item.subItems.length > 0;
-
-              // Check if any subitem is active
-              const hasActiveSubItem = hasSubItems
-                ? item.subItems!.some(subItem => {
-                    if (activeScreen !== item.tabScreen) return false;
-                    if (item.tabScreen === 'Indicators') {
-                      return currentCategory === subItem.value;
-                    }
-                    if (item.tabScreen === 'Quotes') {
-                      return currentQuoteCategory === subItem.value;
-                    }
-                    return false;
-                  })
-                : false;
-
-              return (
-                <View key={index}>
-                  <DrawerMenuItem
-                    label={item.label}
-                    icon={item.icon}
-                    isActive={isActive}
-                    isExpanded={isExpanded}
-                    hasSubItems={hasSubItems}
-                    hasActiveSubItem={hasActiveSubItem}
-                    onPress={() => handleMenuItemPress(item)}
-                  />
-
-                  {/* Sub-items */}
-                  {hasSubItems && isExpanded && (
-                    <View>
-                      {item.subItems!.map((subItem, subIndex) => {
-                        // Determine if subitem is active based on screen type
-                        const isSubItemActive =
-                          activeScreen === item.tabScreen &&
-                          (item.tabScreen === 'Indicators'
-                            ? currentCategory === subItem.value
-                            : item.tabScreen === 'Quotes'
-                              ? currentQuoteCategory === subItem.value
-                              : false);
-                        return (
-                          <DrawerSubItem
-                            key={subIndex}
-                            label={subItem.label}
-                            isActive={isSubItemActive}
-                            onPress={() => handleSubItemPress(item.tabScreen, subItem.value)}
-                          />
-                        );
-                      })}
-                    </View>
-                  )}
-                </View>
-              );
-            })}
+            <DrawerMenuList
+              items={DRAWER_MENU_ITEMS}
+              activeScreen={activeScreen}
+              expandedItems={expandedItems}
+              getCurrentCategory={getCurrentCategory}
+              onMenuItemPress={handleMenuItemPress}
+              onSubItemPress={handleSubItemPress}
+            />
           </View>
         </Animated.View>
       </View>
@@ -270,10 +154,6 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: DRAWER_WIDTH,
-  },
-  header: {
-    paddingTop: 20,
-    borderBottomWidth: 1,
   },
   menuContainer: {
     flex: 1,
