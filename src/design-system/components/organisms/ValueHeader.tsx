@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { View } from 'react-native';
-import { Row } from '@/components/layout';
+import { Row } from '@/components/layout/Row';
 import { Text } from '../atoms';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useTranslation } from '@/i18n';

@@ -49,9 +49,18 @@ interface LabelPosition {
  * Calculates the min and max values from data points for normalization
  */
 const calculateValueRange = (dataPoints: ChartDataPoint[]): { min: number; max: number; range: number } => {
-  const values = dataPoints.map(point => point.value);
-  const minValue = Math.min(...values);
-  const maxValue = Math.max(...values);
+  // Filter out invalid values (NaN, Infinity, null, undefined)
+  const validValues = dataPoints
+    .map(point => point.value)
+    .filter(value => typeof value === 'number' && isFinite(value));
+  
+  if (validValues.length === 0) {
+    // Fallback if no valid values
+    return { min: 0, max: 1, range: 1 };
+  }
+  
+  const minValue = Math.min(...validValues);
+  const maxValue = Math.max(...validValues);
   const valueRange = maxValue - minValue || 1; // Avoid division by zero
   
   return { min: minValue, max: maxValue, range: valueRange };
@@ -297,10 +306,14 @@ export const Chart: React.FC<ChartProps> = ({ height = 180, data, seriesCode, on
                   opacity={1}>
                   {seriesCode 
                     ? formatValueForSeries(selectedDataPoint.rawValue, seriesCode)
-                    : `$${parseFloat(selectedDataPoint.rawValue).toLocaleString('es-AR', {
-                        minimumFractionDigits: parseFloat(selectedDataPoint.rawValue) % 1 !== 0 ? 2 : 0,
-                        maximumFractionDigits: 2,
-                      })}`
+                    : (() => {
+                        const numValue = parseFloat(selectedDataPoint.rawValue);
+                        if (isNaN(numValue) || !isFinite(numValue)) return '$0.00';
+                        return `$${numValue.toLocaleString('es-AR', {
+                          minimumFractionDigits: numValue % 1 !== 0 ? 2 : 0,
+                          maximumFractionDigits: 2,
+                        })}`;
+                      })()
                   }
                 </SvgText>
               </>

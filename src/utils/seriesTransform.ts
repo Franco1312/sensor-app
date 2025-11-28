@@ -46,8 +46,9 @@ import { formatDate } from './dateFormat';
  * @returns Parsed number or 0 if invalid
  */
 const parseValue = (value: string): number => {
+  if (!value || typeof value !== 'string') return 0;
   const parsed = parseFloat(value);
-  return isNaN(parsed) ? 0 : parsed;
+  return isNaN(parsed) || !isFinite(parsed) ? 0 : parsed;
 };
 
 /**
@@ -56,6 +57,7 @@ const parseValue = (value: string): number => {
  * @returns Formatted string (e.g., "$33.0B")
  */
 const formatBillions = (value: number): string => {
+  if (isNaN(value) || !isFinite(value)) return '$0.0B';
   const billions = value / MILLIONS_TO_BILLIONS;
   return `$${billions.toFixed(BILLIONS_DECIMALS)}B`;
 };
@@ -66,6 +68,7 @@ const formatBillions = (value: number): string => {
  * @returns Formatted string (e.g., "U$S 40.356M")
  */
 const formatMillionsUSD = (value: number): string => {
+  if (isNaN(value) || !isFinite(value)) return 'U$S 0M';
   if (value === 0) return 'U$S 0M';
   // Format with dot as thousands separator and no decimals
   const formattedValue = value.toLocaleString('en-US', { 
@@ -81,7 +84,18 @@ const formatMillionsUSD = (value: number): string => {
  * @returns Formatted string (e.g., "2.3%")
  */
 const formatPercentage = (value: number): string => {
+  if (isNaN(value) || !isFinite(value)) return '0.0%';
   return `${value.toFixed(1)}%`;
+};
+
+/**
+ * Formats an index value with 2 decimal places
+ * @param value - Index value (e.g., 152.100058)
+ * @returns Formatted string (e.g., "152.10")
+ */
+const formatIndex = (value: number): string => {
+  if (isNaN(value) || !isFinite(value)) return '0.00';
+  return value.toFixed(2);
 };
 
 // ============================================================================
@@ -168,6 +182,50 @@ const transformIpcVariacionInteranual = (seriesData: SeriesData): Omit<Indicator
   return createIndicatorBase(SERIES_CODES.IPC_VARIACION_INTERANUAL, formattedValue, seriesData.collection_date);
 };
 
+/**
+ * Transforms EMAE Original data
+ * Input: Index value (e.g., 152.100058)
+ * Output: Formatted as index with 2 decimals (e.g., "152.10")
+ */
+const transformEmaeOriginal = (seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
+  const numValue = parseValue(seriesData.value);
+  const formattedValue = formatIndex(numValue);
+  return createIndicatorBase(SERIES_CODES.EMAE_ORIGINAL, formattedValue, seriesData.collection_date);
+};
+
+/**
+ * Transforms EMAE Desestacionalizada data
+ * Input: Index value (e.g., 153.627751)
+ * Output: Formatted as index with 2 decimals (e.g., "153.63")
+ */
+const transformEmaeDesestacionalizada = (seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
+  const numValue = parseValue(seriesData.value);
+  const formattedValue = formatIndex(numValue);
+  return createIndicatorBase(SERIES_CODES.EMAE_DESESTACIONALIZADA, formattedValue, seriesData.collection_date);
+};
+
+/**
+ * Transforms EMAE Tendencia-Ciclo data
+ * Input: Index value (e.g., 153.004681)
+ * Output: Formatted as index with 2 decimals (e.g., "153.00")
+ */
+const transformEmaeTendenciaCiclo = (seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
+  const numValue = parseValue(seriesData.value);
+  const formattedValue = formatIndex(numValue);
+  return createIndicatorBase(SERIES_CODES.EMAE_TENDENCIA_CICLO, formattedValue, seriesData.collection_date);
+};
+
+/**
+ * Transforms EMAE Variación Interanual data
+ * Input: Percentage value (e.g., 5.009732)
+ * Output: Formatted as percentage with 1 decimal (e.g., "5.0%")
+ */
+const transformEmaeVariacionInteranual = (seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
+  const numValue = parseValue(seriesData.value);
+  const formattedValue = formatPercentage(numValue);
+  return createIndicatorBase(SERIES_CODES.EMAE_VARIACION_INTERANUAL, formattedValue, seriesData.collection_date);
+};
+
 // ============================================================================
 // Historical Data Transformations
 // ============================================================================
@@ -184,8 +242,10 @@ const createChartDataPoint = (
 ): ChartDataPoint => {
   const numValue = parseValue(item.value);
   const transformedValue = transformValue(numValue);
+  // Validate that the transformed value is a valid number
+  const validValue = isNaN(transformedValue) || !isFinite(transformedValue) ? 0 : transformedValue;
   return {
-    value: transformedValue,
+    value: validValue,
     date: item.obs_time,
     rawValue: item.value,
   };
@@ -241,6 +301,46 @@ const transformIpcVariacionInteranualHistory = (seriesData: SeriesData[]): Chart
   );
 };
 
+/**
+ * Transforms EMAE Original historical data to chart format
+ * Values are indices, used directly
+ */
+const transformEmaeOriginalHistory = (seriesData: SeriesData[]): ChartDataPoint[] => {
+  return seriesData.map(item =>
+    createChartDataPoint(item, value => value)
+  );
+};
+
+/**
+ * Transforms EMAE Desestacionalizada historical data to chart format
+ * Values are indices, used directly
+ */
+const transformEmaeDesestacionalizadaHistory = (seriesData: SeriesData[]): ChartDataPoint[] => {
+  return seriesData.map(item =>
+    createChartDataPoint(item, value => value)
+  );
+};
+
+/**
+ * Transforms EMAE Tendencia-Ciclo historical data to chart format
+ * Values are indices, used directly
+ */
+const transformEmaeTendenciaCicloHistory = (seriesData: SeriesData[]): ChartDataPoint[] => {
+  return seriesData.map(item =>
+    createChartDataPoint(item, value => value)
+  );
+};
+
+/**
+ * Transforms EMAE Variación Interanual historical data to chart format
+ * Values are percentages, used directly
+ */
+const transformEmaeVariacionInteranualHistory = (seriesData: SeriesData[]): ChartDataPoint[] => {
+  return seriesData.map(item =>
+    createChartDataPoint(item, value => value)
+  );
+};
+
 // ============================================================================
 // Transformer Maps
 // ============================================================================
@@ -251,6 +351,10 @@ const SERIES_TRANSFORMERS: Record<SeriesCode, SeriesTransformer> = {
   [SERIES_CODES.CIRCULANTE_PUBLICO]: transformCirculantePublico,
   [SERIES_CODES.IPC_VARIACION_MENSUAL]: transformIpcVariacionMensual,
   [SERIES_CODES.IPC_VARIACION_INTERANUAL]: transformIpcVariacionInteranual,
+  [SERIES_CODES.EMAE_ORIGINAL]: transformEmaeOriginal,
+  [SERIES_CODES.EMAE_DESESTACIONALIZADA]: transformEmaeDesestacionalizada,
+  [SERIES_CODES.EMAE_TENDENCIA_CICLO]: transformEmaeTendenciaCiclo,
+  [SERIES_CODES.EMAE_VARIACION_INTERANUAL]: transformEmaeVariacionInteranual,
 };
 
 const SERIES_HISTORY_TRANSFORMERS: Record<SeriesCode, SeriesHistoryTransformer> = {
@@ -259,6 +363,10 @@ const SERIES_HISTORY_TRANSFORMERS: Record<SeriesCode, SeriesHistoryTransformer> 
   [SERIES_CODES.CIRCULANTE_PUBLICO]: transformCirculantePublicoHistory,
   [SERIES_CODES.IPC_VARIACION_MENSUAL]: transformIpcVariacionMensualHistory,
   [SERIES_CODES.IPC_VARIACION_INTERANUAL]: transformIpcVariacionInteranualHistory,
+  [SERIES_CODES.EMAE_ORIGINAL]: transformEmaeOriginalHistory,
+  [SERIES_CODES.EMAE_DESESTACIONALIZADA]: transformEmaeDesestacionalizadaHistory,
+  [SERIES_CODES.EMAE_TENDENCIA_CICLO]: transformEmaeTendenciaCicloHistory,
+  [SERIES_CODES.EMAE_VARIACION_INTERANUAL]: transformEmaeVariacionInteranualHistory,
 };
 
 // ============================================================================
@@ -286,7 +394,13 @@ export const formatValueForSeries = (rawValue: string, code: SeriesCode): string
     
     case SERIES_CODES.IPC_VARIACION_MENSUAL:
     case SERIES_CODES.IPC_VARIACION_INTERANUAL:
+    case SERIES_CODES.EMAE_VARIACION_INTERANUAL:
       return formatPercentage(numValue);
+    
+    case SERIES_CODES.EMAE_ORIGINAL:
+    case SERIES_CODES.EMAE_DESESTACIONALIZADA:
+    case SERIES_CODES.EMAE_TENDENCIA_CICLO:
+      return formatIndex(numValue);
     
     default:
       return numValue.toFixed(1);

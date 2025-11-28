@@ -5,7 +5,7 @@
 import React, { ReactNode } from 'react';
 import { View, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
-import { Text } from '@/design-system/components';
+import { Text } from '@/design-system/components/atoms/Text';
 
 interface ListItemProps extends Omit<TouchableOpacityProps, 'style'> {
   title: string;

@@ -7,7 +7,7 @@ import { View, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useDrawerContext } from '@/context/DrawerContext';
-import { Text } from '@/design-system/components';
+import { Text } from '@/design-system/components/atoms/Text';
 import { HamburgerIcon } from '@/design-system/components/atoms/icons';
 
 interface HeaderProps {

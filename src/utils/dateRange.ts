@@ -22,12 +22,18 @@ export const calculateDateRange = (range: TimeRange): { startDate: string; endDa
   switch (range) {
     case '1M':
       startDate.setMonth(startDate.getMonth() - 1);
+      // Set to first day of the month for monthly series
+      startDate.setDate(1);
       break;
     case '3M':
       startDate.setMonth(startDate.getMonth() - 3);
+      // Set to first day of the month for monthly series
+      startDate.setDate(1);
       break;
     case '1A':
       startDate.setFullYear(startDate.getFullYear() - 1);
+      // Set to first day of the month for monthly series
+      startDate.setDate(1);
       break;
   }
   

@@ -24,6 +24,10 @@ export const useIndicators = (): UseIndicatorsResult => {
   const { data: circulanteData, loading: loadingCirculante, refetch: refetchCirculante } = useSeriesData(SERIES_CODES.CIRCULANTE_PUBLICO);
   const { data: ipcMensualData, loading: loadingIpcMensual, refetch: refetchIpcMensual } = useSeriesData(SERIES_CODES.IPC_VARIACION_MENSUAL);
   const { data: ipcInteranualData, loading: loadingIpcInteranual, refetch: refetchIpcInteranual } = useSeriesData(SERIES_CODES.IPC_VARIACION_INTERANUAL);
+  const { data: emaeOriginalData, loading: loadingEmaeOriginal, refetch: refetchEmaeOriginal } = useSeriesData(SERIES_CODES.EMAE_ORIGINAL);
+  const { data: emaeDesestacionalizadaData, loading: loadingEmaeDesestacionalizada, refetch: refetchEmaeDesestacionalizada } = useSeriesData(SERIES_CODES.EMAE_DESESTACIONALIZADA);
+  const { data: emaeTendenciaCicloData, loading: loadingEmaeTendenciaCiclo, refetch: refetchEmaeTendenciaCiclo } = useSeriesData(SERIES_CODES.EMAE_TENDENCIA_CICLO);
+  const { data: emaeVariacionInteranualData, loading: loadingEmaeVariacionInteranual, refetch: refetchEmaeVariacionInteranual } = useSeriesData(SERIES_CODES.EMAE_VARIACION_INTERANUAL);
 
   const indicators = useMemo(() => {
     const data: Indicator[] = [];
@@ -32,10 +36,14 @@ export const useIndicators = (): UseIndicatorsResult => {
     if (circulanteData) data.push(circulanteData);
     if (ipcMensualData) data.push(ipcMensualData);
     if (ipcInteranualData) data.push(ipcInteranualData);
+    if (emaeOriginalData) data.push(emaeOriginalData);
+    if (emaeDesestacionalizadaData) data.push(emaeDesestacionalizadaData);
+    if (emaeTendenciaCicloData) data.push(emaeTendenciaCicloData);
+    if (emaeVariacionInteranualData) data.push(emaeVariacionInteranualData);
     return data;
-  }, [baseMonetariaData, reservasData, circulanteData, ipcMensualData, ipcInteranualData]);
+  }, [baseMonetariaData, reservasData, circulanteData, ipcMensualData, ipcInteranualData, emaeOriginalData, emaeDesestacionalizadaData, emaeTendenciaCicloData, emaeVariacionInteranualData]);
 
-  const loading = loadingBase || loadingReservas || loadingCirculante || loadingIpcMensual || loadingIpcInteranual;
+  const loading = loadingBase || loadingReservas || loadingCirculante || loadingIpcMensual || loadingIpcInteranual || loadingEmaeOriginal || loadingEmaeDesestacionalizada || loadingEmaeTendenciaCiclo || loadingEmaeVariacionInteranual;
 
   const refetch = useCallback(() => {
     refetchBase();
@@ -43,7 +51,11 @@ export const useIndicators = (): UseIndicatorsResult => {
     refetchCirculante();
     refetchIpcMensual();
     refetchIpcInteranual();
-  }, [refetchBase, refetchReservas, refetchCirculante, refetchIpcMensual, refetchIpcInteranual]);
+    refetchEmaeOriginal();
+    refetchEmaeDesestacionalizada();
+    refetchEmaeTendenciaCiclo();
+    refetchEmaeVariacionInteranual();
+  }, [refetchBase, refetchReservas, refetchCirculante, refetchIpcMensual, refetchIpcInteranual, refetchEmaeOriginal, refetchEmaeDesestacionalizada, refetchEmaeTendenciaCiclo, refetchEmaeVariacionInteranual]);
 
   return { indicators, loading, refetch };
 };
