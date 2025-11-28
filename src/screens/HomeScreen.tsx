@@ -5,7 +5,7 @@
 
 import React, { useCallback } from 'react';
 import { ScrollView, StyleSheet, Linking } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Screen, Header } from '@/components/layout';
 import { NotificationIcon } from '@/components/common';
@@ -29,10 +29,19 @@ export const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp>();
   const { setSelectedQuoteCategory } = useIndicatorsFilter();
-  const { indicators, loading: indicatorsLoading } = useIndicators();
-  const { quotes, loading: quotesLoading } = useQuotes();
+  const { indicators, loading: indicatorsLoading, refetch: refetchIndicators } = useIndicators();
+  const { quotes, loading: quotesLoading, refetch: refetchQuotes } = useQuotes();
   const { cryptos, loading: cryptosLoading } = useCrypto(true, DEFAULT_POLLING_INTERVAL);
-  const { news, loading: newsLoading } = useNews();
+  const { news, loading: newsLoading, refetch: refetchNews } = useNews();
+
+  // Reload data when screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      refetchQuotes();
+      refetchIndicators();
+      refetchNews();
+    }, [refetchQuotes, refetchIndicators, refetchNews])
+  );
 
   // Obtener las dos primeras noticias
   const featuredNews = news.slice(0, 2);

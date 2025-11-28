@@ -5,6 +5,7 @@
 
 import React, { useCallback } from 'react';
 import { View, FlatList, Linking, ActivityIndicator } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { Screen, Header } from '@/components/layout';
 import { NewsCard } from '@/components/features/news';
 import { Text, Skeleton, EmptyState, NotificationIcon } from '@/design-system/components';
@@ -16,7 +17,14 @@ import { useTranslation } from '@/i18n';
 export const NewsScreen: React.FC = () => {
   const { theme } = useTheme();
   const { t } = useTranslation();
-  const { news, loading, error, hasMore, loadMore } = useNews();
+  const { news, loading, error, hasMore, loadMore, refetch } = useNews();
+
+  // Reload news when screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   const handleNewsPress = useCallback((newsItem: News) => {
     if (newsItem.link) {

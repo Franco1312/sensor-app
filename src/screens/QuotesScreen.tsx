@@ -5,7 +5,7 @@
 
 import React, { useMemo, useEffect, useCallback } from 'react';
 import { View, FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Screen, Header } from '@/components/layout';
 import { Text, Skeleton, Card, EmptyState } from '@/design-system/components';
@@ -32,10 +32,17 @@ export const QuotesScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const { selectedQuoteCategory, setSelectedQuoteCategory, setCurrentQuoteCategory } =
     useIndicatorsFilter();
-  const { quotes, loading: quotesLoading, error: quotesError } = useQuotes();
+  const { quotes, loading: quotesLoading, error: quotesError, refetch: refetchQuotes } = useQuotes();
   const { cryptos, loading: cryptosLoading, error: cryptosError } = useCrypto(
     true,
     DEFAULT_POLLING_INTERVAL
+  );
+
+  // Reload quotes when screen is focused (crypto has polling)
+  useFocusEffect(
+    useCallback(() => {
+      refetchQuotes();
+    }, [refetchQuotes])
   );
 
   const categories = useMemo(

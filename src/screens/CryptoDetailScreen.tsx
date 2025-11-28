@@ -12,7 +12,7 @@ import { Row } from '@/components/layout';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useCryptoHistory } from '@/hooks/useCryptoHistory';
 import { useCrypto } from '@/hooks/useCrypto';
-import { usePriceColor } from '@/hooks/usePriceDirection';
+import { getPriceColor } from '@/hooks/usePriceDirection';
 import { transformCryptoKlinesToChart } from '@/utils/cryptoTransform';
 import { formatDate } from '@/utils/dateFormat';
 import { formatChangePercent } from '@/utils/formatting';
@@ -83,10 +83,13 @@ export const CryptoDetailScreen: React.FC = () => {
     ? formatChangePercent(currentCrypto.changePercent, isPositive)
     : '';
 
-  // Get price color based on direction
-  const priceColor = currentCrypto?.priceDirection
-    ? usePriceColor(currentCrypto.priceDirection)
-    : undefined;
+  // Get price color based on direction (using pure function to avoid conditional hook call)
+  const priceColor = useMemo(
+    () => currentCrypto?.priceDirection
+      ? getPriceColor(currentCrypto.priceDirection, theme)
+      : undefined,
+    [currentCrypto?.priceDirection, theme]
+  );
 
   // Set header title
   useEffect(() => {

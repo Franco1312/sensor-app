@@ -117,6 +117,40 @@
       "quote": {
         "buyPrice": "Precio de Compra"
       }
+    },
+    "plans": {
+      "title": "Planes",
+      "intro": "Elegí el plan que mejor se adapte a vos.",
+      "free": {
+        "name": "Radar Básico",
+        "description": "Acceso gratuito para todos. Todo lo esencial para seguir la economía argentina al día.",
+        "badge": "Gratuito",
+        "button": "Continuar con Plan Gratuito",
+        "features": {
+          "cotizaciones": "Cotizaciones del dólar (Blue, MEP, CCL, Oficial)",
+          "ultimosValores": "Últimos valores de IPC, Riesgo País y Reservas",
+          "graficos": "Gráficos de hasta 12 meses",
+          "noticias": "Noticias económicas seleccionadas",
+          "favoritos": "Hasta 3 indicadores favoritos",
+          "alerta": "1 alerta personalizada (\"Avisarme si pasa X\")",
+          "actualizaciones": "Actualizaciones diarias según fuentes oficiales"
+        }
+      },
+      "premium": {
+        "name": "Radar Pro",
+        "description": "Desbloqueá el poder total de Radar Económico con herramientas avanzadas, alertas ilimitadas y más datos históricos.",
+        "badge": "Recomendado",
+        "button": "Activar Radar Pro",
+        "buttonSecondary": "Probar 7 días gratis",
+        "features": {
+          "alertas": "Alertas ilimitadas (variación, umbrales, dólar, IPC y más)",
+          "historial": "Historial extendido en todos los indicadores",
+          "exportar": "Exportar gráficos y series a imágenes (ideal para informes y redes)",
+          "actualizaciones": "Actualizaciones más rápidas y completas",
+          "indicadores": "Indicadores adicionales y ampliados según se publiquen",
+          "experiencia": "Experiencia sin límites en favoritos y seguimiento"
+        }
+      }
     }
   },
   "components": {

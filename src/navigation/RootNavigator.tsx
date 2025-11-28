@@ -29,6 +29,7 @@ import { CryptoDetailScreen } from '@/screens/CryptoDetailScreen';
 import { NewsScreen } from '@/screens/NewsScreen';
 import { ProfileScreen } from '@/screens/ProfileScreen';
 import { LoginScreen } from '@/screens/LoginScreen';
+import { PlansScreen } from '@/screens/PlansScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -136,6 +137,13 @@ const RootStack: React.FC = () => {
         <Stack.Screen name="Login" component={LoginScreen} />
       ) : (
         <>
+          <Stack.Screen
+            name="Plans"
+            component={PlansScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen
             name="Quotes"

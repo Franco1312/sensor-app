@@ -71,7 +71,38 @@ const QuoteItemComponent: React.FC<QuoteItemProps> = ({ item, onPress }) => {
 
 // Memoize component to prevent unnecessary re-renders
 export const QuoteItem = React.memo(QuoteItemComponent, (prevProps, nextProps) => {
-  // Custom comparison: only re-render if item id or onPress reference changes
-  return prevProps.item.id === nextProps.item.id && prevProps.onPress === nextProps.onPress;
+  // Custom comparison: re-render if item data or onPress changes
+  const prevItem = prevProps.item;
+  const nextItem = nextProps.item;
+  
+  // Check if onPress changed
+  if (prevProps.onPress !== nextProps.onPress) {
+    return false; // Re-render
+  }
+  
+  // Check if item id changed
+  if (prevItem.id !== nextItem.id) {
+    return false; // Re-render
+  }
+  
+  // Check if price-related fields changed (important for crypto price direction)
+  if (prevItem.sellPrice !== nextItem.sellPrice) {
+    return false; // Re-render
+  }
+  
+  if (prevItem.changePercent !== nextItem.changePercent) {
+    return false; // Re-render
+  }
+  
+  // Check if priceDirection changed (critical for crypto color updates)
+  const prevCrypto = prevItem.category === 'cripto' ? (prevItem as CryptoQuote) : null;
+  const nextCrypto = nextItem.category === 'cripto' ? (nextItem as CryptoQuote) : null;
+  
+  if (prevCrypto?.priceDirection !== nextCrypto?.priceDirection) {
+    return false; // Re-render
+  }
+  
+  // If none of the important fields changed, skip re-render
+  return true;
 });
 

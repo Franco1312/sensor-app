@@ -11,3 +11,4 @@ export { CryptoDetailScreen } from './CryptoDetailScreen';
 export { NewsScreen } from './NewsScreen';
 export { ProfileScreen } from './ProfileScreen';
 export { LoginScreen } from './LoginScreen';
+export { PlansScreen } from './PlansScreen';

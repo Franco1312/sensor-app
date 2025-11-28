@@ -5,7 +5,7 @@
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { View, FlatList, ScrollView, StyleSheet } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { RootStackParamList, MainTabParamList } from '@/navigation/types';
@@ -86,7 +86,14 @@ export const IndicatorsScreen: React.FC = () => {
     setCurrentCategory(categoryValue);
   }, [categoryFilter, setCurrentCategory]);
 
-  const { indicators, loading } = useIndicators();
+  const { indicators, loading, refetch: refetchIndicators } = useIndicators();
+
+  // Reload indicators when screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      refetchIndicators();
+    }, [refetchIndicators])
+  );
 
   const filteredIndicators = useMemo(() => {
     if (categoryFilter === DEFAULT_CATEGORY) {
