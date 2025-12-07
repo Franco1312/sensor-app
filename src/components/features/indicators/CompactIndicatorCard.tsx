@@ -27,11 +27,11 @@ const CompactIndicatorCardComponent: React.FC<CompactIndicatorCardProps> = ({
   );
   const trendColor = useMemo(
     () => isPositive
-      ? theme.colors.success
+      ? (theme.colors.successSoft || theme.colors.success)
       : indicator.trend === 'down'
       ? theme.colors.error
       : theme.colors.textSecondary,
-    [isPositive, indicator.trend, theme.colors.success, theme.colors.error, theme.colors.textSecondary]
+    [isPositive, indicator.trend, theme.colors.success, theme.colors.successSoft, theme.colors.error, theme.colors.textSecondary]
   );
 
   return (
@@ -39,14 +39,14 @@ const CompactIndicatorCardComponent: React.FC<CompactIndicatorCardProps> = ({
       <View style={[styles.card, { borderLeftColor: trendColor }]}>
         <Card variant="elevated" padding="sm" style={{ flex: 1 }}>
           <View style={[styles.container, { minHeight: 80 }]}>
-            <Text variant="2xs" color="textSecondary" weight="medium" style={styles.label}>
+            <Text variant="2xs" color="textSecondary" weight="normal" style={styles.label}>
               {indicator.name}
             </Text>
             <Text variant="lg" weight="bold" style={styles.value}>
               {indicator.value}
             </Text>
             <View style={[styles.changeContainer, { backgroundColor: `${trendColor}15` }]}>
-              <Text variant="2xs" weight="semibold" style={{ color: trendColor }}>
+              <Text variant="2xs" weight="normal" style={{ color: trendColor }}>
                 {changeLabel}
               </Text>
             </View>
@@ -65,7 +65,7 @@ export const CompactIndicatorCard = React.memo(CompactIndicatorCardComponent, (p
 
 const styles = StyleSheet.create({
   card: {
-    borderLeftWidth: 3,
+    borderLeftWidth: 2, // More refined, thinner border
     borderRadius: 8,
     overflow: 'hidden',
   },

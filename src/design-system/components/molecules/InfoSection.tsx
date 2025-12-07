@@ -21,7 +21,7 @@ export const InfoSection: React.FC<InfoSectionProps> = ({ title, content, margin
       <Text variant="sm" weight="medium" style={{ marginBottom: theme.spacing.sm }}>
         {title}
       </Text>
-      <Text variant="sm" color="textSecondary">
+      <Text variant="sm" color="textSecondary" weight="normal">
         {content}
       </Text>
     </Card>

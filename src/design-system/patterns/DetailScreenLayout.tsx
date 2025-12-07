@@ -115,10 +115,10 @@ const InfoSections: React.FC<InfoSectionsProps> = ({ sections, theme }) => (
         padding="sm"
         style={index < sections.length - 1 ? { marginBottom: theme.spacing.xs } : undefined}>
         <View style={{ gap: 4 }}>
-          <Text variant="xs" weight="semibold" color="textPrimary">
+          <Text variant="xs" weight="medium" color="textPrimary">
             {section.title}
           </Text>
-          <Text variant="xs" color="textSecondary" style={{ lineHeight: 16 }}>
+          <Text variant="xs" color="textSecondary" weight="normal" style={{ lineHeight: 16 }}>
             {section.content}
           </Text>
         </View>

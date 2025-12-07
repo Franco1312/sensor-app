@@ -23,10 +23,8 @@ export const Section: React.FC<SectionProps> = ({ title, onVerMasPress, style })
         styles.container,
         {
           paddingBottom: theme.spacing.sm,
-          paddingTop: theme.spacing.xs,
-          borderBottomWidth: 1,
-          borderBottomColor: theme.colors.divider,
-          marginBottom: theme.spacing.sm,
+          paddingTop: 0,
+          marginBottom: theme.spacing.base,
         },
         style,
       ]}>
@@ -41,10 +39,10 @@ export const Section: React.FC<SectionProps> = ({ title, onVerMasPress, style })
           onPress={onVerMasPress}
           activeOpacity={0.7}
           style={styles.verMasButton}>
-          <Text variant="xs" weight="semibold" style={{ color: theme.colors.primary }}>
+          <Text variant="xs" weight="medium" style={{ color: theme.colors.primary }}>
             Ver más
           </Text>
-          <Svg width={14} height={14} viewBox="0 0 24 24" fill="none">
+          <Svg width={12} height={12} viewBox="0 0 24 24" fill="none">
             <Path
               d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"
               fill={theme.colors.primary}
@@ -69,9 +67,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   accent: {
-    width: 3,
-    height: 16,
-    borderRadius: 2,
+    width: 2,
+    height: 14,
+    borderRadius: 1,
   },
   verMasButton: {
     flexDirection: 'row',

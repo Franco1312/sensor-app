@@ -37,7 +37,7 @@ export const ChangeDisplay: React.FC<ChangeDisplayProps> = ({
       )}
       <Text 
         variant={variant} 
-        weight="medium"
+        weight="normal"
         style={{ color: trendColor }}>
         {changeValue}
       </Text>

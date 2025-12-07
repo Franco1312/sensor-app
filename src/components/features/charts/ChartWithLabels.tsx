@@ -37,7 +37,7 @@ export const ChartWithLabels: React.FC<ChartWithLabelsProps> = ({
       )}
       <View style={[styles.labelsContainer, { marginTop: theme.spacing.sm }]}>
         {LABELS.CHART_MONTHS.map((label, index) => (
-          <Text key={index} variant="xs" color="textSecondary" weight="bold">
+          <Text key={index} variant="xs" color="textSecondary" weight="normal">
             {label}
           </Text>
         ))}

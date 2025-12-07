@@ -88,6 +88,8 @@ const MainTabs = () => {
         tabBarIconStyle: {
           marginTop: 4,
         },
+        // Optimize tab navigation - keep tabs mounted
+        freezeOnBlur: true, // Freeze tabs when not focused
       }}>
       <Tab.Screen
         name="Home"
@@ -141,6 +143,8 @@ const RootStack: React.FC = () => {
         contentStyle: {
           backgroundColor: theme.colors.background,
         },
+        // Optimize navigation performance - keep screens mounted
+        freezeOnBlur: true, // Freeze screens when not focused to save resources
       }}>
       {!isAuthenticated ? (
         <>

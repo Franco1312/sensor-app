@@ -26,24 +26,25 @@ const CompactQuoteCardComponent: React.FC<CompactQuoteCardProps> = ({ quote, onP
     () => isPositive ? theme.colors.success : theme.colors.error,
     [isPositive, theme.colors.success, theme.colors.error]
   );
+  // Softer green for positive, keep red as is for negative
   const borderColor = useMemo(
-    () => trendColor,
-    [trendColor]
+    () => isPositive ? (theme.colors.successSoft || '#1FD99A') : trendColor,
+    [isPositive, trendColor, theme.colors.successSoft]
   );
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.6}>
-      <View style={[styles.card, { borderLeftColor: borderColor }]}>
+      <View style={[styles.card, { borderLeftColor: borderColor, borderRadius: theme.radii.base }]}>
         <Card variant="elevated" padding="sm" style={{ flex: 1 }}>
           <View style={[styles.container, { minHeight: 80 }]}>
-            <Text variant="2xs" color="textSecondary" weight="medium" style={styles.label}>
+            <Text variant="2xs" color="textSecondary" weight="normal" style={styles.label}>
               {quote.name}
             </Text>
             <Text variant="lg" weight="bold" style={styles.value}>
               {quote.sellPrice}
             </Text>
             <View style={[styles.changeContainer, { backgroundColor: `${trendColor}15` }]}>
-              <Text variant="2xs" weight="semibold" style={{ color: trendColor }}>
+              <Text variant="2xs" weight="normal" style={{ color: trendColor }}>
                 {changeLabel}
               </Text>
             </View>
@@ -62,8 +63,8 @@ export const CompactQuoteCard = React.memo(CompactQuoteCardComponent, (prevProps
 
 const styles = StyleSheet.create({
   card: {
-    borderLeftWidth: 3,
-    borderRadius: 8,
+    borderLeftWidth: 2, // More refined, thinner border
+    // borderRadius will be set dynamically from theme
     overflow: 'hidden',
   },
   container: {
@@ -87,4 +88,3 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
 });
-

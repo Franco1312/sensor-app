@@ -1,22 +1,32 @@
 /**
- * Custom hook for fetching series data from the API
+ * Custom hook for fetching series data from the API using React Query
+ * Optimized with caching and automatic refetch management
  */
 
-import { useState, useEffect, useCallback } from 'react';
-import { getSeriesLatest, ApiError } from '@/services/projections-consumer-api';
+import { useQuery } from '@tanstack/react-query';
+import { getSeriesLatest } from '@/services/projections-consumer-api';
 import { transformSeriesToIndicator } from '@/utils/seriesTransform';
-import { Indicator, SeriesData } from '@/types';
+import { Indicator } from '@/types';
 import { SeriesCode } from '@/constants/series';
 
 interface UseSeriesDataResult {
   data: Indicator | null;
   loading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
+  refetch: () => void;
 }
 
 /**
+ * Query key factory for series data
+ */
+export const seriesKeys = {
+  all: ['series'] as const,
+  detail: (code: SeriesCode) => [...seriesKeys.all, code] as const,
+};
+
+/**
  * Hook to fetch and transform series data from the API
+ * Uses React Query for caching and automatic refetch management
  * @param code - The series code to fetch
  * @param enabled - Whether to fetch immediately (default: true)
  */
@@ -24,43 +34,22 @@ export const useSeriesData = (
   code: SeriesCode,
   enabled: boolean = true
 ): UseSeriesDataResult => {
-  const [data, setData] = useState<Indicator | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchData = useCallback(async () => {
-    if (!enabled) {
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: seriesKeys.detail(code),
+    queryFn: async () => {
       const response = await getSeriesLatest(code);
-      const transformed = transformSeriesToIndicator(response.data, code);
-      setData(transformed);
-    } catch (err) {
-      const errorMessage =
-        err instanceof ApiError
-          ? err.message
-          : 'Error al obtener los datos. Por favor, intenta nuevamente.';
-      setError(errorMessage);
-      setData(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [code, enabled]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+      return transformSeriesToIndicator(response.data, code);
+    },
+    enabled,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
   return {
-    data,
-    loading,
-    error,
-    refetch: fetchData,
+    data: data || null,
+    loading: isLoading,
+    error: error ? (error instanceof Error ? error.message : 'Error al obtener los datos') : null,
+    refetch: () => {
+      refetch();
+    },
   };
 };
-

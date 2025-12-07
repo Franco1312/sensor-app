@@ -1,21 +1,23 @@
 /**
- * Custom hook for fetching crypto klines (historical data) from the API
+ * Custom hook for fetching crypto klines (historical data) from the API using React Query
+ * Optimized with caching and automatic refetch management
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { getCryptoKlines, Kline, KlineInterval } from '@/services/crypto-api';
-import { ApiError } from '@/services/common/ApiError';
 import { CRYPTO_ERROR_MESSAGES } from '@/services/crypto-api/errors';
+import { cryptoKeys } from './useCrypto';
 
 interface UseCryptoHistoryResult {
   data: Kline[] | null;
   loading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
+  refetch: () => void;
 }
 
 /**
  * Hook to fetch crypto klines from the API
+ * Uses React Query for caching and automatic refetch management
  * @param symbol - Crypto symbol (e.g., 'BTCUSDT', 'ETHUSDT')
  * @param interval - Time interval for each kline
  * @param limit - Maximum number of klines to return (optional, default: 200)
@@ -31,40 +33,22 @@ export const useCryptoHistory = (
   endTime?: number,
   enabled: boolean = true
 ): UseCryptoHistoryResult => {
-  const [data, setData] = useState<Kline[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchHistory = useCallback(async () => {
-    if (!enabled || !symbol) {
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: [...cryptoKeys.all, 'history', symbol, interval, limit, startTime, endTime],
+    queryFn: async () => {
       const response = await getCryptoKlines(symbol, interval, limit, startTime, endTime);
-      setData(response.klines);
-    } catch (err) {
-      const errorMessage =
-        err instanceof ApiError ? err.message : CRYPTO_ERROR_MESSAGES.FETCH_HISTORY;
-      setError(errorMessage);
-      setData(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [symbol, interval, limit, startTime, endTime, enabled]);
-
-  useEffect(() => {
-    fetchHistory();
-  }, [fetchHistory]);
+      return response.klines;
+    },
+    enabled: enabled && !!symbol,
+    staleTime: 1000 * 60 * 10, // 10 minutes for historical data
+  });
 
   return {
-    data,
-    loading,
-    error,
-    refetch: fetchHistory,
+    data: data || null,
+    loading: isLoading,
+    error: error ? (error instanceof Error ? error.message : CRYPTO_ERROR_MESSAGES.FETCH_HISTORY) : null,
+    refetch: () => {
+      refetch();
+    },
   };
 };
-

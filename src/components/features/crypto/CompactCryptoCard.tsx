@@ -34,14 +34,14 @@ const CompactCryptoCardComponent: React.FC<CompactCryptoCardProps> = ({ crypto, 
       <View style={[styles.card, { borderLeftColor: priceColor || trendColor }]}>
         <Card variant="elevated" padding="sm" style={{ flex: 1 }}>
           <View style={[styles.container, { minHeight: 80 }]}>
-            <Text variant="2xs" color="textSecondary" weight="medium" style={styles.label}>
+            <Text variant="2xs" color="textSecondary" weight="normal" style={styles.label}>
               {crypto.name}
             </Text>
             <Text variant="lg" weight="bold" style={[styles.value, { color: priceColor }]}>
               {crypto.lastPrice}
             </Text>
             <View style={[styles.changeContainer, { backgroundColor: `${trendColor}15` }]}>
-              <Text variant="2xs" weight="semibold" style={{ color: trendColor }}>
+              <Text variant="2xs" weight="normal" style={{ color: trendColor }}>
                 {changeLabel}
               </Text>
             </View>
@@ -60,7 +60,7 @@ export const CompactCryptoCard = React.memo(CompactCryptoCardComponent, (prevPro
 
 const styles = StyleSheet.create({
   card: {
-    borderLeftWidth: 3,
+    borderLeftWidth: 2, // More refined, thinner border
     borderRadius: 8,
     overflow: 'hidden',
   },

@@ -18,7 +18,7 @@ interface MainIndicatorsSectionProps {
   onIndicatorPress: (indicatorId: string, indicatorName: string) => void;
 }
 
-export const MainIndicatorsSection: React.FC<MainIndicatorsSectionProps> = ({
+const MainIndicatorsSectionComponent: React.FC<MainIndicatorsSectionProps> = ({
   indicators,
   loading,
   onVerMas,
@@ -69,7 +69,7 @@ export const MainIndicatorsSection: React.FC<MainIndicatorsSectionProps> = ({
 
 const styles = StyleSheet.create({
   section: {
-    marginBottom: 20,
+    marginBottom: 28,
   },
   gridContainer: {
     flexDirection: 'row',
@@ -83,4 +83,7 @@ const styles = StyleSheet.create({
     maxWidth: '48%',
   },
 });
+
+// Memoize component to prevent unnecessary re-renders
+export const MainIndicatorsSection = React.memo(MainIndicatorsSectionComponent);
 

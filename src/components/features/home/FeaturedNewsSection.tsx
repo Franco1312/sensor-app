@@ -18,7 +18,7 @@ interface FeaturedNewsSectionProps {
   onNewsPress: (news: News) => void;
 }
 
-export const FeaturedNewsSection: React.FC<FeaturedNewsSectionProps> = ({
+const FeaturedNewsSectionComponent: React.FC<FeaturedNewsSectionProps> = ({
   featuredNews,
   loading,
   onVerMas,
@@ -72,7 +72,7 @@ export const FeaturedNewsSection: React.FC<FeaturedNewsSectionProps> = ({
 
 const styles = StyleSheet.create({
   section: {
-    marginBottom: 16,
+    marginBottom: 20,
     paddingBottom: 0,
   },
   newsContainer: {
@@ -83,4 +83,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
+
+// Memoize component to prevent unnecessary re-renders
+export const FeaturedNewsSection = React.memo(FeaturedNewsSectionComponent);
 

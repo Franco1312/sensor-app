@@ -5,7 +5,7 @@
 
 import React, { useMemo, useEffect, useCallback } from 'react';
 import { View, FlatList } from 'react-native';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Screen, Header } from '@/components/layout';
 import { Text, Skeleton, Card, EmptyState } from '@/design-system/components';
@@ -23,6 +23,7 @@ import { RootStackParamList } from '@/navigation/types';
 import { cryptosToQuotes, CryptoQuote } from '@/utils/cryptoToQuote';
 import { DEFAULT_POLLING_INTERVAL } from '@/constants/crypto';
 import { useTranslation } from '@/i18n';
+import { usePrefetchQuote, usePrefetchCrypto } from '@/hooks/usePrefetch';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -37,13 +38,10 @@ export const QuotesScreen: React.FC = () => {
     true,
     DEFAULT_POLLING_INTERVAL
   );
+  const prefetchQuote = usePrefetchQuote();
+  const prefetchCrypto = usePrefetchCrypto();
 
-  // Reload quotes when screen is focused (crypto has polling)
-  useFocusEffect(
-    useCallback(() => {
-      refetchQuotes();
-    }, [refetchQuotes])
-  );
+  // No need to reload on focus - React Query handles caching automatically
 
   const categories = useMemo(
     () => QUOTE_CATEGORY_TABS.map(tab => tab.value),
@@ -117,18 +115,22 @@ export const QuotesScreen: React.FC = () => {
     const cryptoItem = isCrypto ? (item as CryptoQuote) : null;
 
     if (isCrypto && cryptoItem?.symbol) {
+      // Prefetch crypto detail data before navigation
+      prefetchCrypto(cryptoItem.symbol);
       navigation.navigate('CryptoDetail', {
         cryptoId: cryptoItem.symbol,
         cryptoName: item.name,
       });
     } else {
       const casa = item.id.replace('quote-', '');
+      // Prefetch quote detail data before navigation
+      prefetchQuote(casa);
       navigation.navigate('QuoteDetail', {
         quoteId: casa,
         quoteName: item.name,
       });
     }
-  }, [navigation]);
+  }, [navigation, prefetchQuote, prefetchCrypto]);
 
   const renderQuote = useCallback(({ item }: { item: Quote | CryptoQuote }) => {
     return <QuoteItem item={item} onPress={handleQuotePress} />;
@@ -147,7 +149,7 @@ export const QuotesScreen: React.FC = () => {
       {/* Last Update */}
       {lastUpdateTime && (
         <View style={{ paddingHorizontal: theme.spacing.base, paddingVertical: theme.spacing.sm, alignItems: 'center' }}>
-          <Text variant="xs" color="textTertiary" weight="medium">
+          <Text variant="xs" color="textTertiary" weight="normal">
             {t('screens.quotes.lastUpdate', { time: lastUpdateTime })}
           </Text>
         </View>
@@ -217,6 +219,17 @@ export const QuotesScreen: React.FC = () => {
                 keyExtractor={item => item.id}
                 contentContainerStyle={{ paddingTop: theme.spacing.sm, paddingBottom: theme.spacing.lg }}
                 showsVerticalScrollIndicator={false}
+                // Performance optimizations
+                windowSize={10}
+                initialNumToRender={10}
+                maxToRenderPerBatch={5}
+                updateCellsBatchingPeriod={50}
+                removeClippedSubviews={true}
+                getItemLayout={(data, index) => ({
+                  length: 80, // Approximate item height
+                  offset: 80 * index,
+                  index,
+                })}
               />
             </View>
           );

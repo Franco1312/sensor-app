@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useDrawerContext } from '@/context/DrawerContext';
@@ -51,8 +51,11 @@ export const Header: React.FC<HeaderProps> = ({
           backgroundColor: theme.colors.background,
           minHeight: 56,
           ...(showBorder && {
-            borderBottomWidth: 1,
-            borderBottomColor: theme.colors.divider,
+            // Unified border - subtle in both modes
+            borderBottomWidth: theme.isDark ? StyleSheet.hairlineWidth : 1,
+            borderBottomColor: theme.isDark 
+              ? (theme.colors.borderSubtle || 'rgba(255, 255, 255, 0.03)')
+              : theme.colors.divider,
           }),
         },
       ]}>

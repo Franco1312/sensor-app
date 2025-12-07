@@ -3,7 +3,7 @@
  */
 
 import React, { ReactNode, useMemo } from 'react';
-import { View, ViewProps, TouchableOpacity, TouchableOpacityProps, ViewStyle } from 'react-native';
+import { View, ViewProps, TouchableOpacity, TouchableOpacityProps, ViewStyle, StyleSheet } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 
 export type CardVariant = 'default' | 'elevated' | 'outlined' | 'flat';
@@ -46,17 +46,35 @@ export const Card: React.FC<CardProps> = ({
   }, [padding, theme.spacing]);
 
   const cardStyle = useMemo((): ViewStyle => {
+    // Unified border logic for both dark and light mode
+    // Subtle borders in both modes, but more subtle in dark mode
+    const borderWidth = variant === 'flat' 
+      ? 0 
+      : variant === 'outlined' 
+        ? 1 
+        : variant === 'default' 
+          ? (theme.isDark ? StyleSheet.hairlineWidth : 1) // Hairline in dark, 1px in light
+          : 0;
+    
+    // Use consistent border colors - subtle in both modes
+    const borderColor = variant === 'outlined'
+      ? theme.colors.border
+      : theme.isDark 
+        ? theme.colors.borderSubtle 
+        : theme.colors.borderLight;
+
     return {
       backgroundColor: variant === 'flat' ? 'transparent' : theme.colors.surface,
       borderRadius: theme.radii.base,
-      ...(variant !== 'flat' && {
-        borderWidth: variant === 'outlined' ? 1 : variant === 'default' ? 1 : 0,
-        borderColor: theme.colors.border,
+      ...(borderWidth > 0 && {
+        borderWidth,
+        borderColor,
       }),
       padding: paddingValue,
+      // Unified shadows - same shadow system for both modes
       ...(variant === 'elevated' && theme.shadows.base),
     };
-  }, [variant, paddingValue, theme.colors.surface, theme.colors.border, theme.radii.base, theme.shadows.base]);
+  }, [variant, paddingValue, theme.colors.surface, theme.colors.border, theme.colors.borderLight, theme.colors.borderSubtle, theme.isDark, theme.radii.base, theme.shadows.base]);
 
   if (onPress) {
     return (

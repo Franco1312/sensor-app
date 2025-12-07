@@ -5,7 +5,6 @@
 
 import React, { useCallback } from 'react';
 import { View, FlatList, Linking, ActivityIndicator } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 import { Screen, Header } from '@/components/layout';
 import { NewsCard } from '@/components/features/news';
 import { Text, Skeleton, EmptyState, NotificationIcon } from '@/design-system/components';
@@ -19,12 +18,7 @@ export const NewsScreen: React.FC = () => {
   const { t } = useTranslation();
   const { news, loading, error, hasMore, loadMore, refetch } = useNews();
 
-  // Reload news when screen is focused
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [refetch])
-  );
+  // No need to reload on focus - React Query handles caching automatically
 
   const handleNewsPress = useCallback((newsItem: News) => {
     if (newsItem.link) {
@@ -125,6 +119,12 @@ export const NewsScreen: React.FC = () => {
           ListFooterComponent={renderFooter}
           ListEmptyComponent={renderEmpty}
           showsVerticalScrollIndicator={false}
+          // Performance optimizations
+          windowSize={10}
+          initialNumToRender={8}
+          maxToRenderPerBatch={4}
+          updateCellsBatchingPeriod={50}
+          removeClippedSubviews={true}
         />
       </View>
     </Screen>

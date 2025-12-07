@@ -3,7 +3,7 @@
  */
 
 import React, { ReactNode } from 'react';
-import { View, TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { View, TouchableOpacity, TouchableOpacityProps, StyleSheet } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Text } from '@/design-system/components/atoms/Text';
 
@@ -37,8 +37,12 @@ export const ListItem: React.FC<ListItemProps> = ({
           paddingHorizontal: theme.spacing.base,
           paddingVertical: theme.spacing.md,
           backgroundColor: theme.colors.surface,
-          borderRadius: theme.radii.md,
-          borderWidth: 0, // No border for cleaner look
+          borderRadius: theme.radii.base, // Unified with Card component
+          // Unified subtle border for depth in both modes
+          borderWidth: theme.isDark ? StyleSheet.hairlineWidth : StyleSheet.hairlineWidth,
+          borderColor: theme.isDark 
+            ? (theme.colors.borderSubtle || 'rgba(255, 255, 255, 0.03)')
+            : theme.colors.borderLight,
           minHeight: 64,
         },
         style,
@@ -52,7 +56,7 @@ export const ListItem: React.FC<ListItemProps> = ({
           {title}
         </Text>
         {subtitle && (
-          <Text variant="sm" color="textSecondary" numberOfLines={2}>
+          <Text variant="sm" color="textSecondary" weight="normal" numberOfLines={2}>
             {subtitle}
           </Text>
         )}

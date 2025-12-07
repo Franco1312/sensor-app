@@ -51,9 +51,9 @@ const QuoteItemComponent: React.FC<QuoteItemProps> = ({ item, onPress }) => {
             }}>
             {item.sellPrice}
           </Text>
-          <Text
+            <Text
             variant="xs"
-            weight="medium"
+            weight="normal"
             style={{
               color: isPositive ? theme.colors.success : theme.colors.error,
             }}>

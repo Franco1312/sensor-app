@@ -1,22 +1,25 @@
 /**
- * Custom hook for fetching historical series data from the API
+ * Custom hook for fetching historical series data from the API using React Query
+ * Optimized with caching and automatic refetch management
  */
 
-import { useState, useEffect, useCallback } from 'react';
-import { getSeriesHistory, ApiError } from '@/services/projections-consumer-api';
+import { useQuery } from '@tanstack/react-query';
+import { getSeriesHistory } from '@/services/projections-consumer-api';
 import { SeriesData } from '@/types';
 import { SeriesCode } from '@/constants/series';
 import { TimeRange, calculateDateRange } from '@/utils/dateRange';
+import { seriesKeys } from './useSeriesData';
 
 interface UseSeriesHistoryResult {
   data: SeriesData[] | null;
   loading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
+  refetch: () => void;
 }
 
 /**
  * Hook to fetch historical series data from the API
+ * Uses React Query for caching and automatic refetch management
  * @param code - The series code to fetch
  * @param timeRange - Time range filter (1M, 3M, or 1A)
  * @param enabled - Whether to fetch immediately (default: true)
@@ -26,43 +29,24 @@ export const useSeriesHistory = (
   timeRange: TimeRange,
   enabled: boolean = true
 ): UseSeriesHistoryResult => {
-  const [data, setData] = useState<SeriesData[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { startDate, endDate } = calculateDateRange(timeRange);
 
-  const fetchData = useCallback(async () => {
-    if (!enabled) {
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const { startDate, endDate } = calculateDateRange(timeRange);
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: [...seriesKeys.detail(code), 'history', timeRange, startDate, endDate],
+    queryFn: async () => {
       const response = await getSeriesHistory(code, startDate, endDate);
-      setData(response.data);
-    } catch (err) {
-      const errorMessage =
-        err instanceof ApiError
-          ? err.message
-          : 'Error al obtener los datos históricos. Por favor, intenta nuevamente.';
-      setError(errorMessage);
-      setData(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [code, timeRange, enabled]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+      return response.data;
+    },
+    enabled: enabled && !!code,
+    staleTime: 1000 * 60 * 10, // 10 minutes for historical data
+  });
 
   return {
-    data,
-    loading,
-    error,
-    refetch: fetchData,
+    data: data || null,
+    loading: isLoading,
+    error: error ? (error instanceof Error ? error.message : 'Error al obtener los datos históricos') : null,
+    refetch: () => {
+      refetch();
+    },
   };
 };
-

@@ -24,7 +24,7 @@ interface DailyQuotesSectionProps {
   onCryptoPress: (cryptoId: string, cryptoName: string) => void;
 }
 
-export const DailyQuotesSection: React.FC<DailyQuotesSectionProps> = ({
+const DailyQuotesSectionComponent: React.FC<DailyQuotesSectionProps> = ({
   dollarQuotes,
   featuredCryptos,
   quotesLoading,
@@ -62,7 +62,7 @@ export const DailyQuotesSection: React.FC<DailyQuotesSectionProps> = ({
       {/* Subsección Dólar */}
       <View style={styles.subsection}>
         <View style={styles.subsectionHeader}>
-          <Text variant="sm" weight="semibold" color="textSecondary">
+          <Text variant="sm" weight="medium" color="textSecondary">
             {t('screens.home.subsections.dollar')}
           </Text>
         </View>
@@ -88,7 +88,7 @@ export const DailyQuotesSection: React.FC<DailyQuotesSectionProps> = ({
       {/* Subsección Crypto */}
       <View style={styles.subsection}>
         <View style={styles.subsectionHeader}>
-          <Text variant="sm" weight="semibold" color="textSecondary">
+          <Text variant="sm" weight="medium" color="textSecondary">
             {t('screens.home.subsections.crypto')}
           </Text>
         </View>
@@ -116,13 +116,13 @@ export const DailyQuotesSection: React.FC<DailyQuotesSectionProps> = ({
 
 const styles = StyleSheet.create({
   section: {
-    marginBottom: 20,
+    marginBottom: 28,
   },
   subsection: {
-    marginTop: 12,
+    marginTop: 8,
   },
   subsectionHeader: {
-    marginBottom: 8,
+    marginBottom: 10,
   },
   gridContainer: {
     flexDirection: 'row',
@@ -136,4 +136,7 @@ const styles = StyleSheet.create({
     maxWidth: '48%',
   },
 });
+
+// Memoize component to prevent unnecessary re-renders
+export const DailyQuotesSection = React.memo(DailyQuotesSectionComponent);
 

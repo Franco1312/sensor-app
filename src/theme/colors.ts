@@ -17,7 +17,7 @@ export const lightColors = {
   backgroundSecondary: '#F8F9FA',
   surface: '#FFFFFF',
   surfaceSecondary: '#F5F5F7',
-  surfaceElevated: '#FFFFFF',
+  surfaceElevated: '#FAFAFA', // Slightly different for better contrast
   surfaceHover: '#F8F9FA',
 
   // Text
@@ -32,11 +32,13 @@ export const lightColors = {
   borderLight: '#F0F2F5',
   borderDark: '#D1D3D6',
   divider: '#E6E8EA',
+  borderSubtle: 'rgba(0, 0, 0, 0.05)', // Ultra subtle border for depth (light mode)
 
   // Status - Trading colors
   success: '#0ECB81', // Binance green
   successLight: 'rgba(14, 203, 129, 0.1)',
   successDark: '#0AB270',
+  successSoft: '#1FD99A', // Softer green for borders
   error: '#F6465D', // Binance red
   errorLight: 'rgba(246, 70, 93, 0.1)',
   errorDark: '#E03E52',
@@ -76,13 +78,13 @@ export const darkColors = {
   primaryHover: '#F8D96A',
   primaryPressed: '#E5A807',
 
-  // Backgrounds - Binance dark theme
-  background: '#0B0E11', // Deep dark base
-  backgroundSecondary: '#131722', // Slightly lighter
-  surface: '#1E2329', // Card/surface color
-  surfaceSecondary: '#2B3139', // Elevated surface
-  surfaceElevated: '#3A3F47', // Highest elevation
-  surfaceHover: '#2B3139', // Hover state
+  // Backgrounds - Binance dark theme (matte finish)
+  background: '#0F0F0F', // Matte dark base
+  backgroundSecondary: '#0F0F0F', // Same matte base
+  surface: '#141414', // Card/surface color - more subtle, less contrast
+  surfaceSecondary: '#1A1A1A', // Elevated surface - subtle elevation
+  surfaceElevated: '#1F1F1F', // Highest elevation - still subtle
+  surfaceHover: '#1A1A1A', // Hover state
 
   // Text
   textPrimary: '#EAECEF', // Primary text
@@ -91,16 +93,18 @@ export const darkColors = {
   textDisabled: '#474D57', // Disabled text
   textInverse: '#0B0E11', // Text on primary
 
-  // Borders
-  border: '#2B3139', // Default border
-  borderLight: '#1E2329', // Subtle border
-  borderDark: '#3A3F47', // Strong border
-  divider: '#2B3139', // Divider lines
+  // Borders - More subtle for less contrast
+  border: '#1A1A1A', // Default border - more subtle
+  borderLight: '#141414', // Subtle border - very close to surface
+  borderDark: '#1F1F1F', // Strong border - still subtle
+  divider: '#1A1A1A', // Divider lines - subtle
+  borderSubtle: 'rgba(255, 255, 255, 0.03)', // Ultra subtle border for depth - even more subtle
 
   // Status - Trading colors (optimized for dark)
   success: '#0ECB81', // Binance green
   successLight: 'rgba(14, 203, 129, 0.15)',
   successDark: '#0AB270',
+  successSoft: '#1FD99A', // Softer green for borders
   error: '#F6465D', // Binance red
   errorLight: 'rgba(246, 70, 93, 0.15)',
   errorDark: '#E03E52',
@@ -114,11 +118,11 @@ export const darkColors = {
   priceDown: '#F6465D',
   priceNeutral: '#848E9C',
 
-  // Neutral grays (dark mode optimized)
-  neutral50: '#1E2329',
-  neutral100: '#2B3139',
-  neutral200: '#3A3F47',
-  neutral300: '#474D57',
+  // Neutral grays (dark mode optimized - more subtle)
+  neutral50: '#141414',
+  neutral100: '#1A1A1A',
+  neutral200: '#1F1F1F',
+  neutral300: '#252525',
   neutral400: '#5E6673',
   neutral500: '#848E9C',
   neutral600: '#B7BDC6',

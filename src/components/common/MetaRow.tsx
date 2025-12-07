@@ -20,7 +20,7 @@ export const MetaRow: React.FC<MetaRowProps> = ({ changeLabel, changeVariant, la
   return (
     <View style={[styles.container, { gap: theme.spacing.sm }]}>
       <Badge label={changeLabel} variant={changeVariant} />
-      <Text variant="xs" color="textSecondary">
+      <Text variant="xs" color="textSecondary" weight="normal">
         {formatUpdatedLabel(lastUpdate)}
       </Text>
     </View>

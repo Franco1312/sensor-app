@@ -41,15 +41,15 @@ export const ValueHeader: React.FC<ValueHeaderProps> = ({
       </Text>
       <Row gap={theme.spacing.sm}>
         {subtitle ? (
-          <Text variant="xs" color="textSecondary">
+          <Text variant="xs" color="textSecondary" weight="normal">
             {subtitle}
           </Text>
         ) : (
-          <Text variant="xs" color="textSecondary">
+          <Text variant="xs" color="textSecondary" weight="normal">
             {t('screens.detail.lastValue')}
           </Text>
         )}
-        <Text variant="xs" weight="semibold" style={{ color: changeColor || theme.colors.success }}>
+        <Text variant="xs" weight="normal" style={{ color: changeColor || theme.colors.success }}>
           {changeLabel}
         </Text>
       </Row>

@@ -7,7 +7,7 @@ import { Text as RNText, TextProps as RNTextProps } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 
 interface TextProps extends RNTextProps {
-  variant?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
+  variant?: '2xs' | 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
   weight?: 'normal' | 'medium' | 'semibold' | 'bold' | 'extrabold';
   color?: 'primary' | 'textPrimary' | 'textSecondary' | 'textTertiary' | 'success' | 'error';
   children: React.ReactNode;

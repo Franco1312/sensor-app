@@ -91,7 +91,13 @@ const NewsCardComponent: React.FC<NewsCardProps> = ({ news, onPress, onVerMasPre
 
 
   return (
-    <View style={[styles.container, { borderBottomColor: theme.colors.divider }]}>
+    <View style={[
+      styles.container, 
+      { 
+        borderBottomColor: theme.colors.divider,
+        borderBottomWidth: StyleSheet.hairlineWidth, // Unified subtle border
+      }
+    ]}>
       <View style={styles.content}>
         <View style={styles.textContainer}>
           <Text variant="xs" weight="medium" style={{ color: theme.colors.primary, marginBottom: theme.spacing.xs }}>
@@ -192,7 +198,7 @@ export const NewsCard = React.memo(NewsCardComponent, (prevProps, nextProps) => 
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 20,
-    borderBottomWidth: 1,
+    // borderBottomWidth will be set dynamically for theme consistency
   },
   content: {
     flexDirection: 'row',

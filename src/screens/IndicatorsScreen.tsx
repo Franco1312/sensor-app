@@ -5,7 +5,7 @@
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { View, FlatList, ScrollView, StyleSheet } from 'react-native';
-import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { RootStackParamList, MainTabParamList } from '@/navigation/types';
@@ -22,6 +22,8 @@ import { Indicator } from '@/types';
 import { useIndicators } from '@/hooks/useIndicators';
 import { useIndicatorsFilter } from '@/context/IndicatorsFilterContext';
 import { useTranslation } from '@/i18n';
+import { usePrefetchIndicator } from '@/hooks/usePrefetch';
+import { SeriesCode } from '@/constants/series';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 type TabNavigationProp = BottomTabNavigationProp<MainTabParamList, 'Indicators'>;
@@ -67,6 +69,7 @@ export const IndicatorsScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const { selectedCategory, setSelectedCategory, setCurrentCategory } = useIndicatorsFilter();
   const [categoryFilter, setCategoryFilter] = useState<string>(DEFAULT_CATEGORY);
+  const prefetchIndicator = usePrefetchIndicator();
 
   // Update filter when context category changes
   useEffect(() => {
@@ -88,12 +91,7 @@ export const IndicatorsScreen: React.FC = () => {
 
   const { indicators, loading, refetch: refetchIndicators } = useIndicators();
 
-  // Reload indicators when screen is focused
-  useFocusEffect(
-    useCallback(() => {
-      refetchIndicators();
-    }, [refetchIndicators])
-  );
+  // No need to reload on focus - React Query handles caching automatically
 
   const filteredIndicators = useMemo(() => {
     if (categoryFilter === DEFAULT_CATEGORY) {
@@ -106,6 +104,15 @@ export const IndicatorsScreen: React.FC = () => {
   }, [indicators, categoryFilter]);
 
   const renderIndicator = useCallback(({ item }: { item: Indicator }) => {
+    const handlePress = () => {
+      // Prefetch detail data before navigation
+      prefetchIndicator(item.id as SeriesCode);
+      navigation.navigate('IndicatorDetail', {
+        indicatorId: item.id,
+        indicatorName: item.name,
+      });
+    };
+
     return (
       <ListItem
         title={item.name}
@@ -119,16 +126,11 @@ export const IndicatorsScreen: React.FC = () => {
             <ChangeDisplay changePercent={item.changePercent} trend={item.trend} />
           </View>
         }
-        onPress={() =>
-          navigation.navigate('IndicatorDetail', {
-            indicatorId: item.id,
-            indicatorName: item.name,
-          })
-        }
+        onPress={handlePress}
         style={{ marginBottom: theme.spacing.sm }}
       />
     );
-  }, [navigation, theme.spacing.md]);
+  }, [navigation, theme.spacing.md, prefetchIndicator]);
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
@@ -166,6 +168,17 @@ export const IndicatorsScreen: React.FC = () => {
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingHorizontal: theme.spacing.base, paddingTop: theme.spacing.sm, paddingBottom: theme.spacing.lg }}
           showsVerticalScrollIndicator={false}
+          // Performance optimizations
+          windowSize={10}
+          initialNumToRender={10}
+          maxToRenderPerBatch={5}
+          updateCellsBatchingPeriod={50}
+          removeClippedSubviews={true}
+          getItemLayout={(data, index) => ({
+            length: 80, // Approximate item height
+            offset: 80 * index,
+            index,
+          })}
         />
       )}
     </View>

@@ -1,21 +1,23 @@
 /**
- * Custom hook for fetching quote history from the API
+ * Custom hook for fetching quote history from the API using React Query
+ * Optimized with caching and automatic refetch management
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { getQuoteHistory, QuoteApiData } from '@/services/quotes-api';
-import { ApiError } from '@/services/common/ApiError';
 import { TimeRange, calculateDateRange } from '@/utils/dateRange';
+import { quoteKeys } from './useQuotes';
 
 interface UseQuoteHistoryResult {
   data: QuoteApiData[] | null;
   loading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
+  refetch: () => void;
 }
 
 /**
  * Hook to fetch quote history from the API
+ * Uses React Query for caching and automatic refetch management
  * @param casa - The type of dollar (e.g., 'blue', 'oficial', 'bolsa')
  * @param timeRange - Time range filter (1M, 3M, or 1A)
  * @param enabled - Whether to fetch immediately (default: true)
@@ -25,47 +27,26 @@ export const useQuoteHistory = (
   timeRange: TimeRange,
   enabled: boolean = true
 ): UseQuoteHistoryResult => {
-  const [data, setData] = useState<QuoteApiData[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { startDate, endDate } = calculateDateRange(timeRange);
+  // Convert ISO format to YYYY-MM-DD format for the API
+  const startDateFormatted = startDate.split('T')[0];
+  const endDateFormatted = endDate.split('T')[0];
 
-  const fetchHistory = useCallback(async () => {
-    if (!enabled || !casa) {
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const { startDate, endDate } = calculateDateRange(timeRange);
-      // Convert ISO format to YYYY-MM-DD format for the API
-      const startDateFormatted = startDate.split('T')[0];
-      const endDateFormatted = endDate.split('T')[0];
-      
-      const historyData: QuoteApiData[] = await getQuoteHistory(casa, startDateFormatted, endDateFormatted);
-      setData(historyData);
-    } catch (err) {
-      const errorMessage =
-        err instanceof ApiError
-          ? err.message
-          : 'Error al obtener el historial de cotizaciones. Por favor, intenta nuevamente.';
-      setError(errorMessage);
-      setData(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [casa, timeRange, enabled]);
-
-  useEffect(() => {
-    fetchHistory();
-  }, [fetchHistory]);
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: [...quoteKeys.all, 'history', casa, timeRange, startDateFormatted, endDateFormatted],
+    queryFn: async () => {
+      return await getQuoteHistory(casa, startDateFormatted, endDateFormatted);
+    },
+    enabled: enabled && !!casa,
+    staleTime: 1000 * 60 * 10, // 10 minutes for historical data
+  });
 
   return {
-    data,
-    loading,
-    error,
-    refetch: fetchHistory,
+    data: data || null,
+    loading: isLoading,
+    error: error ? (error instanceof Error ? error.message : 'Error al obtener el historial de cotizaciones') : null,
+    refetch: () => {
+      refetch();
+    },
   };
 };
-

@@ -51,7 +51,7 @@ export const StatCard: React.FC<StatCardProps> = ({
           {value}
         </Text>
         {subtitle && (
-          <Text variant="2xs" color="textSecondary">
+          <Text variant="2xs" color="textSecondary" weight="normal">
             {subtitle}
           </Text>
         )}

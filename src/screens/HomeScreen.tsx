@@ -3,10 +3,11 @@
  * Based on stitch_home_screen_revamp design
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { ScrollView, StyleSheet, Linking } from 'react-native';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 import { Screen, Header } from '@/components/layout';
 import { NotificationIcon } from '@/components/common';
 import { DailyQuotesSection, MainIndicatorsSection, FeaturedNewsSection } from '@/components/features/home';
@@ -21,6 +22,9 @@ import { DEFAULT_POLLING_INTERVAL } from '@/constants/crypto';
 import { QUOTE_CATEGORIES } from '@/constants/quotes';
 import { useTranslation } from '@/i18n';
 import { News } from '@/types';
+import { newsKeys } from '@/hooks/useNews';
+import { usePrefetchIndicator, usePrefetchQuote, usePrefetchCrypto } from '@/hooks/usePrefetch';
+import { SeriesCode } from '@/constants/series';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -28,20 +32,45 @@ export const HomeScreen: React.FC = () => {
   const { theme } = useTheme();
   const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp>();
+  const queryClient = useQueryClient();
   const { setSelectedQuoteCategory } = useIndicatorsFilter();
   const { indicators, loading: indicatorsLoading, refetch: refetchIndicators } = useIndicators();
   const { quotes, loading: quotesLoading, refetch: refetchQuotes } = useQuotes();
   const { cryptos, loading: cryptosLoading } = useCrypto(true, DEFAULT_POLLING_INTERVAL);
   const { news, loading: newsLoading, refetch: refetchNews } = useNews();
+  const prefetchIndicator = usePrefetchIndicator();
+  const prefetchQuote = usePrefetchQuote();
+  const prefetchCrypto = usePrefetchCrypto();
 
-  // Reload data when screen is focused
-  useFocusEffect(
-    useCallback(() => {
-      refetchQuotes();
-      refetchIndicators();
-      refetchNews();
-    }, [refetchQuotes, refetchIndicators, refetchNews])
-  );
+  // Prefetch related data for better navigation performance
+  useEffect(() => {
+    // Prefetch full news list when on home screen
+    queryClient.prefetchInfiniteQuery({
+      queryKey: newsKeys.lists(),
+      queryFn: async ({ pageParam = 0 }) => {
+        const { getNews } = await import('@/services/news-api');
+        const apiData = await getNews(10, pageParam);
+        return apiData
+          .filter(item => item && item.id && item.title)
+          .map(item => ({
+            id: item.id,
+            title: item.title,
+            summary: item.summary,
+            link: item.link,
+            sourceName: item.sourceName,
+            publishedAt: item.publishedAt,
+            fetchedAt: item.fetchedAt,
+            categories: item.categories,
+            imageUrl: item.imageUrl,
+          }));
+      },
+      getNextPageParam: (lastPage: any[], allPages: any[][]) => {
+        if (lastPage.length < 10) return undefined;
+        return allPages.length * 10;
+      },
+      initialPageParam: 0,
+    });
+  }, [queryClient]);
 
   // Obtener las dos primeras noticias
   const featuredNews = news.slice(0, 2);
@@ -80,23 +109,29 @@ export const HomeScreen: React.FC = () => {
 
   const handleQuotePress = useCallback(
     (quoteId: string, quoteName: string) => {
+      // Prefetch quote detail data before navigation
+      prefetchQuote(quoteId);
       navigation.navigate('QuoteDetail', { quoteId, quoteName });
     },
-    [navigation]
+    [navigation, prefetchQuote]
   );
 
   const handleCryptoPress = useCallback(
     (cryptoId: string, cryptoName: string) => {
+      // Prefetch crypto detail data before navigation
+      prefetchCrypto(cryptoId);
       navigation.navigate('CryptoDetail', { cryptoId, cryptoName });
     },
-    [navigation]
+    [navigation, prefetchCrypto]
   );
 
   const handleIndicatorPress = useCallback(
     (indicatorId: string, indicatorName: string) => {
+      // Prefetch indicator detail data before navigation
+      prefetchIndicator(indicatorId as SeriesCode);
       navigation.navigate('IndicatorDetail', { indicatorId, indicatorName });
     },
-    [navigation]
+    [navigation, prefetchIndicator]
   );
 
   return (
@@ -112,7 +147,7 @@ export const HomeScreen: React.FC = () => {
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: theme.spacing.base, paddingTop: theme.spacing.sm }]}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: theme.spacing.base, paddingTop: theme.spacing.base }]}
         showsVerticalScrollIndicator={false}>
         <DailyQuotesSection
           dollarQuotes={dollarQuotes}

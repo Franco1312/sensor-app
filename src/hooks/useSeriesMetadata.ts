@@ -1,21 +1,24 @@
 /**
- * Custom hook for fetching series metadata from the API
+ * Custom hook for fetching series metadata from the API using React Query
+ * Optimized with caching and automatic refetch management
  */
 
-import { useState, useEffect, useCallback } from 'react';
-import { getSeriesMetadata, ApiError } from '@/services/projections-consumer-api';
+import { useQuery } from '@tanstack/react-query';
+import { getSeriesMetadata } from '@/services/projections-consumer-api';
 import { SeriesMetadata } from '@/types';
 import { SeriesCode } from '@/constants/series';
+import { seriesKeys } from './useSeriesData';
 
 interface UseSeriesMetadataResult {
   data: SeriesMetadata | null;
   loading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
+  refetch: () => void;
 }
 
 /**
  * Hook to fetch series metadata (description and methodology) from the API
+ * Uses React Query for caching and automatic refetch management
  * @param code - The series code to fetch metadata for
  * @param enabled - Whether to fetch immediately (default: true)
  */
@@ -23,42 +26,22 @@ export const useSeriesMetadata = (
   code: SeriesCode,
   enabled: boolean = true
 ): UseSeriesMetadataResult => {
-  const [data, setData] = useState<SeriesMetadata | null>(null);
-  const [loading, setLoading] = useState<boolean>(true); // Start as true to show loading initially
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchData = useCallback(async () => {
-    if (!enabled) {
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: [...seriesKeys.detail(code), 'metadata'],
+    queryFn: async () => {
       const response = await getSeriesMetadata(code);
-      setData(response.data);
-    } catch (err) {
-      const errorMessage =
-        err instanceof ApiError
-          ? err.message
-          : 'Error al obtener los metadatos. Por favor, intenta nuevamente.';
-      setError(errorMessage);
-      setData(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [code, enabled]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+      return response.data;
+    },
+    enabled: enabled && !!code,
+    staleTime: 1000 * 60 * 60, // 1 hour for metadata (rarely changes)
+  });
 
   return {
-    data,
-    loading,
-    error,
-    refetch: fetchData,
+    data: data || null,
+    loading: isLoading,
+    error: error ? (error instanceof Error ? error.message : 'Error al obtener los metadatos') : null,
+    refetch: () => {
+      refetch();
+    },
   };
 };
-
