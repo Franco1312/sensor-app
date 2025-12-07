@@ -36,9 +36,17 @@ interface CategoryFilterProps {
   selected: string;
   onSelect: (category: string) => void;
   theme: Theme;
+  indicators: Indicator[];
 }
 
-const CategoryFilter: React.FC<CategoryFilterProps> = ({ selected, onSelect, theme }) => (
+const CategoryFilter: React.FC<CategoryFilterProps> = ({ selected, onSelect, theme, indicators }) => {
+  // Calculate count for each category
+  const getCategoryCount = (categoryValue: string) => {
+    if (categoryValue === '') return indicators.length;
+    return indicators.filter(indicator => indicator.category === categoryValue).length;
+  };
+
+  return (
   <View style={{ paddingTop: theme.spacing.md, paddingBottom: theme.spacing.xs }}>
     <ScrollView
       horizontal
@@ -47,17 +55,25 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({ selected, onSelect, the
         paddingHorizontal: theme.spacing.base,
         gap: theme.spacing.sm,
       }}>
-      {INDICATOR_CATEGORIES.map(category => (
+        {INDICATOR_CATEGORIES.map(category => {
+          const count = getCategoryCount(category.value);
+          const labelWithCount = category.label === 'Todo' 
+            ? category.label 
+            : `${category.label} (${count})`;
+          
+          return (
         <FilterButton
           key={category.label}
-          label={category.label}
+              label={labelWithCount}
           isSelected={selected === category.label}
           onPress={() => onSelect(category.label)}
         />
-      ))}
+          );
+        })}
     </ScrollView>
   </View>
 );
+};
 
 // ============================================================================
 // Main Component
@@ -132,11 +148,37 @@ export const IndicatorsScreen: React.FC = () => {
     );
   }, [navigation, theme.spacing.md, prefetchIndicator]);
 
+  // Get header title with category breadcrumb
+  const headerTitle = useMemo(() => {
+    if (categoryFilter === DEFAULT_CATEGORY) {
+      return t('screens.indicators.title');
+    }
+    return `${t('screens.indicators.title')} > ${categoryFilter}`;
+  }, [categoryFilter, t]);
+
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <Header title={t('screens.indicators.title')} />
+      <Header title={headerTitle} />
 
-      <CategoryFilter selected={categoryFilter} onSelect={setCategoryFilter} theme={theme} />
+      <CategoryFilter 
+        selected={categoryFilter} 
+        onSelect={setCategoryFilter} 
+        theme={theme}
+        indicators={indicators}
+      />
+
+      {/* Category info section */}
+      {!loading && categoryFilter !== DEFAULT_CATEGORY && (
+        <View style={{ 
+          paddingHorizontal: theme.spacing.base, 
+          paddingTop: theme.spacing.xs,
+          paddingBottom: theme.spacing.sm 
+        }}>
+          <Text variant="sm" color="textSecondary">
+            {filteredIndicators.length} {filteredIndicators.length === 1 ? 'indicador' : 'indicadores'} en {categoryFilter}
+          </Text>
+        </View>
+      )}
 
       {loading ? (
         <ScrollView

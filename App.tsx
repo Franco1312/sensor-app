@@ -18,9 +18,9 @@ const App: React.FC = () => {
         <PersistQueryClientProvider
           client={queryClient}
           persistOptions={{ persister: asyncStoragePersister }}>
-          <ThemeProvider>
-            <RootNavigator />
-          </ThemeProvider>
+        <ThemeProvider>
+          <RootNavigator />
+        </ThemeProvider>
         </PersistQueryClientProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>

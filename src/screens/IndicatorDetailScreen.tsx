@@ -75,9 +75,12 @@ export const IndicatorDetailScreen: React.FC = () => {
     return historyData[historyData.length - 1];
   }, [historyData]);
 
+  // Use obs_time from the latest indicator data (from /series/latest endpoint)
+  // This is more accurate than using history data which may be filtered by time range
   const lastDataPointDate = useMemo(() => {
-    return lastDataPoint ? formatDate(lastDataPoint.obs_time) : null;
-  }, [lastDataPoint]);
+    // Use indicator.lastUpdate which now contains obs_time formatted
+    return indicatorData?.lastUpdate || null;
+  }, [indicatorData]);
 
   const indicator: IndicatorDetail | undefined = useMemo(() => {
     if (!indicatorData || !metadata) {

@@ -53,9 +53,9 @@ export const useCrypto = (
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: cryptoKeys.prices(),
     queryFn: async () => {
-      const apiData: CryptoPricesResponse = await getCryptoPrices();
-      const transformed = transformCryptoPricesResponse(apiData);
-      
+        const apiData: CryptoPricesResponse = await getCryptoPrices();
+        const transformed = transformCryptoPricesResponse(apiData);
+
       // Add price directions by comparing with previous data
       const withDirections = addPriceDirections(transformed, previousCryptosRef.current);
       previousCryptosRef.current = transformed;

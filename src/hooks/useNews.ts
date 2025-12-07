@@ -28,20 +28,49 @@ export const newsKeys = {
 };
 
 /**
- * Transform news item from API to app format
+ * Simple hash function to generate a short hash from a string
+ * Used to create unique IDs for news items
  */
-const transformNewsItem = (item: NewsItem): News => {
-  return {
-    id: item.id,
-    title: item.title,
-    summary: item.summary,
-    link: item.link,
+const simpleHash = (str: string): string => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash).toString(36);
+};
+
+/**
+ * Transform news item from API to app format
+ * Creates a unique ID by combining id with a hash of multiple unique fields to avoid duplicates
+ */
+const transformNewsItem = (item: NewsItem, pageIndex: number, itemIndex: number): News => {
+  // Create a unique ID by combining id with a hash of multiple fields
+  // This ensures uniqueness even if the API returns duplicate ids
+  const uniqueFields = [
+    item.link || '',
+    item.publishedAt || '',
+    item.title || '',
+    item.sourceId || '',
+  ].join('|');
+
+  const fieldsHash = simpleHash(uniqueFields);
+  // Include pageIndex and itemIndex as additional uniqueness guarantee
+  const uniqueId = `${item.id}-${fieldsHash}-${pageIndex}-${itemIndex}`;
+  
+    return {
+    id: uniqueId,
+      sourceId: item.sourceId,
+      title: item.title,
+      summary: item.summary,
+      link: item.link,
     sourceName: item.sourceName,
-    publishedAt: item.publishedAt,
-    fetchedAt: item.fetchedAt,
-    categories: item.categories,
-    imageUrl: item.imageUrl,
-  };
+      publishedAt: item.publishedAt,
+      fetchedAt: item.fetchedAt,
+      categories: item.categories,
+      imageUrl: item.imageUrl,
+    };
 };
 
 /**
@@ -61,9 +90,11 @@ export const useNews = (enabled: boolean = true): UseNewsResult => {
     queryKey: newsKeys.lists(),
     queryFn: async ({ pageParam = 0 }) => {
       const apiData: NewsItem[] = await getNews(ITEMS_PER_PAGE, pageParam);
+      // Calculate page index from offset
+      const pageIndex = Math.floor(pageParam / ITEMS_PER_PAGE);
       return apiData
         .filter(item => item && item.id && item.title)
-        .map(transformNewsItem);
+        .map((item, itemIndex) => transformNewsItem(item, pageIndex, itemIndex));
     },
     getNextPageParam: (lastPage, allPages) => {
       // If last page has fewer items than ITEMS_PER_PAGE, no more pages
@@ -79,7 +110,7 @@ export const useNews = (enabled: boolean = true): UseNewsResult => {
   });
 
   // Flatten all pages into a single array
-  const news = data?.pages.flat() || [];
+  const news = data?.pages.reduce((acc, page) => [...acc, ...page], []) || [];
 
   return {
     news,

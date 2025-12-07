@@ -29,7 +29,7 @@ export const useSeriesHistory = (
   timeRange: TimeRange,
   enabled: boolean = true
 ): UseSeriesHistoryResult => {
-  const { startDate, endDate } = calculateDateRange(timeRange);
+      const { startDate, endDate } = calculateDateRange(timeRange);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [...seriesKeys.detail(code), 'history', timeRange, startDate, endDate],

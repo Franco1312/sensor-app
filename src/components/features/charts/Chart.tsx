@@ -72,14 +72,18 @@ const calculateValueRange = (dataPoints: ChartDataPoint[]): { min: number; max: 
 const normalizeDataPoints = (dataPoints: ChartDataPoint[]): ChartPoint[] => {
   const { min: minValue, range: valueRange } = calculateValueRange(dataPoints);
   const pointCount = dataPoints.length;
-  const pointSpacing = CHART_WIDTH / (pointCount - 1);
+  
+  // Handle edge case: single point or division by zero
+  const pointSpacing = pointCount > 1 ? CHART_WIDTH / (pointCount - 1) : CHART_WIDTH / 2;
   const availableHeight = CHART_HEIGHT - (CHART_PADDING * 2);
 
   return dataPoints.map((point, index) => {
-    const x = index * pointSpacing;
+    // For single point, center it horizontally
+    const x = pointCount === 1 ? CHART_WIDTH / 2 : index * pointSpacing;
+    
     // Normalize value to 0-1 range, then scale to chart height
     // Invert Y because SVG coordinates start from top
-    const normalizedValue = (point.value - minValue) / valueRange;
+    const normalizedValue = valueRange > 0 ? (point.value - minValue) / valueRange : 0.5;
     const y = CHART_HEIGHT - (normalizedValue * availableHeight) - CHART_PADDING;
     
     return { x, y, date: point.date };
@@ -116,6 +120,12 @@ const generateSmoothPath = (points: ChartPoint[]): string => {
  */
 const generateChartData = (dataPoints: ChartDataPoint[] | undefined): ChartPathResult | string => {
   if (!dataPoints || dataPoints.length === 0) {
+    return FALLBACK_CHART_PATH;
+  }
+
+  // If we have less than 2 points, we can't draw a meaningful line
+  // Return fallback path to indicate insufficient data
+  if (dataPoints.length < 2) {
     return FALLBACK_CHART_PATH;
   }
 
@@ -190,15 +200,23 @@ export const Chart: React.FC<ChartProps> = ({ height = 180, data, seriesCode, on
 
   // Handle touch to select point on chart
   const handleTouch = (event: any) => {
-    if (!data || data.length === 0 || !points || points.length === 0) return;
+    // Only allow selection if we have real data (not fallback path)
+    if (!hasData || !data || data.length === 0 || !points || points.length === 0) return;
 
     const { locationX } = event.nativeEvent;
     const touchX = convertTouchToChartCoordinates(locationX);
     const closestIndex = findClosestPointIndex(touchX, points);
 
-    setSelectedPointIndex(closestIndex);
-    if (onPointSelect && data[closestIndex]) {
-      onPointSelect(data[closestIndex]);
+    // Validate that the selected point has valid data
+    if (closestIndex >= 0 && closestIndex < data.length && data[closestIndex]) {
+      const selectedPoint = data[closestIndex];
+      // Only allow selection if rawValue is valid
+      if (selectedPoint.rawValue && typeof selectedPoint.rawValue === 'string' && selectedPoint.rawValue.trim() !== '') {
+        setSelectedPointIndex(closestIndex);
+        if (onPointSelect) {
+          onPointSelect(selectedPoint);
+        }
+      }
     }
   };
 
@@ -295,27 +313,41 @@ export const Chart: React.FC<ChartProps> = ({ height = 180, data, seriesCode, on
                   {formatDateTime(selectedDataPoint.date)}
                 </SvgText>
                 
-                {/* Value text */}
-                <SvgText
-                  x={labelPosition.textX}
-                  y={32}
-                  fontSize="11"
-                  fontWeight="600"
-                  fill={theme.colors.textPrimary}
-                  textAnchor={labelPosition.textAnchor}
-                  opacity={1}>
-                  {seriesCode 
-                    ? formatValueForSeries(selectedDataPoint.rawValue, seriesCode)
-                    : (() => {
-                        const numValue = parseFloat(selectedDataPoint.rawValue);
-                        if (isNaN(numValue) || !isFinite(numValue)) return '$0.00';
-                        return `$${numValue.toLocaleString('es-AR', {
-                          minimumFractionDigits: numValue % 1 !== 0 ? 2 : 0,
-                          maximumFractionDigits: 2,
-                        })}`;
-                      })()
-                  }
-                </SvgText>
+                {/* Value text - only show if we have valid data */}
+                {selectedDataPoint.rawValue && selectedDataPoint.rawValue.trim() !== '' && (
+                  <SvgText
+                    x={labelPosition.textX}
+                    y={32}
+                    fontSize="11"
+                    fontWeight="600"
+                    fill={theme.colors.textPrimary}
+                    textAnchor={labelPosition.textAnchor}
+                    opacity={1}>
+                    {seriesCode 
+                      ? (() => {
+                          const formatted = formatValueForSeries(selectedDataPoint.rawValue, seriesCode);
+                          // Only show if we got a valid formatted value (not empty)
+                          return formatted || '—';
+                        })()
+                      : (() => {
+                          if (!selectedDataPoint.rawValue || typeof selectedDataPoint.rawValue !== 'string') {
+                            return '—';
+                          }
+                          const numValue = parseFloat(selectedDataPoint.rawValue);
+                          if (isNaN(numValue) || !isFinite(numValue)) return '—';
+                          try {
+                            return `$${numValue.toLocaleString('en-US', {
+                              minimumFractionDigits: numValue % 1 !== 0 ? 2 : 0,
+                              maximumFractionDigits: 2,
+                            })}`;
+                          } catch (error) {
+                            // Fallback if locale is not available
+                            return `$${numValue.toFixed(2)}`;
+                          }
+                        })()
+                    }
+                  </SvgText>
+                )}
               </>
             )}
           </>

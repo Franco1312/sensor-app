@@ -27,11 +27,11 @@ export const useQuoteHistory = (
   timeRange: TimeRange,
   enabled: boolean = true
 ): UseQuoteHistoryResult => {
-  const { startDate, endDate } = calculateDateRange(timeRange);
-  // Convert ISO format to YYYY-MM-DD format for the API
-  const startDateFormatted = startDate.split('T')[0];
-  const endDateFormatted = endDate.split('T')[0];
-
+      const { startDate, endDate } = calculateDateRange(timeRange);
+      // Convert ISO format to YYYY-MM-DD format for the API
+      const startDateFormatted = startDate.split('T')[0];
+      const endDateFormatted = endDate.split('T')[0];
+      
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [...quoteKeys.all, 'history', casa, timeRange, startDateFormatted, endDateFormatted],
     queryFn: async () => {

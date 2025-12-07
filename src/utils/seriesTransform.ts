@@ -106,19 +106,19 @@ const formatIndex = (value: number): string => {
  * Creates a base indicator object with common fields
  * @param code - Series code
  * @param value - Formatted value string
- * @param collectionDate - Collection date from API
+ * @param obsTime - Observation time from API (date of the data point)
  * @returns Partial indicator object (without change/changePercent/trend)
  */
 const createIndicatorBase = (
   code: SeriesCode,
   value: string,
-  collectionDate: string
+  obsTime: string
 ): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
   return {
     id: code,
     name: SERIES_METADATA[code].name,
     value,
-    lastUpdate: formatDate(collectionDate),
+    lastUpdate: formatDate(obsTime), // Use obs_time instead of collection_date
     category: SERIES_METADATA[code].category,
   };
 };
@@ -131,7 +131,7 @@ const createIndicatorBase = (
 const transformBaseMonetaria = (seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
   const numValue = parseValue(seriesData.value);
   const formattedValue = formatBillions(numValue);
-  return createIndicatorBase(SERIES_CODES.BASE_MONETARIA, formattedValue, seriesData.collection_date);
+  return createIndicatorBase(SERIES_CODES.BASE_MONETARIA, formattedValue, seriesData.obs_time);
 };
 
 /**
@@ -145,7 +145,7 @@ const transformReservasInternacionales = (seriesData: SeriesData): Omit<Indicato
   return createIndicatorBase(
     SERIES_CODES.RESERVAS_INTERNACIONALES,
     formattedValue,
-    seriesData.collection_date
+    seriesData.obs_time
   );
 };
 
@@ -157,7 +157,7 @@ const transformReservasInternacionales = (seriesData: SeriesData): Omit<Indicato
 const transformCirculantePublico = (seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
   const numValue = parseValue(seriesData.value);
   const formattedValue = formatBillions(numValue);
-  return createIndicatorBase(SERIES_CODES.CIRCULANTE_PUBLICO, formattedValue, seriesData.collection_date);
+  return createIndicatorBase(SERIES_CODES.CIRCULANTE_PUBLICO, formattedValue, seriesData.obs_time);
 };
 
 /**
@@ -168,7 +168,7 @@ const transformCirculantePublico = (seriesData: SeriesData): Omit<Indicator, 'ch
 const transformIpcVariacionMensual = (seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
   const numValue = parseValue(seriesData.value);
   const formattedValue = formatPercentage(numValue);
-  return createIndicatorBase(SERIES_CODES.IPC_VARIACION_MENSUAL, formattedValue, seriesData.collection_date);
+  return createIndicatorBase(SERIES_CODES.IPC_VARIACION_MENSUAL, formattedValue, seriesData.obs_time);
 };
 
 /**
@@ -179,7 +179,7 @@ const transformIpcVariacionMensual = (seriesData: SeriesData): Omit<Indicator, '
 const transformIpcVariacionInteranual = (seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
   const numValue = parseValue(seriesData.value);
   const formattedValue = formatPercentage(numValue);
-  return createIndicatorBase(SERIES_CODES.IPC_VARIACION_INTERANUAL, formattedValue, seriesData.collection_date);
+  return createIndicatorBase(SERIES_CODES.IPC_VARIACION_INTERANUAL, formattedValue, seriesData.obs_time);
 };
 
 /**
@@ -190,7 +190,7 @@ const transformIpcVariacionInteranual = (seriesData: SeriesData): Omit<Indicator
 const transformEmaeOriginal = (seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
   const numValue = parseValue(seriesData.value);
   const formattedValue = formatIndex(numValue);
-  return createIndicatorBase(SERIES_CODES.EMAE_ORIGINAL, formattedValue, seriesData.collection_date);
+  return createIndicatorBase(SERIES_CODES.EMAE_ORIGINAL, formattedValue, seriesData.obs_time);
 };
 
 /**
@@ -201,7 +201,7 @@ const transformEmaeOriginal = (seriesData: SeriesData): Omit<Indicator, 'change'
 const transformEmaeDesestacionalizada = (seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
   const numValue = parseValue(seriesData.value);
   const formattedValue = formatIndex(numValue);
-  return createIndicatorBase(SERIES_CODES.EMAE_DESESTACIONALIZADA, formattedValue, seriesData.collection_date);
+  return createIndicatorBase(SERIES_CODES.EMAE_DESESTACIONALIZADA, formattedValue, seriesData.obs_time);
 };
 
 /**
@@ -212,7 +212,7 @@ const transformEmaeDesestacionalizada = (seriesData: SeriesData): Omit<Indicator
 const transformEmaeTendenciaCiclo = (seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
   const numValue = parseValue(seriesData.value);
   const formattedValue = formatIndex(numValue);
-  return createIndicatorBase(SERIES_CODES.EMAE_TENDENCIA_CICLO, formattedValue, seriesData.collection_date);
+  return createIndicatorBase(SERIES_CODES.EMAE_TENDENCIA_CICLO, formattedValue, seriesData.obs_time);
 };
 
 /**
@@ -223,7 +223,7 @@ const transformEmaeTendenciaCiclo = (seriesData: SeriesData): Omit<Indicator, 'c
 const transformEmaeVariacionInteranual = (seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
   const numValue = parseValue(seriesData.value);
   const formattedValue = formatPercentage(numValue);
-  return createIndicatorBase(SERIES_CODES.EMAE_VARIACION_INTERANUAL, formattedValue, seriesData.collection_date);
+  return createIndicatorBase(SERIES_CODES.EMAE_VARIACION_INTERANUAL, formattedValue, seriesData.obs_time);
 };
 
 // ============================================================================
@@ -244,10 +244,12 @@ const createChartDataPoint = (
   const transformedValue = transformValue(numValue);
   // Validate that the transformed value is a valid number
   const validValue = isNaN(transformedValue) || !isFinite(transformedValue) ? 0 : transformedValue;
+  // Ensure rawValue is always a valid string
+  const rawValue = item.value && typeof item.value === 'string' ? item.value : '0';
   return {
     value: validValue,
-    date: item.obs_time,
-    rawValue: item.value,
+    date: item.obs_time || '',
+    rawValue,
   };
 };
 
@@ -379,31 +381,49 @@ const SERIES_HISTORY_TRANSFORMERS: Record<SeriesCode, SeriesHistoryTransformer> 
  * 
  * @param rawValue - Original string value from API
  * @param code - Series code to determine formatting rules
- * @returns Formatted value string matching the series display format
+ * @returns Formatted value string matching the series display format, or empty string if invalid
+ * @throws Error if value cannot be formatted (should not happen in normal flow)
  */
-export const formatValueForSeries = (rawValue: string, code: SeriesCode): string => {
+export const formatValueForSeries = (rawValue: string | undefined | null, code: SeriesCode): string => {
+  // Validate input - never show fake data
+  if (!rawValue || typeof rawValue !== 'string' || rawValue.trim() === '') {
+    return ''; // Return empty string instead of fake values
+  }
+  
   const numValue = parseValue(rawValue);
   
-  switch (code) {
-    case SERIES_CODES.BASE_MONETARIA:
-    case SERIES_CODES.CIRCULANTE_PUBLICO:
-      return formatBillions(numValue);
-    
-    case SERIES_CODES.RESERVAS_INTERNACIONALES:
-      return formatMillionsUSD(numValue);
-    
-    case SERIES_CODES.IPC_VARIACION_MENSUAL:
-    case SERIES_CODES.IPC_VARIACION_INTERANUAL:
-    case SERIES_CODES.EMAE_VARIACION_INTERANUAL:
-      return formatPercentage(numValue);
-    
-    case SERIES_CODES.EMAE_ORIGINAL:
-    case SERIES_CODES.EMAE_DESESTACIONALIZADA:
-    case SERIES_CODES.EMAE_TENDENCIA_CICLO:
-      return formatIndex(numValue);
-    
-    default:
-      return numValue.toFixed(1);
+  // If parsed value is invalid, return empty string
+  // Note: 0 is a valid value, so we only check for NaN and Infinity
+  if (isNaN(numValue) || !isFinite(numValue)) {
+    return ''; // Invalid value, don't show fake data
+  }
+  
+  try {
+    switch (code) {
+      case SERIES_CODES.BASE_MONETARIA:
+      case SERIES_CODES.CIRCULANTE_PUBLICO:
+        return formatBillions(numValue);
+      
+      case SERIES_CODES.RESERVAS_INTERNACIONALES:
+        return formatMillionsUSD(numValue);
+      
+      case SERIES_CODES.IPC_VARIACION_MENSUAL:
+      case SERIES_CODES.IPC_VARIACION_INTERANUAL:
+      case SERIES_CODES.EMAE_VARIACION_INTERANUAL:
+        return formatPercentage(numValue);
+      
+      case SERIES_CODES.EMAE_ORIGINAL:
+      case SERIES_CODES.EMAE_DESESTACIONALIZADA:
+      case SERIES_CODES.EMAE_TENDENCIA_CICLO:
+        return formatIndex(numValue);
+      
+      default:
+        return numValue.toFixed(1);
+    }
+  } catch (error) {
+    // If formatting fails, return empty string instead of showing error or fake data
+    console.warn('Error formatting value for series:', error);
+    return '';
   }
 };
 
