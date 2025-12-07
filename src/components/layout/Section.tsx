@@ -22,14 +22,20 @@ export const Section: React.FC<SectionProps> = ({ title, onVerMasPress, style })
       style={[
         styles.container,
         {
-          paddingBottom: theme.spacing.xs,
-          paddingTop: 0,
+          paddingBottom: theme.spacing.sm,
+          paddingTop: theme.spacing.xs,
+          borderBottomWidth: 1,
+          borderBottomColor: theme.colors.divider,
+          marginBottom: theme.spacing.sm,
         },
         style,
       ]}>
-      <Text variant="md" weight="semibold" color="textPrimary" style={{ flex: 1 }}>
-        {title}
-      </Text>
+      <View style={styles.titleContainer}>
+        <View style={[styles.accent, { backgroundColor: theme.colors.primary }]} />
+        <Text variant="md" weight="semibold" color="textPrimary" style={{ flex: 1 }}>
+          {title}
+        </Text>
+      </View>
       {onVerMasPress && (
         <TouchableOpacity
           onPress={onVerMasPress}
@@ -55,6 +61,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    gap: 8,
+  },
+  accent: {
+    width: 3,
+    height: 16,
+    borderRadius: 2,
   },
   verMasButton: {
     flexDirection: 'row',

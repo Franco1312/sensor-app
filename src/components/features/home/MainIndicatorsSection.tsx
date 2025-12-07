@@ -69,8 +69,7 @@ export const MainIndicatorsSection: React.FC<MainIndicatorsSectionProps> = ({
 
 const styles = StyleSheet.create({
   section: {
-    marginBottom: 12,
-    paddingBottom: 0,
+    marginBottom: 20,
   },
   gridContainer: {
     flexDirection: 'row',

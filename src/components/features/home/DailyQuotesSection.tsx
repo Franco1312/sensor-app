@@ -116,8 +116,7 @@ export const DailyQuotesSection: React.FC<DailyQuotesSectionProps> = ({
 
 const styles = StyleSheet.create({
   section: {
-    marginBottom: 12,
-    paddingBottom: 0,
+    marginBottom: 20,
   },
   subsection: {
     marginTop: 12,

@@ -72,7 +72,7 @@ export const FeaturedNewsSection: React.FC<FeaturedNewsSectionProps> = ({
 
 const styles = StyleSheet.create({
   section: {
-    marginBottom: 12,
+    marginBottom: 16,
     paddingBottom: 0,
   },
   newsContainer: {

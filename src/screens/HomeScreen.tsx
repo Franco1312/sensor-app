@@ -112,7 +112,7 @@ export const HomeScreen: React.FC = () => {
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: theme.spacing.base, paddingTop: theme.spacing.xs }]}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: theme.spacing.base, paddingTop: theme.spacing.sm }]}
         showsVerticalScrollIndicator={false}>
         <DailyQuotesSection
           dollarQuotes={dollarQuotes}
