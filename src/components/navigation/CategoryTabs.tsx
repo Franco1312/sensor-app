@@ -31,7 +31,7 @@ export const CategoryTabs = <T extends string>({
       style={[
         styles.container,
         {
-          borderBottomColor: theme.colors.border,
+          borderBottomColor: theme.colors.divider,
           backgroundColor: theme.colors.background,
         },
       ]}>
@@ -41,16 +41,17 @@ export const CategoryTabs = <T extends string>({
           <TouchableOpacity
             key={tab.value}
             onPress={() => onTabPress(tab.value)}
+            activeOpacity={0.7}
             style={[
               styles.tab,
               {
                 borderBottomColor: isActive ? theme.colors.primary : 'transparent',
-                borderBottomWidth: isActive ? 3 : 0,
+                borderBottomWidth: isActive ? 2 : 0,
               },
             ]}>
             <Text
               variant="sm"
-              weight="bold"
+              weight={isActive ? 'semibold' : 'medium'}
               color={isActive ? 'textPrimary' : 'textSecondary'}>
               {tab.label}
             </Text>
@@ -71,8 +72,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 16,
-    paddingBottom: 13,
+    paddingTop: 12,
+    paddingBottom: 12,
+    minHeight: 48,
   },
 });
 

@@ -117,7 +117,7 @@ export const NewsScreen: React.FC = () => {
           renderItem={renderNewsItem}
           keyExtractor={item => item.id}
           contentContainerStyle={{
-            paddingTop: theme.spacing.md,
+            paddingTop: theme.spacing.sm,
             paddingBottom: theme.spacing.xl,
           }}
           onEndReached={handleEndReached}

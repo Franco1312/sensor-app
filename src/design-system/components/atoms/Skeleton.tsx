@@ -119,10 +119,10 @@ export const CompactIndicatorCardSkeleton: React.FC = () => {
   const { theme } = useTheme();
 
   return (
-    <View style={[styles.compactCardContainer, { gap: 4 }]}>
-      <Skeleton width="70%" height={12} />
-      <Skeleton width="85%" height={24} style={{ marginTop: 4 }} />
-      <Skeleton width="40%" height={12} style={{ marginTop: 6 }} />
+    <View style={[styles.compactCardContainer, { gap: 2 }]}>
+      <Skeleton width="70%" height={10} />
+      <Skeleton width="85%" height={20} style={{ marginTop: 2 }} />
+      <Skeleton width="40%" height={10} style={{ marginTop: 4 }} />
     </View>
   );
 };
@@ -134,10 +134,10 @@ export const CompactQuoteCardSkeleton: React.FC = () => {
   const { theme } = useTheme();
 
   return (
-    <View style={[styles.compactCardContainer, { gap: 4 }]}>
-      <Skeleton width="70%" height={12} />
-      <Skeleton width="85%" height={24} style={{ marginTop: 4 }} />
-      <Skeleton width="40%" height={12} style={{ marginTop: 6 }} />
+    <View style={[styles.compactCardContainer, { gap: 2 }]}>
+      <Skeleton width="70%" height={10} />
+      <Skeleton width="85%" height={20} style={{ marginTop: 2 }} />
+      <Skeleton width="40%" height={10} style={{ marginTop: 4 }} />
     </View>
   );
 };

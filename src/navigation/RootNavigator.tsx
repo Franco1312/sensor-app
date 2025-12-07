@@ -72,15 +72,21 @@ const MainTabs = () => {
         tabBarInactiveTintColor: theme.colors.textSecondary,
         tabBarStyle: {
           backgroundColor: theme.colors.surface,
-          borderTopColor: theme.colors.border,
+          borderTopColor: theme.colors.divider,
           borderTopWidth: 1,
-          paddingBottom: Math.max(insets.bottom, 4),
-          paddingTop: 4,
-          height: 60 + Math.max(insets.bottom, 0),
+          paddingBottom: Math.max(insets.bottom, 8),
+          paddingTop: 8,
+          height: 64 + Math.max(insets.bottom, 0),
+          elevation: 0, // Remove shadow on Android
+          shadowOpacity: 0, // Remove shadow on iOS
         },
         tabBarLabelStyle: {
-          fontSize: theme.typography.fontSize.xs,
+          fontSize: theme.typography.fontSize['2xs'],
           fontWeight: theme.typography.fontWeight.medium,
+          marginTop: 4,
+        },
+        tabBarIconStyle: {
+          marginTop: 4,
         },
       }}>
       <Tab.Screen

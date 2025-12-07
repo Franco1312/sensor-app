@@ -54,13 +54,18 @@ export const DailyQuotesSection: React.FC<DailyQuotesSectionProps> = ({
 
   return (
     <View style={styles.section}>
-      <Section title={t('screens.home.sections.dailyQuotes')} />
+      <Section 
+        title={t('screens.home.sections.dailyQuotes')} 
+        onVerMasPress={onVerMasDolares}
+      />
 
       {/* Subsección Dólar */}
       <View style={styles.subsection}>
-        <Text variant="sm" weight="semibold" color="textSecondary" style={styles.subsectionTitle}>
-          {t('screens.home.subsections.dollar')}
-        </Text>
+        <View style={styles.subsectionHeader}>
+          <Text variant="sm" weight="semibold" color="textSecondary">
+            {t('screens.home.subsections.dollar')}
+          </Text>
+        </View>
         <View style={styles.gridContainer}>
           {quotesLoading ? (
             Array.from({ length: 2 }).map((_, index) => (
@@ -78,16 +83,15 @@ export const DailyQuotesSection: React.FC<DailyQuotesSectionProps> = ({
             ))
           )}
         </View>
-        <View style={styles.verMasContainer}>
-          <VerMasButton onPress={onVerMasDolares} />
-        </View>
       </View>
 
       {/* Subsección Crypto */}
       <View style={styles.subsection}>
-        <Text variant="sm" weight="semibold" color="textSecondary" style={styles.subsectionTitle}>
-          {t('screens.home.subsections.crypto')}
-        </Text>
+        <View style={styles.subsectionHeader}>
+          <Text variant="sm" weight="semibold" color="textSecondary">
+            {t('screens.home.subsections.crypto')}
+          </Text>
+        </View>
         <View style={styles.gridContainer}>
           {cryptosLoading ? (
             Array.from({ length: 2 }).map((_, index) => (
@@ -105,9 +109,6 @@ export const DailyQuotesSection: React.FC<DailyQuotesSectionProps> = ({
             ))
           )}
         </View>
-        <View style={styles.verMasContainer}>
-          <VerMasButton onPress={onVerMasCrypto} />
-        </View>
       </View>
     </View>
   );
@@ -115,28 +116,25 @@ export const DailyQuotesSection: React.FC<DailyQuotesSectionProps> = ({
 
 const styles = StyleSheet.create({
   section: {
-    marginBottom: 16,
-    paddingBottom: 16,
+    marginBottom: 12,
+    paddingBottom: 0,
   },
   subsection: {
-    marginTop: 16,
+    marginTop: 12,
   },
-  subsectionTitle: {
-    marginBottom: 12,
+  subsectionHeader: {
+    marginBottom: 8,
   },
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 16,
-    marginTop: 12,
+    gap: 8,
+    marginTop: 8,
   },
   gridItem: {
     flex: 1,
     minWidth: '45%',
     maxWidth: '48%',
-  },
-  verMasContainer: {
-    marginTop: 0,
   },
 });
 

@@ -45,7 +45,7 @@ const QuoteItemComponent: React.FC<QuoteItemProps> = ({ item, onPress }) => {
         <View style={{ alignItems: 'flex-end', gap: 4 }}>
           <Text
             variant="base"
-            weight="medium"
+            weight="semibold"
             style={{
               color: priceColor,
             }}>
@@ -53,6 +53,7 @@ const QuoteItemComponent: React.FC<QuoteItemProps> = ({ item, onPress }) => {
           </Text>
           <Text
             variant="xs"
+            weight="medium"
             style={{
               color: isPositive ? theme.colors.success : theme.colors.error,
             }}>
@@ -61,7 +62,7 @@ const QuoteItemComponent: React.FC<QuoteItemProps> = ({ item, onPress }) => {
         </View>
       }
       style={{
-        marginBottom: theme.spacing.md,
+        marginBottom: theme.spacing.sm,
         backgroundColor: theme.colors.surface,
       }}
       onPress={handlePress}

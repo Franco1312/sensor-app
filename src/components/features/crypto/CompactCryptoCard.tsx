@@ -30,22 +30,24 @@ const CompactCryptoCardComponent: React.FC<CompactCryptoCardProps> = ({ crypto, 
   const priceColor = usePriceColor(crypto.priceDirection);
 
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
-      <Card variant="elevated" padding="md">
-        <View style={[styles.container, { minHeight: theme.spacing['4xl'] + theme.spacing['2xl'] }]}>
-          <Text variant="xs" color="textSecondary">
-            {crypto.name}
-          </Text>
-          <Text variant="xl" weight="bold" style={[styles.value, { color: priceColor }]}>
-            {crypto.lastPrice}
-          </Text>
-          <View style={styles.changeContainer}>
-            <Text variant="xs" style={{ color: trendColor }}>
-              {changeLabel}
+    <TouchableOpacity onPress={onPress} activeOpacity={0.6}>
+      <View style={[styles.card, { borderLeftColor: priceColor || trendColor }]}>
+        <Card variant="elevated" padding="sm" style={{ flex: 1 }}>
+          <View style={[styles.container, { minHeight: 80 }]}>
+            <Text variant="2xs" color="textSecondary" weight="medium" style={styles.label}>
+              {crypto.name}
             </Text>
+            <Text variant="lg" weight="bold" style={[styles.value, { color: priceColor }]}>
+              {crypto.lastPrice}
+            </Text>
+            <View style={[styles.changeContainer, { backgroundColor: `${trendColor}15` }]}>
+              <Text variant="2xs" weight="semibold" style={{ color: trendColor }}>
+                {changeLabel}
+              </Text>
+            </View>
           </View>
-        </View>
-      </Card>
+        </Card>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -57,17 +59,30 @@ export const CompactCryptoCard = React.memo(CompactCryptoCardComponent, (prevPro
 });
 
 const styles = StyleSheet.create({
+  card: {
+    borderLeftWidth: 3,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
   container: {
-    gap: 4,
+    gap: 2,
     justifyContent: 'space-between',
   },
+  label: {
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
   value: {
-    marginTop: 4,
+    marginTop: 2,
   },
   changeContainer: {
-    marginTop: 6,
+    marginTop: 4,
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'flex-start',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
   },
 });
 

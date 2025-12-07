@@ -30,11 +30,12 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
     ? 'transparent'
     : theme.colors.surfaceSecondary;
 
-  const borderRadius = variant === 'transparent' ? theme.radii.base : theme.radii.full;
+  const borderRadius = variant === 'transparent' ? theme.radii.md : theme.radii.full;
 
   return (
     <TouchableOpacity
       onPress={onPress}
+      activeOpacity={0.7}
       style={[
         styles.button,
         {
@@ -43,14 +44,16 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
           paddingVertical: theme.spacing.sm,
           borderRadius,
           backgroundColor,
-          minHeight: 32,
+          minHeight: 36,
           alignSelf: fullWidth ? undefined : 'flex-start',
+          borderWidth: variant === 'transparent' && !isSelected ? 1 : 0,
+          borderColor: variant === 'transparent' && !isSelected ? theme.colors.border : 'transparent',
         },
       ]}>
       <Text
         variant="sm"
-        weight={isSelected ? 'medium' : 'normal'}
-        color={isSelected ? 'textPrimary' : 'textSecondary'}>
+        weight={isSelected ? 'semibold' : 'medium'}
+        color={isSelected ? 'textInverse' : 'textSecondary'}>
         {label}
       </Text>
     </TouchableOpacity>

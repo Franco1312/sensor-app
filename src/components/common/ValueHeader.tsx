@@ -30,26 +30,26 @@ export const ValueHeader: React.FC<ValueHeaderProps> = ({
   const { t } = useTranslation();
 
   return (
-    <View style={{ gap: theme.spacing.sm }}>
+    <View style={{ gap: theme.spacing.xs }}>
       {title && (
-        <Text variant="base" weight="medium" color="textSecondary">
+        <Text variant="xs" weight="medium" color="textSecondary">
           {title}
         </Text>
       )}
-      <Text variant="5xl" weight="bold" style={{ lineHeight: 48, color: valueColor || theme.colors.textPrimary }}>
+      <Text variant="4xl" weight="bold" style={{ lineHeight: 40, color: valueColor || theme.colors.textPrimary }}>
         {value}
       </Text>
       <Row gap={theme.spacing.sm}>
         {subtitle ? (
-          <Text variant="base" color="textSecondary">
+          <Text variant="xs" color="textSecondary">
             {subtitle}
           </Text>
         ) : (
-          <Text variant="base" color="textSecondary">
+          <Text variant="xs" color="textSecondary">
             {t('screens.detail.lastValue')}
           </Text>
         )}
-        <Text variant="base" weight="medium" style={{ color: changeColor || theme.colors.success }}>
+        <Text variant="xs" weight="semibold" style={{ color: changeColor || theme.colors.success }}>
           {changeLabel}
         </Text>
       </Row>

@@ -36,7 +36,10 @@ export const FeaturedNewsSection: React.FC<FeaturedNewsSectionProps> = ({
 
   return (
     <View style={styles.section}>
-      <Section title={t('screens.home.sections.featuredNews')} />
+      <Section 
+        title={t('screens.home.sections.featuredNews')} 
+        onVerMasPress={featuredNews.length > 0 ? onVerMas : undefined}
+      />
       <View style={styles.newsContainer}>
         {loading ? (
           Array.from({ length: 2 }).map((_, index) => (
@@ -63,29 +66,21 @@ export const FeaturedNewsSection: React.FC<FeaturedNewsSectionProps> = ({
           ))
         ) : null}
       </View>
-      {featuredNews.length > 0 && (
-        <View style={styles.verMasContainer}>
-          <VerMasButton onPress={onVerMas} />
-        </View>
-      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   section: {
-    marginBottom: 16,
-    paddingBottom: 16,
+    marginBottom: 12,
+    paddingBottom: 0,
   },
   newsContainer: {
-    gap: 16,
-    marginTop: 12,
+    gap: 12,
+    marginTop: 8,
   },
   newsItem: {
     width: '100%',
-  },
-  verMasContainer: {
-    marginTop: 0,
   },
 });
 

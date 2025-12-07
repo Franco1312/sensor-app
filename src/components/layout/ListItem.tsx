@@ -35,11 +35,11 @@ export const ListItem: React.FC<ListItemProps> = ({
           alignItems: 'center',
           gap: theme.spacing.base,
           paddingHorizontal: theme.spacing.base,
-          paddingVertical: theme.spacing.base,
+          paddingVertical: theme.spacing.md,
           backgroundColor: theme.colors.surface,
-          borderRadius: theme.radii.lg, // rounded-lg = 0.5rem
-          borderWidth: 1,
-          borderColor: theme.colors.border,
+          borderRadius: theme.radii.md,
+          borderWidth: 0, // No border for cleaner look
+          minHeight: 64,
         },
         style,
       ]}>
@@ -47,7 +47,7 @@ export const ListItem: React.FC<ListItemProps> = ({
         <View style={{ flexShrink: 0 }}>{leftIcon}</View>
       )}
 
-      <View style={{ flex: 1, flexGrow: 1, gap: 2 }}>
+      <View style={{ flex: 1, flexGrow: 1, gap: 4 }}>
         <Text variant="base" weight="medium" numberOfLines={1}>
           {title}
         </Text>
@@ -64,7 +64,7 @@ export const ListItem: React.FC<ListItemProps> = ({
 
   if (onPress) {
     return (
-      <TouchableOpacity onPress={onPress} activeOpacity={0.7} {...props}>
+      <TouchableOpacity onPress={onPress} activeOpacity={0.6} {...props}>
         {content}
       </TouchableOpacity>
     );

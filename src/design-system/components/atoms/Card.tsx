@@ -44,13 +44,17 @@ export const Card: React.FC<CardProps> = ({
 
   const cardStyle = {
     backgroundColor: variant === 'flat' ? 'transparent' : theme.colors.surface,
-    borderRadius: theme.radii.base,
+    borderRadius: theme.radii.md, // More rounded corners
     ...(variant !== 'flat' && {
-      borderWidth: variant === 'outlined' ? 1 : variant === 'default' ? 1 : 0,
+      borderWidth: variant === 'outlined' ? 1 : variant === 'default' ? 0 : 0, // No default border
       borderColor: theme.colors.border,
     }),
     padding: getPadding(),
-    ...(variant === 'elevated' && theme.shadows.base),
+    ...(variant === 'elevated' && (theme.isDark ? theme.shadows.dark.base : theme.shadows.base)),
+    // Subtle background difference for elevated cards
+    ...(variant === 'elevated' && {
+      backgroundColor: theme.colors.surfaceElevated,
+    }),
   };
 
   if (onPress) {

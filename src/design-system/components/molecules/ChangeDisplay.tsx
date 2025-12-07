@@ -30,14 +30,17 @@ export const ChangeDisplay: React.FC<ChangeDisplayProps> = ({
 
   return (
     <View style={styles.container}>
-      <Text variant={variant} style={{ color: trendColor }}>
-        {changeValue}
-      </Text>
       {showArrow && (
-        <Text variant={variant} style={{ color: trendColor }}>
+        <Text variant={variant} style={{ color: trendColor, marginRight: 2 }}>
           {trendArrow}
         </Text>
       )}
+      <Text 
+        variant={variant} 
+        weight="medium"
+        style={{ color: trendColor }}>
+        {changeValue}
+      </Text>
     </View>
   );
 };

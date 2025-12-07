@@ -36,13 +36,14 @@ export const Button: React.FC<ButtonProps> = ({
 
   const buttonStyle = useMemo((): ViewStyle => {
     const baseStyle: ViewStyle = {
-      borderRadius: theme.radii.base,
+      borderRadius: theme.radii.md, // Slightly more rounded
       paddingVertical:
         size === 'sm' ? theme.spacing.sm : size === 'md' ? theme.spacing.md : theme.spacing.base,
       paddingHorizontal:
         size === 'sm' ? theme.spacing.base : size === 'md' ? theme.spacing.lg : theme.spacing.xl,
       alignItems: 'center',
       justifyContent: 'center',
+      minHeight: size === 'sm' ? 32 : size === 'md' ? 40 : 48,
     };
 
     switch (variant) {
@@ -71,19 +72,21 @@ export const Button: React.FC<ButtonProps> = ({
       default:
         return baseStyle;
     }
-  }, [variant, size, theme.radii.base, theme.spacing, theme.colors]);
+  }, [variant, size, theme.radii.md, theme.spacing, theme.colors]);
 
-  const textColor = useMemo((): 'primary' | 'textPrimary' | 'textSecondary' => {
-    // All variants use textPrimary for consistency
+  const textColor = useMemo((): 'primary' | 'textPrimary' | 'textSecondary' | 'textInverse' => {
+    if (variant === 'primary') {
+      return 'textInverse'; // White text on primary
+    }
     return 'textPrimary';
-  }, []);
+  }, [variant]);
 
   const textWeight = useMemo(() => {
-    return variant === 'primary' ? 'bold' : 'medium';
+    return variant === 'primary' ? 'semibold' : 'medium';
   }, [variant]);
 
   const indicatorColor = useMemo(() => {
-    return variant === 'primary' ? theme.colors.textPrimary : theme.colors.primary;
+    return variant === 'primary' ? theme.colors.textInverse : theme.colors.primary;
   }, [variant, theme.colors]);
 
   const isDisabled = disabled || loading;

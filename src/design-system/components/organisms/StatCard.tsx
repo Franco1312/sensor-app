@@ -29,10 +29,10 @@ export const StatCard: React.FC<StatCardProps> = ({
   const { theme } = useTheme();
 
   return (
-    <Card style={styles.statCard}>
-      <View style={{ gap: theme.spacing.sm }}>
+    <Card padding="sm" style={styles.statCard}>
+      <View style={{ gap: 4 }}>
         <View style={styles.titleRow}>
-          <Text variant="base" weight="medium" color="textSecondary">
+          <Text variant="xs" weight="medium" color="textSecondary">
             {title}
           </Text>
           {showInfoIcon && (
@@ -40,18 +40,18 @@ export const StatCard: React.FC<StatCardProps> = ({
               onPress={onInfoPress}
               style={styles.infoIconButton}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <InfoIcon size={16} />
+              <InfoIcon size={14} />
             </TouchableOpacity>
           )}
         </View>
         <Text
-          variant="2xl"
+          variant="xl"
           weight="bold"
-          style={[{ lineHeight: 32 }, valueColor ? { color: valueColor } : {}]}>
+          style={[{ lineHeight: 24 }, valueColor ? { color: valueColor } : {}]}>
           {value}
         </Text>
         {subtitle && (
-          <Text variant="xs" color="textSecondary">
+          <Text variant="2xs" color="textSecondary">
             {subtitle}
           </Text>
         )}

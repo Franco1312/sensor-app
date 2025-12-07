@@ -125,7 +125,7 @@ export const IndicatorsScreen: React.FC = () => {
             indicatorName: item.name,
           })
         }
-        style={{ marginBottom: theme.spacing.md }}
+        style={{ marginBottom: theme.spacing.sm }}
       />
     );
   }, [navigation, theme.spacing.md]);
@@ -139,10 +139,10 @@ export const IndicatorsScreen: React.FC = () => {
       {loading ? (
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{ paddingHorizontal: theme.spacing.base, paddingTop: theme.spacing.xs }}>
-          <View style={{ gap: theme.spacing.md }}>
+          contentContainerStyle={{ paddingHorizontal: theme.spacing.base, paddingTop: theme.spacing.sm }}>
+          <View style={{ gap: theme.spacing.sm }}>
             {Array.from({ length: 6 }).map((_, index) => (
-              <Card key={`skeleton-${index}`} style={{ marginBottom: theme.spacing.md }}>
+              <Card key={`skeleton-${index}`} style={{ marginBottom: theme.spacing.sm }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.base }}>
                   <Skeleton width={40} height={40} borderRadius={8} />
                   <View style={{ flex: 1, gap: theme.spacing.xs }}>
@@ -164,7 +164,8 @@ export const IndicatorsScreen: React.FC = () => {
           renderItem={renderIndicator}
           keyExtractor={item => item.id}
           style={{ flex: 1 }}
-          contentContainerStyle={{ paddingHorizontal: theme.spacing.base, paddingTop: theme.spacing.xs, paddingBottom: theme.spacing.lg }}
+          contentContainerStyle={{ paddingHorizontal: theme.spacing.base, paddingTop: theme.spacing.sm, paddingBottom: theme.spacing.lg }}
+          showsVerticalScrollIndicator={false}
         />
       )}
     </View>

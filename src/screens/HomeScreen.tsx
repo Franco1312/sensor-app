@@ -112,7 +112,7 @@ export const HomeScreen: React.FC = () => {
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: theme.spacing.xl, paddingTop: theme.spacing.base }]}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: theme.spacing.base, paddingTop: theme.spacing.xs }]}
         showsVerticalScrollIndicator={false}>
         <DailyQuotesSection
           dollarQuotes={dollarQuotes}
@@ -146,5 +146,6 @@ export const HomeScreen: React.FC = () => {
 const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
+    gap: 0,
   },
 });

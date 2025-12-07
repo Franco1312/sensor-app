@@ -146,8 +146,8 @@ export const QuotesScreen: React.FC = () => {
 
       {/* Last Update */}
       {lastUpdateTime && (
-        <View style={{ padding: theme.spacing.base, alignItems: 'center' }}>
-          <Text variant="xs" color="textSecondary">
+        <View style={{ paddingHorizontal: theme.spacing.base, paddingVertical: theme.spacing.sm, alignItems: 'center' }}>
+          <Text variant="xs" color="textTertiary" weight="medium">
             {t('screens.quotes.lastUpdate', { time: lastUpdateTime })}
           </Text>
         </View>
@@ -167,9 +167,9 @@ export const QuotesScreen: React.FC = () => {
           
           if (loading) {
             return (
-              <View style={{ flex: 1, paddingHorizontal: theme.spacing.base, paddingTop: theme.spacing.md }}>
+              <View style={{ flex: 1, paddingHorizontal: theme.spacing.base, paddingTop: theme.spacing.sm }}>
                 {Array.from({ length: 6 }).map((_, index) => (
-                  <Card key={`skeleton-${index}`} style={{ marginBottom: theme.spacing.md }}>
+                  <Card key={`skeleton-${index}`} style={{ marginBottom: theme.spacing.sm }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.base }}>
                       <Skeleton width={40} height={40} borderRadius={8} />
                       <View style={{ flex: 1, gap: theme.spacing.xs }}>
@@ -215,7 +215,8 @@ export const QuotesScreen: React.FC = () => {
                 data={categoryQuotes}
                 renderItem={renderQuote}
                 keyExtractor={item => item.id}
-                contentContainerStyle={{ paddingTop: theme.spacing.md }}
+                contentContainerStyle={{ paddingTop: theme.spacing.sm, paddingBottom: theme.spacing.lg }}
+                showsVerticalScrollIndicator={false}
               />
             </View>
           );

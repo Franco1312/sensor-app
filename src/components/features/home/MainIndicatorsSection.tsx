@@ -42,7 +42,10 @@ export const MainIndicatorsSection: React.FC<MainIndicatorsSectionProps> = ({
 
   return (
     <View style={styles.section}>
-      <Section title={t('screens.home.sections.mainIndicators')} />
+      <Section 
+        title={t('screens.home.sections.mainIndicators')} 
+        onVerMasPress={onVerMas}
+      />
       <View style={styles.gridContainer}>
         {loading ? (
           Array.from({ length: 2 }).map((_, index) => (
@@ -60,31 +63,25 @@ export const MainIndicatorsSection: React.FC<MainIndicatorsSectionProps> = ({
           ))
         )}
       </View>
-      <View style={styles.verMasContainer}>
-        <VerMasButton onPress={onVerMas} />
-      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   section: {
-    marginBottom: 16,
-    paddingBottom: 16,
+    marginBottom: 12,
+    paddingBottom: 0,
   },
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 16,
-    marginTop: 12,
+    gap: 8,
+    marginTop: 8,
   },
   gridItem: {
     flex: 1,
     minWidth: '45%',
     maxWidth: '48%',
-  },
-  verMasContainer: {
-    marginTop: 0,
   },
 });
 

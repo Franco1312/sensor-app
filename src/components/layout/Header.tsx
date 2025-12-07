@@ -46,12 +46,13 @@ export const Header: React.FC<HeaderProps> = ({
           alignItems: 'center',
           justifyContent: 'space-between',
           paddingHorizontal: theme.spacing.base,
-          paddingTop: Math.max(insets.top, theme.spacing.md),
-          paddingBottom: theme.spacing.md,
+          paddingTop: Math.max(insets.top, theme.spacing.sm),
+          paddingBottom: theme.spacing.sm,
           backgroundColor: theme.colors.background,
+          minHeight: 56,
           ...(showBorder && {
             borderBottomWidth: 1,
-            borderBottomColor: theme.colors.border,
+            borderBottomColor: theme.colors.divider,
           }),
         },
       ]}>
@@ -59,15 +60,21 @@ export const Header: React.FC<HeaderProps> = ({
         {defaultLeftIcon && (
           <TouchableOpacity
             onPress={defaultOnLeftPress}
-            activeOpacity={0.7}
-            style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+            activeOpacity={0.6}
+            style={{ 
+              width: 40, 
+              height: 40, 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              borderRadius: theme.radii.base,
+            }}>
             {defaultLeftIcon}
           </TouchableOpacity>
         )}
       </View>
 
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: theme.spacing.sm, minWidth: 0 }}>
-        <Text variant="lg" weight="bold" numberOfLines={1} ellipsizeMode="tail" style={{ textAlign: 'center' }}>
+        <Text variant="md" weight="semibold" numberOfLines={1} ellipsizeMode="tail" style={{ textAlign: 'center' }}>
           {title}
         </Text>
       </View>
@@ -76,8 +83,14 @@ export const Header: React.FC<HeaderProps> = ({
         {rightIcon && (
           <TouchableOpacity
             onPress={onRightPress}
-            activeOpacity={0.7}
-            style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+            activeOpacity={0.6}
+            style={{ 
+              width: 40, 
+              height: 40, 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              borderRadius: theme.radii.base,
+            }}>
             {rightIcon}
           </TouchableOpacity>
         )}

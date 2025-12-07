@@ -87,7 +87,7 @@ interface StatsSectionProps {
 }
 
 const StatsSection: React.FC<StatsSectionProps> = ({ stats, theme }) => (
-  <View style={[styles.statsContainer, { gap: theme.spacing.base, marginBottom: theme.spacing.lg }]}>
+  <View style={[styles.statsContainer, { gap: theme.spacing.sm, marginBottom: theme.spacing.base }]}>
     {stats.map((stat, index) => (
       <StatCard
         key={index}
@@ -112,12 +112,13 @@ const InfoSections: React.FC<InfoSectionsProps> = ({ sections, theme }) => (
     {sections.map((section, index) => (
       <Card
         key={index}
-        style={index < sections.length - 1 ? { marginBottom: theme.spacing.base } : undefined}>
-        <View style={{ gap: theme.spacing.xs }}>
-          <Text variant="sm" weight="semibold" color="textPrimary">
+        padding="sm"
+        style={index < sections.length - 1 ? { marginBottom: theme.spacing.xs } : undefined}>
+        <View style={{ gap: 4 }}>
+          <Text variant="xs" weight="semibold" color="textPrimary">
             {section.title}
           </Text>
-          <Text variant="sm" color="textSecondary">
+          <Text variant="xs" color="textSecondary" style={{ lineHeight: 16 }}>
             {section.content}
           </Text>
         </View>
@@ -186,8 +187,8 @@ export const DetailScreenLayout: React.FC<DetailScreenConfig> = ({
           styles.container,
           {
             padding: theme.spacing.base,
-            paddingTop: theme.spacing.md,
-            paddingBottom: insets.bottom + theme.spacing.lg,
+            paddingTop: theme.spacing.sm,
+            paddingBottom: insets.bottom + theme.spacing.base,
           },
         ]}>
         {/* Header skeleton */}
@@ -251,7 +252,7 @@ export const DetailScreenLayout: React.FC<DetailScreenConfig> = ({
         },
       ]}>
       {/* Header */}
-      <Container gap={theme.spacing.sm} style={{ marginBottom: theme.spacing.lg }}>
+      <Container gap={theme.spacing.xs} style={{ marginBottom: theme.spacing.sm }}>
         <ValueHeader
           title={title}
           value={value}
@@ -273,7 +274,7 @@ export const DetailScreenLayout: React.FC<DetailScreenConfig> = ({
       {renderTimeRangeSelector ? (
         renderTimeRangeSelector()
       ) : timeRangeOptions && timeRangeOptions.length > 0 && onTimeRangeChange ? (
-        <View style={[styles.timeRangeContainer, { gap: theme.spacing.sm, marginBottom: theme.spacing.lg }]}>
+        <View style={[styles.timeRangeContainer, { gap: theme.spacing.sm, marginBottom: theme.spacing.sm, marginTop: theme.spacing.xs }]}>
           {timeRangeOptions.map(option => (
             <FilterButton
               key={option.value}

@@ -91,7 +91,7 @@ const NewsCardComponent: React.FC<NewsCardProps> = ({ news, onPress, onVerMasPre
 
 
   return (
-    <View style={[styles.container, { borderBottomColor: theme.colors.border }]}>
+    <View style={[styles.container, { borderBottomColor: theme.colors.divider }]}>
       <View style={styles.content}>
         <View style={styles.textContainer}>
           <Text variant="xs" weight="medium" style={{ color: theme.colors.primary, marginBottom: theme.spacing.xs }}>
@@ -160,7 +160,7 @@ const NewsCardComponent: React.FC<NewsCardProps> = ({ news, onPress, onVerMasPre
       {showVisitButton && (
         <TouchableOpacity
           onPress={handleVerMas}
-          activeOpacity={0.7}
+          activeOpacity={0.6}
           style={[styles.visitButton, { backgroundColor: theme.colors.surfaceSecondary }]}>
           <Text variant="sm" weight="semibold" color="textSecondary">
             {t('components.common.visitNews')}
@@ -191,23 +191,23 @@ export const NewsCard = React.memo(NewsCardComponent, (prevProps, nextProps) => 
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 24,
+    paddingVertical: 20,
     borderBottomWidth: 1,
   },
   content: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 16,
+    gap: 12,
   },
   textContainer: {
     flex: 1,
   },
   title: {
-    marginBottom: 8,
+    marginBottom: 6,
     lineHeight: 20,
   },
   summaryTouchable: {
-    marginTop: 8,
+    marginTop: 6,
   },
   summary: {
     lineHeight: 18,
@@ -224,9 +224,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 10,
-    borderRadius: 12,
+    borderRadius: 8,
     gap: 6,
-    marginTop: 8,
+    marginTop: 12,
   },
   image: {
     width: 96,
