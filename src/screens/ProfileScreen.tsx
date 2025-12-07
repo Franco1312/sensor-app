@@ -53,6 +53,7 @@ export const ProfileScreen: React.FC = () => {
   
   const userData = user || {
     email: 'usuario@ejemplo.com',
+    isEmailVerified: true,
   };
 
   return (
@@ -71,17 +72,10 @@ export const ProfileScreen: React.FC = () => {
           <Text variant="base" color="textSecondary" style={{ marginBottom: theme.spacing.sm }}>
             {userData.email}
           </Text>
-          {userData.plan && (
-            <Badge
-              variant={userData.plan === 'PREMIUM' ? 'primary' : 'secondary'}
-              style={{ marginTop: theme.spacing.xs }}>
-              {userData.plan}
-            </Badge>
-          )}
           {userData.isEmailVerified === false && (
-            <Badge variant="warning" style={{ marginTop: theme.spacing.xs }}>
-              {t('screens.profile.emailNotVerified')}
-            </Badge>
+            <View style={{ marginTop: theme.spacing.xs }}>
+              <Badge variant="negative" label={t('screens.profile.emailNotVerified')} />
+            </View>
           )}
         </Card>
 
@@ -97,14 +91,6 @@ export const ProfileScreen: React.FC = () => {
           style={{ marginBottom: theme.spacing.sm }}
         />
 
-        <ListItem
-          title={t('screens.profile.subscription')}
-          subtitle={userData.plan ? `${t('screens.profile.currentPlan')}: ${userData.plan}` : t('screens.profile.noPlan')}
-          onPress={() => {
-            navigation.navigate('Plans');
-          }}
-          style={{ marginBottom: theme.spacing.sm }}
-        />
 
         <ListItem
           title={t('screens.profile.changePassword')}

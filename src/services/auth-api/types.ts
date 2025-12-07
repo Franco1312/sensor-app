@@ -58,13 +58,6 @@ export interface VerifyEmailRequest {
   token: string;
 }
 
-export interface UpgradePlanRequest {
-  planCode: string;
-}
-
-export interface DowngradePlanRequest {
-  planCode: string;
-}
 
 export interface ValidationErrorDetail {
   path: string[];

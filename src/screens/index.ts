@@ -14,4 +14,3 @@ export { LoginScreen } from './LoginScreen';
 export { RegisterScreen } from './RegisterScreen';
 export { VerifyEmailScreen } from './VerifyEmailScreen';
 export { ResetPasswordScreen } from './ResetPasswordScreen';
-export { PlansScreen } from './PlansScreen';

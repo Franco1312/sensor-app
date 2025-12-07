@@ -187,48 +187,6 @@
       "quote": {
         "buyPrice": "Buy Price"
       }
-    },
-    "plans": {
-      "title": "Plans",
-      "intro": "Choose the plan that best suits you.",
-      "free": {
-        "name": "Basic Radar",
-        "description": "Free access for everyone. Everything essential to keep up with the Argentine economy.",
-        "badge": "Free",
-        "button": "Continue with Free Plan",
-        "features": {
-          "cotizaciones": "Dollar quotes (Blue, MEP, CCL, Official)",
-          "ultimosValores": "Latest values of CPI, Country Risk and Reserves",
-          "graficos": "Charts up to 12 months",
-          "noticias": "Selected economic news",
-          "favoritos": "Up to 3 favorite indicators",
-          "alerta": "1 personalized alert (\"Notify me if X happens\")",
-          "actualizaciones": "Daily updates according to official sources"
-        }
-      },
-      "premium": {
-        "name": "Radar Pro",
-        "description": "Unlock the full power of Economic Radar with advanced tools, unlimited alerts and more historical data.",
-        "badge": "Recommended",
-        "button": "Activate Radar Pro",
-        "buttonSecondary": "Try 7 days free",
-        "features": {
-          "alertas": "Unlimited alerts (variation, thresholds, dollar, CPI and more)",
-          "historial": "Extended history in all indicators",
-          "exportar": "Export charts and series to images (ideal for reports and social media)",
-          "actualizaciones": "Faster and more complete updates",
-          "indicadores": "Additional and expanded indicators as they are published",
-          "experiencia": "Unlimited experience in favorites and tracking"
-        }
-      },
-      "success": {
-        "upgrade": "Plan updated successfully",
-        "downgrade": "Plan updated successfully"
-      },
-      "errors": {
-        "upgradeFailed": "Error updating plan",
-        "downgradeFailed": "Error updating plan"
-      }
     }
   },
   "components": {

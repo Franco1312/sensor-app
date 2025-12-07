@@ -16,8 +16,6 @@ import type {
   ResetPasswordRequest,
   VerifyEmailRequest,
   User,
-  UpgradePlanRequest,
-  DowngradePlanRequest,
   ApiErrorResponse,
 } from './types';
 
@@ -337,68 +335,3 @@ export const getCurrentUser = async (): Promise<User> => {
   }
 };
 
-/**
- * Upgrade plan
- * POST /me/upgrade-plan
- * Requires authentication
- */
-export const upgradePlan = async (data: UpgradePlanRequest): Promise<void> => {
-  try {
-    const response = await authenticatedFetch('/me/upgrade-plan', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const errorData: ApiErrorResponse = await response.json().catch(() => ({}));
-      throw new ApiError(
-        errorData.error || 'Failed to upgrade plan',
-        response.status,
-        errorData
-      );
-    }
-    // Always returns 204, no content
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw new ApiError(
-      error instanceof Error ? error.message : 'Unknown error occurred',
-      undefined,
-      error
-    );
-  }
-};
-
-/**
- * Downgrade plan
- * POST /me/downgrade-plan
- * Requires authentication
- */
-export const downgradePlan = async (data: DowngradePlanRequest): Promise<void> => {
-  try {
-    const response = await authenticatedFetch('/me/downgrade-plan', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const errorData: ApiErrorResponse = await response.json().catch(() => ({}));
-      throw new ApiError(
-        errorData.error || 'Failed to downgrade plan',
-        response.status,
-        errorData
-      );
-    }
-    // Always returns 204, no content
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw new ApiError(
-      error instanceof Error ? error.message : 'Unknown error occurred',
-      undefined,
-      error
-    );
-  }
-};

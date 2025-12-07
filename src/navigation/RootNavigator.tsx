@@ -32,7 +32,6 @@ import { LoginScreen } from '@/screens/LoginScreen';
 import { RegisterScreen } from '@/screens/RegisterScreen';
 import { VerifyEmailScreen } from '@/screens/VerifyEmailScreen';
 import { ResetPasswordScreen } from '@/screens/ResetPasswordScreen';
-import { PlansScreen } from '@/screens/PlansScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -173,13 +172,6 @@ const RootStack: React.FC = () => {
         </>
       ) : (
         <>
-          <Stack.Screen
-            name="Plans"
-            component={PlansScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen
             name="Quotes"

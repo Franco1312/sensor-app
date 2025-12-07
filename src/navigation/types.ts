@@ -7,7 +7,6 @@ export type RootStackParamList = {
   Register: undefined;
   VerifyEmail: { email?: string };
   ResetPassword: { token?: string; email?: string };
-  Plans: undefined;
   MainTabs: { screen?: keyof MainTabParamList; params?: MainTabParamList[keyof MainTabParamList] } | undefined;
   Quotes: undefined;
   IndicatorDetail: { indicatorId: string; indicatorName: string };
