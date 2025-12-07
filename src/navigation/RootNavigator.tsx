@@ -29,6 +29,9 @@ import { CryptoDetailScreen } from '@/screens/CryptoDetailScreen';
 import { NewsScreen } from '@/screens/NewsScreen';
 import { ProfileScreen } from '@/screens/ProfileScreen';
 import { LoginScreen } from '@/screens/LoginScreen';
+import { RegisterScreen } from '@/screens/RegisterScreen';
+import { VerifyEmailScreen } from '@/screens/VerifyEmailScreen';
+import { ResetPasswordScreen } from '@/screens/ResetPasswordScreen';
 import { PlansScreen } from '@/screens/PlansScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -134,7 +137,30 @@ const RootStack: React.FC = () => {
         },
       }}>
       {!isAuthenticated ? (
+        <>
         <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen
+            name="Register"
+            component={RegisterScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="VerifyEmail"
+            component={VerifyEmailScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="ResetPassword"
+            component={ResetPasswordScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </>
       ) : (
         <>
           <Stack.Screen

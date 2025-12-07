@@ -67,13 +67,83 @@
         "registerComingSoon": "Registration - Coming soon"
       }
     },
+    "register": {
+      "title": "Create account",
+      "subtitle": "Sign up to start using Economic Radar",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password (min. 8 characters)",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "registerButton": "Sign Up",
+      "login": {
+        "question": "Already have an account?",
+        "link": "Sign in"
+      },
+      "errors": {
+        "emptyFields": "Please complete all fields",
+        "passwordTooShort": "Password must be at least 8 characters",
+        "passwordsDontMatch": "Passwords do not match",
+        "invalidEmail": "Please enter a valid email",
+        "registrationFailed": "Error signing up"
+      },
+      "success": {
+        "message": "Account created successfully. Please verify your email to continue."
+      }
+    },
+    "verifyEmail": {
+      "title": "Verify Email",
+      "subtitle": "Enter the verification code you received by email",
+      "tokenLabel": "Verification Code",
+      "tokenPlaceholder": "Enter the code",
+      "verifyButton": "Verify",
+      "resendEmail": "Resend verification email",
+      "sending": "Sending...",
+      "backToLogin": "Back to sign in",
+      "errors": {
+        "tokenRequired": "Please enter the verification code",
+        "emailRequired": "Please enter your email",
+        "verificationFailed": "Error verifying email",
+        "sendFailed": "Error sending verification email"
+      },
+      "success": {
+        "message": "Email verified successfully. You can now sign in.",
+        "emailSent": "Verification email sent"
+      }
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter the code received by email and your new password",
+      "tokenLabel": "Verification Code",
+      "tokenPlaceholder": "Enter the code received by email",
+      "passwordLabel": "New Password",
+      "passwordPlaceholder": "Enter your new password (min. 8 characters)",
+      "confirmPasswordLabel": "Confirm New Password",
+      "confirmPasswordPlaceholder": "Confirm your new password",
+      "resetButton": "Reset Password",
+      "backToLogin": "Back to sign in",
+      "errors": {
+        "emptyFields": "Please complete all fields",
+        "passwordTooShort": "Password must be at least 8 characters",
+        "passwordsDontMatch": "Passwords do not match",
+        "resetFailed": "Error resetting password"
+      },
+      "success": {
+        "message": "Password reset successfully. Please sign in with your new password."
+      }
+    },
     "profile": {
       "title": "Profile",
       "account": "Account",
       "preferences": "Preferences",
       "about": "About",
-      "editProfile": "Editar Perfil",
+      "editProfile": "Edit Profile",
       "editProfileSubtitle": "Update your personal information",
+      "subscription": "Subscription",
+      "currentPlan": "Current plan",
+      "noPlan": "No active plan",
+      "emailNotVerified": "Email not verified",
       "changePassword": "Change Password",
       "changePasswordSubtitle": "Update your access password",
       "darkMode": "Dark Mode",
@@ -150,6 +220,14 @@
           "indicadores": "Additional and expanded indicators as they are published",
           "experiencia": "Unlimited experience in favorites and tracking"
         }
+      },
+      "success": {
+        "upgrade": "Plan updated successfully",
+        "downgrade": "Plan updated successfully"
+      },
+      "errors": {
+        "upgradeFailed": "Error updating plan",
+        "downgradeFailed": "Error updating plan"
       }
     }
   },
@@ -172,6 +250,7 @@
       "error": "Error",
       "success": "Success",
       "info": "Info",
+      "ok": "OK",
       "emptyTitle": "No items available",
       "emptyMessage": "No items found to display."
     }

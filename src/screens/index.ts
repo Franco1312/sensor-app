@@ -11,4 +11,7 @@ export { CryptoDetailScreen } from './CryptoDetailScreen';
 export { NewsScreen } from './NewsScreen';
 export { ProfileScreen } from './ProfileScreen';
 export { LoginScreen } from './LoginScreen';
+export { RegisterScreen } from './RegisterScreen';
+export { VerifyEmailScreen } from './VerifyEmailScreen';
+export { ResetPasswordScreen } from './ResetPasswordScreen';
 export { PlansScreen } from './PlansScreen';

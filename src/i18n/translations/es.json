@@ -67,6 +67,72 @@
         "registerComingSoon": "Registro - Próximamente"
       }
     },
+    "register": {
+      "title": "Crear cuenta",
+      "subtitle": "Regístrate para comenzar a usar Radar Económico",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Ingresa tu email",
+      "passwordLabel": "Contraseña",
+      "passwordPlaceholder": "Ingresa tu contraseña (mín. 8 caracteres)",
+      "confirmPasswordLabel": "Confirmar Contraseña",
+      "confirmPasswordPlaceholder": "Confirma tu contraseña",
+      "registerButton": "Registrarse",
+      "login": {
+        "question": "¿Ya tienes una cuenta?",
+        "link": "Inicia sesión"
+      },
+      "errors": {
+        "emptyFields": "Por favor completa todos los campos",
+        "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
+        "passwordsDontMatch": "Las contraseñas no coinciden",
+        "invalidEmail": "Por favor ingresa un email válido",
+        "registrationFailed": "Error al registrarse"
+      },
+      "success": {
+        "message": "Cuenta creada exitosamente. Por favor verifica tu email para continuar."
+      }
+    },
+    "verifyEmail": {
+      "title": "Verificar Email",
+      "subtitle": "Ingresa el código de verificación que recibiste por email",
+      "tokenLabel": "Código de Verificación",
+      "tokenPlaceholder": "Ingresa el código",
+      "verifyButton": "Verificar",
+      "resendEmail": "Reenviar email de verificación",
+      "sending": "Enviando...",
+      "backToLogin": "Volver al inicio de sesión",
+      "errors": {
+        "tokenRequired": "Por favor ingresa el código de verificación",
+        "emailRequired": "Por favor ingresa tu email",
+        "verificationFailed": "Error al verificar el email",
+        "sendFailed": "Error al enviar el email de verificación"
+      },
+      "success": {
+        "message": "Email verificado exitosamente. Ya puedes iniciar sesión.",
+        "emailSent": "Email de verificación enviado"
+      }
+    },
+    "resetPassword": {
+      "title": "Restablecer Contraseña",
+      "subtitle": "Ingresa el código recibido por email y tu nueva contraseña",
+      "tokenLabel": "Código de Verificación",
+      "tokenPlaceholder": "Ingresa el código recibido por email",
+      "passwordLabel": "Nueva Contraseña",
+      "passwordPlaceholder": "Ingresa tu nueva contraseña (mín. 8 caracteres)",
+      "confirmPasswordLabel": "Confirmar Nueva Contraseña",
+      "confirmPasswordPlaceholder": "Confirma tu nueva contraseña",
+      "resetButton": "Restablecer Contraseña",
+      "backToLogin": "Volver al inicio de sesión",
+      "errors": {
+        "emptyFields": "Por favor completa todos los campos",
+        "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
+        "passwordsDontMatch": "Las contraseñas no coinciden",
+        "resetFailed": "Error al restablecer la contraseña"
+      },
+      "success": {
+        "message": "Contraseña restablecida exitosamente. Por favor inicia sesión con tu nueva contraseña."
+      }
+    },
     "profile": {
       "title": "Perfil",
       "account": "Cuenta",
@@ -74,6 +140,10 @@
       "about": "Acerca de",
       "editProfile": "Editar Perfil",
       "editProfileSubtitle": "Actualiza tu información personal",
+      "subscription": "Suscripción",
+      "currentPlan": "Plan actual",
+      "noPlan": "Sin plan activo",
+      "emailNotVerified": "Email no verificado",
       "changePassword": "Cambiar Contraseña",
       "changePasswordSubtitle": "Actualiza tu contraseña de acceso",
       "darkMode": "Modo Oscuro",
@@ -150,6 +220,14 @@
           "indicadores": "Indicadores adicionales y ampliados según se publiquen",
           "experiencia": "Experiencia sin límites en favoritos y seguimiento"
         }
+      },
+      "success": {
+        "upgrade": "Plan actualizado exitosamente",
+        "downgrade": "Plan actualizado exitosamente"
+      },
+      "errors": {
+        "upgradeFailed": "Error al actualizar el plan",
+        "downgradeFailed": "Error al actualizar el plan"
       }
     }
   },
@@ -172,6 +250,7 @@
       "error": "Error",
       "success": "Éxito",
       "info": "Info",
+      "ok": "OK",
       "emptyTitle": "No hay elementos disponibles",
       "emptyMessage": "No se encontraron elementos para mostrar."
     }

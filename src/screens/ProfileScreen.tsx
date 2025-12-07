@@ -5,11 +5,14 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { Screen, Header, Section } from '@/components/layout';
-import { Text, Card } from '@/design-system/components';
+import { Text, Card, Badge } from '@/design-system/components';
 import { ListItem } from '@/components/layout';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/i18n';
+import { useNavigation } from '@react-navigation/native';
+import type { RootStackParamList } from '@/navigation/types';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Svg, { Path } from 'react-native-svg';
 
 /**
@@ -40,12 +43,15 @@ const UserAvatar: React.FC<{ size?: number }> = ({ size = 80 }) => {
   );
 };
 
+type ProfileScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
 export const ProfileScreen: React.FC = () => {
   const { theme, isDarkMode, setThemeMode } = useTheme();
   const { user, logout } = useAuth();
   const { t } = useTranslation();
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
+  
   const userData = user || {
-    name: 'Usuario',
     email: 'usuario@ejemplo.com',
   };
 
@@ -60,11 +66,23 @@ export const ProfileScreen: React.FC = () => {
         <Card style={{ marginBottom: theme.spacing.lg, alignItems: 'center', paddingVertical: theme.spacing.xl }}>
           <UserAvatar size={100} />
           <Text variant="xl" weight="bold" style={{ marginTop: theme.spacing.base, marginBottom: theme.spacing.xs }}>
-            {userData.name}
+            {userData.email?.split('@')[0] || 'Usuario'}
           </Text>
-          <Text variant="base" color="textSecondary">
+          <Text variant="base" color="textSecondary" style={{ marginBottom: theme.spacing.sm }}>
             {userData.email}
           </Text>
+          {userData.plan && (
+            <Badge
+              variant={userData.plan === 'PREMIUM' ? 'primary' : 'secondary'}
+              style={{ marginTop: theme.spacing.xs }}>
+              {userData.plan}
+            </Badge>
+          )}
+          {userData.isEmailVerified === false && (
+            <Badge variant="warning" style={{ marginTop: theme.spacing.xs }}>
+              {t('screens.profile.emailNotVerified')}
+            </Badge>
+          )}
         </Card>
 
         {/* Account Section */}
@@ -75,6 +93,15 @@ export const ProfileScreen: React.FC = () => {
           subtitle={t('screens.profile.editProfileSubtitle')}
           onPress={() => {
             // TODO: Navigate to edit profile screen
+          }}
+          style={{ marginBottom: theme.spacing.sm }}
+        />
+
+        <ListItem
+          title={t('screens.profile.subscription')}
+          subtitle={userData.plan ? `${t('screens.profile.currentPlan')}: ${userData.plan}` : t('screens.profile.noPlan')}
+          onPress={() => {
+            navigation.navigate('Plans');
           }}
           style={{ marginBottom: theme.spacing.sm }}
         />

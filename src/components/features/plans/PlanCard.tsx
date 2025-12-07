@@ -84,7 +84,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
   ];
 
   return (
-    <Card variant="outlined" padding="lg" style={cardStyle}>
+    <Card variant="outlined" padding="md" style={cardStyle}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.titleContainer}>
@@ -151,43 +151,43 @@ export const PlanCard: React.FC<PlanCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    minHeight: 500,
   },
   header: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   titleContainer: {
-    marginBottom: 8,
+    marginBottom: 6,
   },
   badgeContainer: {
     alignSelf: 'flex-start',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   title: {
     marginBottom: 4,
   },
   description: {
-    lineHeight: 20,
+    lineHeight: 18,
   },
   featuresContainer: {
     flex: 1,
-    marginBottom: 24,
+    marginBottom: 16,
   },
   featureRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   featureBullet: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    marginTop: 6,
-    marginRight: 12,
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    marginTop: 5,
+    marginRight: 10,
   },
   featureText: {
     flex: 1,
-    lineHeight: 20,
+    lineHeight: 18,
+    fontSize: 14,
   },
   buttonContainer: {
     alignItems: 'center',
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   buttonSecondaryText: {
-    marginTop: 8,
+    marginTop: 6,
     textAlign: 'center',
   },
 });

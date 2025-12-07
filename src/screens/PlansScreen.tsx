@@ -2,8 +2,8 @@
  * PlansScreen - Subscription plans screen
  */
 
-import React, { useCallback } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Screen, Header } from '@/components/layout';
@@ -12,6 +12,8 @@ import { Text } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useTranslation } from '@/i18n';
 import { RootStackParamList } from '@/navigation/types';
+import { upgradePlan, downgradePlan } from '@/services/auth-api';
+import { useAuth } from '@/context/AuthContext';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -19,18 +21,64 @@ export const PlansScreen: React.FC = () => {
   const { theme } = useTheme();
   const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp>();
+  const { user, refreshUser } = useAuth();
+  const [loading, setLoading] = useState<string | null>(null);
 
-  const handleFreePlanPress = useCallback(() => {
-    // TODO: Handle free plan activation
-    // For now, navigate to MainTabs
+  const handleFreePlanPress = useCallback(async () => {
+    if (user?.plan === 'FREE') {
     navigation.replace('MainTabs');
-  }, [navigation]);
+      return;
+    }
 
-  const handlePremiumPlanPress = useCallback(() => {
-    // TODO: Handle premium plan activation
-    // For now, navigate to MainTabs
+    setLoading('FREE');
+    try {
+      await downgradePlan({ planCode: 'FREE' });
+      await refreshUser();
+      Alert.alert(
+        t('components.common.success'),
+        t('screens.plans.success.downgrade'),
+        [
+          {
+            text: t('components.common.ok'),
+            onPress: () => navigation.replace('MainTabs'),
+          },
+        ]
+      );
+    } catch (error: any) {
+      const errorMessage = error instanceof Error ? error.message : t('screens.plans.errors.downgradeFailed');
+      Alert.alert(t('components.common.error'), errorMessage);
+    } finally {
+      setLoading(null);
+    }
+  }, [navigation, user, refreshUser, t]);
+
+  const handlePremiumPlanPress = useCallback(async () => {
+    if (user?.plan === 'PREMIUM') {
     navigation.replace('MainTabs');
-  }, [navigation]);
+      return;
+    }
+
+    setLoading('PREMIUM');
+    try {
+      await upgradePlan({ planCode: 'PREMIUM' });
+      await refreshUser();
+      Alert.alert(
+        t('components.common.success'),
+        t('screens.plans.success.upgrade'),
+        [
+          {
+            text: t('components.common.ok'),
+            onPress: () => navigation.replace('MainTabs'),
+          },
+        ]
+      );
+    } catch (error: any) {
+      const errorMessage = error instanceof Error ? error.message : t('screens.plans.errors.upgradeFailed');
+      Alert.alert(t('components.common.error'), errorMessage);
+    } finally {
+      setLoading(null);
+    }
+  }, [navigation, user, refreshUser, t]);
 
   const freePlanFeatures: PlanFeature[] = [
     { text: t('screens.plans.free.features.cotizaciones') },
@@ -59,7 +107,7 @@ export const PlansScreen: React.FC = () => {
         style={{ flex: 1 }}
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingBottom: theme.spacing.xl, paddingTop: theme.spacing.base },
+          { paddingBottom: theme.spacing.lg, paddingTop: theme.spacing.sm },
         ]}
         showsVerticalScrollIndicator={false}>
         {/* Intro Text */}
@@ -79,6 +127,8 @@ export const PlansScreen: React.FC = () => {
             buttonText={t('screens.plans.premium.button')}
             buttonSecondaryText={t('screens.plans.premium.buttonSecondary')}
             onButtonPress={handlePremiumPlanPress}
+            buttonLoading={loading === 'PREMIUM'}
+            buttonDisabled={loading !== null}
             style={styles.planCard}
           />
 
@@ -90,6 +140,8 @@ export const PlansScreen: React.FC = () => {
             features={freePlanFeatures}
             buttonText={t('screens.plans.free.button')}
             onButtonPress={handleFreePlanPress}
+            buttonLoading={loading === 'FREE'}
+            buttonDisabled={loading !== null}
             style={styles.planCard}
           />
         </View>
@@ -104,8 +156,8 @@ const styles = StyleSheet.create({
   },
   introText: {
     textAlign: 'center',
-    marginBottom: 32,
-    lineHeight: 22,
+    marginBottom: 20,
+    lineHeight: 20,
   },
   plansContainer: {
     gap: 16,

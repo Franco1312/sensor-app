@@ -8,13 +8,19 @@ import { Screen } from '@/components/layout';
 import { Text, Button, Input, ChartIcon } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/context/AuthContext';
-import { login, requestPasswordReset, LoginRequest } from '@/services/auth-api';
+import { login, requestPasswordReset, type LoginRequest } from '@/services/auth-api';
 import { useTranslation } from '@/i18n';
+import { useNavigation } from '@react-navigation/native';
+import type { RootStackParamList } from '@/navigation/types';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 export const LoginScreen: React.FC = () => {
   const { theme } = useTheme();
   const { t } = useTranslation();
   const { login: loginUser } = useAuth();
+  const navigation = useNavigation<LoginScreenNavigationProp>();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -32,9 +38,10 @@ export const LoginScreen: React.FC = () => {
     try {
       const credentials: LoginRequest = { email, password };
       const response = await login(credentials);
-      loginUser(response.data.user, response.data.token);
+      await loginUser(response);
     } catch (error: any) {
-      Alert.alert(t('components.common.error'), error.message || t('screens.login.errors.loginFailed'));
+      const errorMessage = error instanceof Error ? error.message : t('screens.login.errors.loginFailed');
+      Alert.alert(t('components.common.error'), errorMessage);
     } finally {
       setLoading(false);
     }
@@ -49,9 +56,22 @@ export const LoginScreen: React.FC = () => {
     setLoading(true);
     try {
       await requestPasswordReset({ email });
-      Alert.alert(t('components.common.success'), t('screens.login.errors.resetSuccess'));
+      Alert.alert(
+        t('components.common.success'),
+        t('screens.login.errors.resetSuccess'),
+        [
+          {
+            text: t('components.common.ok'),
+            onPress: () => {
+              // Navigate to reset password screen if needed
+              // navigation.navigate('ResetPassword', { email });
+            },
+          },
+        ]
+      );
     } catch (error: any) {
-      Alert.alert(t('components.common.error'), error.message || t('screens.login.errors.resetFailed'));
+      const errorMessage = error instanceof Error ? error.message : t('screens.login.errors.resetFailed');
+      Alert.alert(t('components.common.error'), errorMessage);
     } finally {
       setLoading(false);
     }
@@ -204,8 +224,7 @@ export const LoginScreen: React.FC = () => {
                   weight="semibold"
                   style={{ color: theme.colors.primary }}
                   onPress={() => {
-                    // TODO: Navigate to register screen
-                    Alert.alert(t('components.common.info'), t('screens.login.alerts.registerComingSoon'));
+                    navigation.navigate('Register' as never);
                   }}>
                   {t('screens.login.signUp.link')}
                 </Text>
