@@ -14,7 +14,22 @@ export const SERIES_CODES = {
   EMAE_DESESTACIONALIZADA: 'INDEC_EMAE_DESESTACIONALIZADA_IDX_M',
   EMAE_TENDENCIA_CICLO: 'INDEC_EMAE_TENDENCIA_CICLO_IDX_M',
   EMAE_VARIACION_INTERANUAL: 'INDEC_EMAE_ORIGINAL_VARIACION_INTERANUAL_PCT_M',
-  // Add more series codes here as we integrate them
+  // USD Quotes - Compra
+  USD_OFICIAL_COMPRA: 'USD_OFICIAL_COMPRA_PESOSxUSD_D',
+  USD_MAYORISTA_COMPRA: 'USD_MAYORISTA_COMPRA_PESOSxUSD_D',
+  USD_TARJETA_COMPRA: 'USD_TARJETA_COMPRA_PESOSxUSD_D',
+  USD_BOLSA_COMPRA: 'USD_BOLSA_COMPRA_PESOSxUSD_D',
+  USD_CONTADOCONLIQUI_COMPRA: 'USD_CONTADOCONLIQUI_COMPRA_PESOSxUSD_D',
+  USD_BLUE_COMPRA: 'USD_BLUE_COMPRA_PESOSxUSD_D',
+  USD_CRIPTO_COMPRA: 'USD_CRIPTO_COMPRA_PESOSxUSD_D',
+  // USD Quotes - Venta
+  USD_OFICIAL_VENTA: 'USD_OFICIAL_VENTA_PESOSxUSD_D',
+  USD_MAYORISTA_VENTA: 'USD_MAYORISTA_VENTA_PESOSxUSD_D',
+  USD_TARJETA_VENTA: 'USD_TARJETA_VENTA_PESOSxUSD_D',
+  USD_BOLSA_VENTA: 'USD_BOLSA_VENTA_PESOSxUSD_D',
+  USD_CONTADOCONLIQUI_VENTA: 'USD_CONTADOCONLIQUI_VENTA_PESOSxUSD_D',
+  USD_BLUE_VENTA: 'USD_BLUE_VENTA_PESOSxUSD_D',
+  USD_CRIPTO_VENTA: 'USD_CRIPTO_VENTA_PESOSxUSD_D',
 } as const;
 
 export type SeriesCode = typeof SERIES_CODES[keyof typeof SERIES_CODES];
@@ -58,6 +73,64 @@ export const SERIES_METADATA: Record<SeriesCode, { name: string; category: Indic
   [SERIES_CODES.EMAE_VARIACION_INTERANUAL]: {
     name: 'EMAE Variación Interanual',
     category: 'actividad',
+  },
+  // USD Quotes - Compra
+  [SERIES_CODES.USD_OFICIAL_COMPRA]: {
+    name: 'Dólar Oficial (Compra)',
+    category: 'externo',
+  },
+  [SERIES_CODES.USD_MAYORISTA_COMPRA]: {
+    name: 'Dólar Mayorista (Compra)',
+    category: 'externo',
+  },
+  [SERIES_CODES.USD_TARJETA_COMPRA]: {
+    name: 'Dólar Tarjeta (Compra)',
+    category: 'externo',
+  },
+  [SERIES_CODES.USD_BOLSA_COMPRA]: {
+    name: 'Dólar Bolsa (MEP) Compra',
+    category: 'externo',
+  },
+  [SERIES_CODES.USD_CONTADOCONLIQUI_COMPRA]: {
+    name: 'Dólar Contado con Liquidación (CCL) Compra',
+    category: 'externo',
+  },
+  [SERIES_CODES.USD_BLUE_COMPRA]: {
+    name: 'Dólar Blue (Compra)',
+    category: 'externo',
+  },
+  [SERIES_CODES.USD_CRIPTO_COMPRA]: {
+    name: 'Dólar Cripto (Compra)',
+    category: 'externo',
+  },
+  // USD Quotes - Venta
+  [SERIES_CODES.USD_OFICIAL_VENTA]: {
+    name: 'Dólar Oficial (Venta)',
+    category: 'externo',
+  },
+  [SERIES_CODES.USD_MAYORISTA_VENTA]: {
+    name: 'Dólar Mayorista (Venta)',
+    category: 'externo',
+  },
+  [SERIES_CODES.USD_TARJETA_VENTA]: {
+    name: 'Dólar Tarjeta (Venta)',
+    category: 'externo',
+  },
+  [SERIES_CODES.USD_BOLSA_VENTA]: {
+    name: 'Dólar Bolsa (MEP) Venta',
+    category: 'externo',
+  },
+  [SERIES_CODES.USD_CONTADOCONLIQUI_VENTA]: {
+    name: 'Dólar Contado con Liquidación (CCL) Venta',
+    category: 'externo',
+  },
+  [SERIES_CODES.USD_BLUE_VENTA]: {
+    name: 'Dólar Blue (Venta)',
+    category: 'externo',
+  },
+  [SERIES_CODES.USD_CRIPTO_VENTA]: {
+    name: 'Dólar Cripto (Venta)',
+    category: 'externo',
   },
 };
 

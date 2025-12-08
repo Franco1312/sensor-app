@@ -40,6 +40,7 @@ const DRAWER_MENU_ITEMS: DrawerMenuItemConfig[] = [
     expandable: true,
     subItems: QUOTE_CATEGORY_TABS.map(tab => ({ label: tab.label, value: tab.value })),
   },
+  { label: 'Alertas', screen: 'Alerts', icon: 'alerts' },
 ];
 
 export const CustomDrawer: React.FC<CustomDrawerProps> = ({ visible, onClose }) => {

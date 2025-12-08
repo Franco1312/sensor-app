@@ -98,6 +98,21 @@ const formatIndex = (value: number): string => {
   return value.toFixed(2);
 };
 
+/**
+ * Formats a price value in pesos (for USD quotes)
+ * Uses Argentine format: dot for thousands, comma for decimals
+ * @param value - Price value in pesos
+ * @returns Formatted string (e.g., "$1.450" or "$1.450,50")
+ */
+const formatPriceARS = (value: number): string => {
+  if (isNaN(value) || !isFinite(value)) return '$0';
+  // Use Argentine locale which formats: 1.450,50 (dot for thousands, comma for decimals)
+  return `$${value.toLocaleString('es-AR', {
+    minimumFractionDigits: value % 1 !== 0 ? 2 : 0,
+    maximumFractionDigits: 2,
+  })}`;
+};
+
 // ============================================================================
 // Series-Specific Transformations
 // ============================================================================
@@ -224,6 +239,17 @@ const transformEmaeVariacionInteranual = (seriesData: SeriesData): Omit<Indicato
   const numValue = parseValue(seriesData.value);
   const formattedValue = formatPercentage(numValue);
   return createIndicatorBase(SERIES_CODES.EMAE_VARIACION_INTERANUAL, formattedValue, seriesData.obs_time);
+};
+
+/**
+ * Transforms USD quote data (compra or venta)
+ * Input: Price in pesos (e.g., 1450.50)
+ * Output: Formatted as price in pesos (e.g., "$1.450,50")
+ */
+const transformUsdQuote = (code: SeriesCode, seriesData: SeriesData): Omit<Indicator, 'change' | 'changePercent' | 'trend'> => {
+  const numValue = parseValue(seriesData.value);
+  const formattedValue = formatPriceARS(numValue);
+  return createIndicatorBase(code, formattedValue, seriesData.obs_time);
 };
 
 // ============================================================================
@@ -357,6 +383,22 @@ const SERIES_TRANSFORMERS: Record<SeriesCode, SeriesTransformer> = {
   [SERIES_CODES.EMAE_DESESTACIONALIZADA]: transformEmaeDesestacionalizada,
   [SERIES_CODES.EMAE_TENDENCIA_CICLO]: transformEmaeTendenciaCiclo,
   [SERIES_CODES.EMAE_VARIACION_INTERANUAL]: transformEmaeVariacionInteranual,
+  // USD Quotes - Compra
+  [SERIES_CODES.USD_OFICIAL_COMPRA]: (data) => transformUsdQuote(SERIES_CODES.USD_OFICIAL_COMPRA, data),
+  [SERIES_CODES.USD_MAYORISTA_COMPRA]: (data) => transformUsdQuote(SERIES_CODES.USD_MAYORISTA_COMPRA, data),
+  [SERIES_CODES.USD_TARJETA_COMPRA]: (data) => transformUsdQuote(SERIES_CODES.USD_TARJETA_COMPRA, data),
+  [SERIES_CODES.USD_BOLSA_COMPRA]: (data) => transformUsdQuote(SERIES_CODES.USD_BOLSA_COMPRA, data),
+  [SERIES_CODES.USD_CONTADOCONLIQUI_COMPRA]: (data) => transformUsdQuote(SERIES_CODES.USD_CONTADOCONLIQUI_COMPRA, data),
+  [SERIES_CODES.USD_BLUE_COMPRA]: (data) => transformUsdQuote(SERIES_CODES.USD_BLUE_COMPRA, data),
+  [SERIES_CODES.USD_CRIPTO_COMPRA]: (data) => transformUsdQuote(SERIES_CODES.USD_CRIPTO_COMPRA, data),
+  // USD Quotes - Venta
+  [SERIES_CODES.USD_OFICIAL_VENTA]: (data) => transformUsdQuote(SERIES_CODES.USD_OFICIAL_VENTA, data),
+  [SERIES_CODES.USD_MAYORISTA_VENTA]: (data) => transformUsdQuote(SERIES_CODES.USD_MAYORISTA_VENTA, data),
+  [SERIES_CODES.USD_TARJETA_VENTA]: (data) => transformUsdQuote(SERIES_CODES.USD_TARJETA_VENTA, data),
+  [SERIES_CODES.USD_BOLSA_VENTA]: (data) => transformUsdQuote(SERIES_CODES.USD_BOLSA_VENTA, data),
+  [SERIES_CODES.USD_CONTADOCONLIQUI_VENTA]: (data) => transformUsdQuote(SERIES_CODES.USD_CONTADOCONLIQUI_VENTA, data),
+  [SERIES_CODES.USD_BLUE_VENTA]: (data) => transformUsdQuote(SERIES_CODES.USD_BLUE_VENTA, data),
+  [SERIES_CODES.USD_CRIPTO_VENTA]: (data) => transformUsdQuote(SERIES_CODES.USD_CRIPTO_VENTA, data),
 };
 
 const SERIES_HISTORY_TRANSFORMERS: Record<SeriesCode, SeriesHistoryTransformer> = {
@@ -369,6 +411,22 @@ const SERIES_HISTORY_TRANSFORMERS: Record<SeriesCode, SeriesHistoryTransformer> 
   [SERIES_CODES.EMAE_DESESTACIONALIZADA]: transformEmaeDesestacionalizadaHistory,
   [SERIES_CODES.EMAE_TENDENCIA_CICLO]: transformEmaeTendenciaCicloHistory,
   [SERIES_CODES.EMAE_VARIACION_INTERANUAL]: transformEmaeVariacionInteranualHistory,
+  // USD Quotes - Compra (use direct value for history)
+  [SERIES_CODES.USD_OFICIAL_COMPRA]: (data) => data.map(item => createChartDataPoint(item, value => value)),
+  [SERIES_CODES.USD_MAYORISTA_COMPRA]: (data) => data.map(item => createChartDataPoint(item, value => value)),
+  [SERIES_CODES.USD_TARJETA_COMPRA]: (data) => data.map(item => createChartDataPoint(item, value => value)),
+  [SERIES_CODES.USD_BOLSA_COMPRA]: (data) => data.map(item => createChartDataPoint(item, value => value)),
+  [SERIES_CODES.USD_CONTADOCONLIQUI_COMPRA]: (data) => data.map(item => createChartDataPoint(item, value => value)),
+  [SERIES_CODES.USD_BLUE_COMPRA]: (data) => data.map(item => createChartDataPoint(item, value => value)),
+  [SERIES_CODES.USD_CRIPTO_COMPRA]: (data) => data.map(item => createChartDataPoint(item, value => value)),
+  // USD Quotes - Venta (use direct value for history)
+  [SERIES_CODES.USD_OFICIAL_VENTA]: (data) => data.map(item => createChartDataPoint(item, value => value)),
+  [SERIES_CODES.USD_MAYORISTA_VENTA]: (data) => data.map(item => createChartDataPoint(item, value => value)),
+  [SERIES_CODES.USD_TARJETA_VENTA]: (data) => data.map(item => createChartDataPoint(item, value => value)),
+  [SERIES_CODES.USD_BOLSA_VENTA]: (data) => data.map(item => createChartDataPoint(item, value => value)),
+  [SERIES_CODES.USD_CONTADOCONLIQUI_VENTA]: (data) => data.map(item => createChartDataPoint(item, value => value)),
+  [SERIES_CODES.USD_BLUE_VENTA]: (data) => data.map(item => createChartDataPoint(item, value => value)),
+  [SERIES_CODES.USD_CRIPTO_VENTA]: (data) => data.map(item => createChartDataPoint(item, value => value)),
 };
 
 // ============================================================================
@@ -416,6 +474,23 @@ export const formatValueForSeries = (rawValue: string | undefined | null, code: 
       case SERIES_CODES.EMAE_DESESTACIONALIZADA:
       case SERIES_CODES.EMAE_TENDENCIA_CICLO:
         return formatIndex(numValue);
+      
+      // USD Quotes
+      case SERIES_CODES.USD_OFICIAL_COMPRA:
+      case SERIES_CODES.USD_OFICIAL_VENTA:
+      case SERIES_CODES.USD_MAYORISTA_COMPRA:
+      case SERIES_CODES.USD_MAYORISTA_VENTA:
+      case SERIES_CODES.USD_TARJETA_COMPRA:
+      case SERIES_CODES.USD_TARJETA_VENTA:
+      case SERIES_CODES.USD_BOLSA_COMPRA:
+      case SERIES_CODES.USD_BOLSA_VENTA:
+      case SERIES_CODES.USD_CONTADOCONLIQUI_COMPRA:
+      case SERIES_CODES.USD_CONTADOCONLIQUI_VENTA:
+      case SERIES_CODES.USD_BLUE_COMPRA:
+      case SERIES_CODES.USD_BLUE_VENTA:
+      case SERIES_CODES.USD_CRIPTO_COMPRA:
+      case SERIES_CODES.USD_CRIPTO_VENTA:
+        return formatPriceARS(numValue);
       
       default:
         return numValue.toFixed(1);

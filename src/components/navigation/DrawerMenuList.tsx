@@ -11,7 +11,7 @@ import { ScreenType } from '@/types/navigation';
 export interface DrawerMenuItemConfig {
   label: string;
   screen: ScreenType;
-  icon: 'home' | 'profile' | 'indicators' | 'quotes';
+  icon: 'home' | 'profile' | 'indicators' | 'quotes' | 'alerts';
   expandable?: boolean;
   subItems?: Array<{ label: string; value: string }>;
 }

@@ -187,6 +187,56 @@
       "quote": {
         "buyPrice": "Precio de Compra"
       }
+    },
+    "alerts": {
+      "title": "Alertas",
+      "createNew": "Crear Nueva Alerta",
+      "createAlert": "Crear Alerta",
+      "editAlert": "Editar Alerta",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "active": "Activa",
+      "inactive": "Inactiva",
+      "create": "Crear",
+      "seriesCode": "Código de Serie",
+      "lastTriggered": "Última Activación",
+      "empty": {
+        "title": "No hay alertas configuradas",
+        "message": "Crea tu primera alerta para recibir notificaciones cuando los indicadores alcancen ciertos valores."
+      },
+      "error": {
+        "title": "Error",
+        "nameRequired": "El nombre es requerido",
+        "seriesCodeRequired": "El código de serie es requerido",
+        "thresholdRequired": "El umbral es requerido y debe ser un número válido",
+        "saveFailed": "Error al guardar la alerta",
+        "updateFailed": "Error al actualizar la alerta",
+        "deleteFailed": "Error al eliminar la alerta"
+      },
+      "deleteConfirm": {
+        "title": "Eliminar Alerta",
+        "message": "¿Estás seguro de que deseas eliminar la alerta \"{{name}}\"?",
+        "confirm": "Eliminar"
+      },
+      "form": {
+        "name": "Nombre de la Alerta",
+        "namePlaceholder": "Ej: Alerta TC Oficial",
+        "seriesCode": "Código de Serie",
+        "seriesCodePlaceholder": "Ej: BCRA_TC_OFICIAL_A3500_PESOSxUSD_D",
+        "dataSource": "Fuente de Datos",
+        "ruleType": "Tipo de Regla",
+        "threshold": "Umbral",
+        "thresholdPlaceholder": "Ej: 1500",
+        "window": "Ventana de Tiempo",
+        "windowPlaceholder": "Ej: 7d, 2w, 1m",
+        "isActive": "Estado"
+      },
+      "ruleDescriptions": {
+        "valueAbove": "Valor mayor que {{threshold}}",
+        "valueBelow": "Valor menor que {{threshold}}",
+        "percentChangeAbove": "Cambio % mayor que {{threshold}}% en {{window}}",
+        "percentChangeBelow": "Cambio % menor que {{threshold}}% en {{window}}"
+      }
     }
   },
   "components": {
@@ -218,6 +268,7 @@
       "home": "Inicio",
       "indicators": "Mercados",
       "news": "Noticias",
+      "alerts": "Alertas",
       "settings": "Perfil"
     }
   },

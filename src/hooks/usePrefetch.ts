@@ -9,7 +9,7 @@ import { quoteKeys } from './useQuotes';
 import { cryptoKeys } from './useCrypto';
 import { SeriesCode } from '@/constants/series';
 import { getSeriesLatest, getSeriesHistory, getSeriesMetadata } from '@/services/projections-consumer-api';
-import { getQuoteHistory } from '@/services/quotes-api';
+import { mapQuoteIdToUsdType, USD_QUOTE_MAPPING } from '@/utils/usdSeriesToQuotes';
 import { getCryptoKlines, KlineInterval } from '@/services/crypto-api';
 import { transformSeriesToIndicator } from '@/utils/seriesTransform';
 import { calculateDateRange } from '@/utils/dateRange';
@@ -56,20 +56,25 @@ export const usePrefetchIndicator = () => {
 
 /**
  * Hook to prefetch quote detail data
+ * Now uses projections-consumer-api (series format)
  */
 export const usePrefetchQuote = () => {
   const queryClient = useQueryClient();
 
-  return (casa: string) => {
-    // Prefetch quote history for default time range (1A)
-    const { startDate, endDate } = calculateDateRange('1A');
-    const startDateFormatted = startDate.split('T')[0];
-    const endDateFormatted = endDate.split('T')[0];
+  return (quoteId: string) => {
+    // Map quote ID to USD type and get venta series code
+    const usdType = mapQuoteIdToUsdType(quoteId);
+    if (!usdType) return;
 
+    const seriesCode = USD_QUOTE_MAPPING[usdType].venta;
+    const { startDate, endDate } = calculateDateRange('1A');
+
+    // Prefetch quote history using series format
     queryClient.prefetchQuery({
-      queryKey: [...quoteKeys.all, 'history', casa, '1A', startDateFormatted, endDateFormatted],
+      queryKey: [...quoteKeys.all, 'history', quoteId, '1A', startDate, endDate],
       queryFn: async () => {
-        return await getQuoteHistory(casa, startDateFormatted, endDateFormatted);
+        const response = await getSeriesHistory(seriesCode, startDate, endDate);
+        return response.data;
       },
       staleTime: 1000 * 60 * 10,
     });

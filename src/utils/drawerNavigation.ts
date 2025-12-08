@@ -14,10 +14,10 @@ export const getActiveScreenFromState = (
 ): ScreenType | null => {
   if (!state) return null;
 
-  // Check Stack screens first (like Quotes)
-  const stackRoute = state.routes.find((r: any) => r.name === 'Quotes');
+  // Check Stack screens first (like Quotes, Alerts)
+  const stackRoute = state.routes.find((r: any) => r.name === 'Quotes' || r.name === 'Alerts');
   if (stackRoute) {
-    return 'Quotes';
+    return stackRoute.name as ScreenType;
   }
 
   // Check MainTabs
@@ -34,8 +34,8 @@ export const getActiveScreenFromState = (
  * Get navigation target for a screen
  */
 export const getNavigationTarget = (screen: ScreenType): NavigationTarget => {
-  if (screen === 'Quotes') {
-    return { type: 'stack', screen: 'Quotes' };
+  if (screen === 'Quotes' || screen === 'Alerts') {
+    return { type: 'stack', screen: screen as 'Quotes' | 'Alerts' };
   }
   return { type: 'tab', screen: screen as keyof MainTabParamList };
 };

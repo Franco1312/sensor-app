@@ -12,7 +12,6 @@ import { Card, Text } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useQuoteHistory } from '@/hooks/useQuoteHistory';
 import { useQuotes } from '@/hooks/useQuotes';
-import { transformQuoteHistoryToChart } from '@/utils/quotesTransform';
 import { formatDate } from '@/utils/dateFormat';
 import { formatChangePercent } from '@/utils/formatting';
 import { DetailScreenLayout, DetailScreenConfig, StatCardData, TimeRangeOption } from '@/design-system/patterns';
@@ -47,22 +46,17 @@ export const QuoteDetailScreen: React.FC = () => {
 
   // Fetch current quote and history
   const { quotes, loading: quotesLoading } = useQuotes();
-  const { data: historyData, loading: historyLoading } = useQuoteHistory(quoteId, timeRange);
+  const { data: historyData, chartData, loading: historyLoading } = useQuoteHistory(quoteId, timeRange);
 
   // Find current quote
   const currentQuote = useMemo(() => {
     return quotes.find(q => q.id === `quote-${quoteId}`);
   }, [quotes, quoteId]);
 
-  // Transform and compute derived data
-  const chartData = useMemo(() => {
-    if (!historyData) return undefined;
-    try {
-      return transformQuoteHistoryToChart(historyData);
-    } catch {
-      return undefined;
-    }
-  }, [historyData]);
+  // Use chart data from hook (already transformed)
+  const finalChartData = useMemo(() => {
+    return chartData || undefined;
+  }, [chartData]);
 
   const lastDataPoint = useMemo(() => {
     if (!historyData?.length) return null;
@@ -70,7 +64,7 @@ export const QuoteDetailScreen: React.FC = () => {
   }, [historyData]);
 
   const lastDataPointDate = useMemo(() => {
-    return lastDataPoint ? formatDate(lastDataPoint.fecha) : null;
+    return lastDataPoint ? formatDate(lastDataPoint.obs_time) : null;
   }, [lastDataPoint]);
 
   const isPositive = currentQuote ? currentQuote.changePercent >= 0 : false;
@@ -140,7 +134,7 @@ export const QuoteDetailScreen: React.FC = () => {
       value: currentQuote?.sellPrice || '',
       changeLabel,
       changeColor: isPositive ? theme.colors.success : theme.colors.error,
-      chartData,
+      chartData: finalChartData,
       chartHeight: CHART_HEIGHT,
       chartLoading: historyLoading,
       timeRange,
@@ -157,7 +151,7 @@ export const QuoteDetailScreen: React.FC = () => {
       currentQuote,
       changeLabel,
       isPositive,
-      chartData,
+      finalChartData,
       historyLoading,
       timeRange,
       timeRangeOptions,

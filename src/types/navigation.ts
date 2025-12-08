@@ -4,11 +4,11 @@
 
 import { MainTabParamList } from '@/navigation/types';
 
-export type ScreenType = keyof MainTabParamList | 'Quotes';
+export type ScreenType = keyof MainTabParamList | 'Quotes' | 'Alerts';
 
 export type NavigationTarget = 
   | { type: 'tab'; screen: keyof MainTabParamList }
-  | { type: 'stack'; screen: 'Quotes' };
+  | { type: 'stack'; screen: 'Quotes' | 'Alerts' };
 
 export interface CategoryConfig {
   getCurrent: () => string | null;

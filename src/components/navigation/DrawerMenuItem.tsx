@@ -10,7 +10,7 @@ import { useTheme } from '@/theme/ThemeProvider';
 
 interface DrawerMenuItemProps {
   label: string;
-  icon: 'home' | 'profile' | 'indicators' | 'quotes';
+  icon: 'home' | 'profile' | 'indicators' | 'quotes' | 'alerts';
   isActive: boolean;
   isExpanded?: boolean;
   hasSubItems?: boolean;

@@ -28,6 +28,8 @@ import { QuoteDetailScreen } from '@/screens/QuoteDetailScreen';
 import { CryptoDetailScreen } from '@/screens/CryptoDetailScreen';
 import { NewsScreen } from '@/screens/NewsScreen';
 import { ProfileScreen } from '@/screens/ProfileScreen';
+import { AlertsScreen } from '@/screens/AlertsScreen';
+import { AlertFormScreen } from '@/screens/AlertFormScreen';
 import { LoginScreen } from '@/screens/LoginScreen';
 import { RegisterScreen } from '@/screens/RegisterScreen';
 import { VerifyEmailScreen } from '@/screens/VerifyEmailScreen';
@@ -43,11 +45,12 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 const SwipeableTabsWrapper: React.FC = () => {
   return (
     <SwipeableTabView
-      tabNames={['Home', 'Indicators', 'News', 'Settings']}
+      tabNames={['Home', 'Indicators', 'News', 'Alerts', 'Settings']}
       children={[
         <HomeScreen key="home" />,
         <IndicatorsScreen key="indicators" />,
         <NewsScreen key="news" />,
+        <AlertsScreen key="alerts" />,
         <ProfileScreen key="settings" />,
       ]}
     />
@@ -115,6 +118,14 @@ const MainTabs = () => {
         }}
       />
       <Tab.Screen
+        name="Alerts"
+        component={SwipeableTabsWrapper}
+        options={{
+          tabBarLabel: t('navigation.tabs.alerts'),
+          tabBarIcon: ({ focused, size }) => <TabIcon name="alerts" focused={focused} size={size} />,
+        }}
+      />
+      <Tab.Screen
         name="Settings"
         component={SwipeableTabsWrapper}
         options={{
@@ -178,6 +189,33 @@ const RootStack: React.FC = () => {
             component={QuotesScreen}
             options={{
               headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Alerts"
+            component={AlertsScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="AlertForm"
+            component={AlertFormScreen}
+            options={{
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: theme.colors.background,
+              },
+              headerTintColor: theme.colors.textPrimary,
+              headerTitleStyle: {
+                fontWeight: theme.typography.fontWeight.bold,
+                fontSize: theme.typography.fontSize.lg,
+              },
+              headerShadowVisible: false,
+              headerTransparent: false,
+              contentStyle: {
+                backgroundColor: theme.colors.background,
+              },
             }}
           />
           <Stack.Screen
