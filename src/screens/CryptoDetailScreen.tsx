@@ -21,6 +21,7 @@ import { useTranslation } from '@/i18n';
 import { Crypto } from '@/types';
 import { TIME_INTERVALS, DEFAULT_TIME_INTERVAL, TimeInterval } from '@/constants/cryptoIntervals';
 import { CRYPTO_CHART_HEIGHT, DEFAULT_POLLING_INTERVAL } from '@/constants/crypto';
+import { useScreenTracking, useAnalytics, SCREEN_NAMES, EVENT_NAMES } from '@/core/analytics';
 
 // ============================================================================
 // Types
@@ -41,6 +42,12 @@ export const CryptoDetailScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const { cryptoId, cryptoName } = route.params;
   const [timeInterval, setTimeInterval] = useState<TimeInterval>(DEFAULT_TIME_INTERVAL);
+  const { trackEvent } = useAnalytics();
+
+  // Track screen view
+  useScreenTracking(SCREEN_NAMES.CRYPTO_DETAIL, {
+    crypto_id: cryptoId,
+  });
 
   const intervalConfig = useMemo(
     () => TIME_INTERVALS.find(i => i.value === timeInterval) || TIME_INTERVALS[2],
@@ -195,7 +202,15 @@ export const CryptoDetailScreen: React.FC = () => {
       chartLoading: historyLoading,
       timeRange: timeInterval,
       timeRangeOptions,
-      onTimeRangeChange: (range: string) => setTimeInterval(range as TimeInterval),
+      onTimeRangeChange: (range: string) => {
+        const newInterval = range as TimeInterval;
+        setTimeInterval(newInterval);
+        // Track crypto config change
+        trackEvent(EVENT_NAMES.CHANGE_CRYPTO_CONFIG, {
+          crypto_id: cryptoId,
+          time_interval: newInterval,
+        });
+      },
       stats,
       additionalContent,
       loading: cryptosLoading || historyLoading || !currentCrypto,
@@ -218,6 +233,7 @@ export const CryptoDetailScreen: React.FC = () => {
       theme.colors.success,
       theme.colors.error,
       t,
+      trackEvent,
     ]
   );
 

@@ -18,3 +18,4 @@ export { Chart, MiniChart, ChartWithLabels } from '../features/charts';
 export { DataCard } from './DataCard';
 export { MetaRow } from './MetaRow';
 export { VerMasButton } from './VerMasButton';
+export { AdBanner } from './AdBanner';

@@ -9,7 +9,9 @@ export type RuleType =
   | 'PERCENT_CHANGE_ABOVE_THRESHOLD'
   | 'PERCENT_CHANGE_BELOW_THRESHOLD';
 
-export type DataSource = 'BCRA' | 'INDEC' | 'LOCAL_DB' | 'projections-consumer';
+export type DataSource = 'BCRA' | 'INDEC' | 'LOCAL_DB' | 'projections-consumer' | 'DOLARAPI';
+
+export type AlertCrossOperation = 'SPREAD_PCT' | 'SPREAD_ABS' | 'RATIO';
 
 export interface RuleConfig {
   threshold: number;
@@ -85,5 +87,26 @@ export interface ApiErrorResponse {
     message?: string;
     validation?: string;
   }>;
+}
+
+/**
+ * Configuration types for alert series from /alert-configs endpoint
+ */
+export interface CrossSeriesOption {
+  relatedSeriesCode: string;
+  relatedDisplayName: string;
+  operation: AlertCrossOperation;
+  description: string | null;
+}
+
+export interface AlertSeriesFrontendConfig {
+  seriesCode: string;
+  dataSource: string;
+  displayName: string;
+  description: string | null;
+  unit: string | null;
+  frequency: string | null;
+  supportedRuleTypes: RuleType[];
+  crossSeriesOptions: CrossSeriesOption[];
 }
 

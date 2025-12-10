@@ -14,11 +14,13 @@ import { useTranslation } from '@/i18n';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/navigation/types';
+import { useScreenTracking, SCREEN_NAMES } from '@/core/analytics';
+import { analytics } from '@/core/analytics';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export const AlertsScreen: React.FC = () => {
-  const { theme } = useTheme();
+  const { theme, isDarkMode } = useTheme();
   const { t } = useTranslation();
   const { user } = useAuth();
   const navigation = useNavigation<NavigationProp>();
@@ -26,6 +28,14 @@ export const AlertsScreen: React.FC = () => {
   const { data: alerts = [], isLoading, refetch } = useAlerts(user?.id || null);
   const updateAlertMutation = useUpdateAlert();
   const deleteAlertMutation = useDeleteAlert();
+
+  // Track screen view
+  useScreenTracking(SCREEN_NAMES.ALERTS_LIST);
+
+  // Track alerts screen viewed event
+  useEffect(() => {
+    analytics.trackAlertsScreenViewed();
+  }, []);
 
   // Refrescar cuando la pantalla recibe foco (después de crear/editar)
   useFocusEffect(
@@ -36,19 +46,29 @@ export const AlertsScreen: React.FC = () => {
 
   const handleToggleActive = useCallback(
     async (alert: Alert) => {
+      const newActiveState = !alert.isActive;
+      
       try {
         await updateAlertMutation.mutateAsync({
           alertId: alert.id,
-          request: { isActive: !alert.isActive },
+          request: { isActive: newActiveState },
         });
+        
+        // Track alert toggle (using legacy event for now)
+        // TODO: Consider if we need a separate event for toggle vs create
+        
+        // Refrescar la lista inmediatamente después de actualizar
+        await refetch();
       } catch (error) {
         RNAlert.alert(
           t('screens.alerts.error.title'),
           error instanceof Error ? error.message : t('screens.alerts.error.updateFailed')
         );
+        // Refrescar incluso si hay error para asegurar estado consistente
+        refetch();
       }
     },
-    [updateAlertMutation, t]
+    [updateAlertMutation, refetch, t]
   );
 
   const handleEdit = useCallback((alert: Alert) => {
@@ -71,6 +91,8 @@ export const AlertsScreen: React.FC = () => {
             onPress: async () => {
               try {
                 await deleteAlertMutation.mutateAsync(alert.id);
+                
+                // Alert deletion tracked via screen view and user actions
               } catch (error) {
                 RNAlert.alert(
                   t('screens.alerts.error.title'),
@@ -133,8 +155,15 @@ export const AlertsScreen: React.FC = () => {
               <Switch
                 value={item.isActive}
                 onValueChange={() => handleToggleActive(item)}
-                trackColor={{ false: theme.colors.border, true: theme.colors.primary }}
-                thumbColor={theme.colors.surface}
+                trackColor={{ 
+                  false: isDarkMode ? theme.colors.neutral300 : theme.colors.border, 
+                  true: theme.colors.primary 
+                }}
+                thumbColor={item.isActive 
+                  ? theme.colors.surface 
+                  : (isDarkMode ? theme.colors.neutral500 : theme.colors.surface)
+                }
+                ios_backgroundColor={isDarkMode ? theme.colors.neutral300 : theme.colors.border}
               />
             </View>
 

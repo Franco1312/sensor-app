@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { RootStackParamList } from '@/navigation/types';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Svg, { Path } from 'react-native-svg';
+import { useScreenTracking, SCREEN_NAMES } from '@/core/analytics';
 
 /**
  * User Avatar Icon Component
@@ -50,6 +51,9 @@ export const ProfileScreen: React.FC = () => {
   const { user, logout } = useAuth();
   const { t } = useTranslation();
   const navigation = useNavigation<ProfileScreenNavigationProp>();
+  
+  // Track screen view
+  useScreenTracking(SCREEN_NAMES.PROFILE);
   
   const userData = user || {
     email: 'usuario@ejemplo.com',

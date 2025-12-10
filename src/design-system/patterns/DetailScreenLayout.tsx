@@ -9,6 +9,7 @@ import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Screen, Container } from '@/components/layout';
 import { Card, Text, Skeleton, EmptyState, FilterButton, ValueHeader, StatCard, StatCardSkeleton } from '../components';
+import { AdBanner } from '@/components/common';
 import { ChartWithLabels } from '@/components/features/charts';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useTranslation } from '@/i18n';
@@ -269,6 +270,9 @@ export const DetailScreenLayout: React.FC<DetailScreenConfig> = ({
         seriesCode={seriesCode}
         height={chartHeight}
       />
+
+      {/* Ad Banner - Strategic placement after chart, before stats */}
+      <AdBanner marginVertical="md" />
 
       {/* Time Range Selector */}
       {renderTimeRangeSelector ? (

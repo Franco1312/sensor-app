@@ -4,11 +4,10 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { View } from 'react-native';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/navigation/types';
-import { FilterButton, InfoModal, InfoSection } from '@/design-system/components';
+import {  InfoModal } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useSeriesHistory } from '@/hooks/useSeriesHistory';
 import { useSeriesData } from '@/hooks/useSeriesData';
@@ -16,11 +15,12 @@ import { useSeriesMetadata } from '@/hooks/useSeriesMetadata';
 import { SeriesCode } from '@/constants/series';
 import { transformSeriesHistoryToChart } from '@/utils/seriesTransform';
 import { TimeRange as TimeRangeType } from '@/utils/dateRange';
-import { formatDate } from '@/utils/dateFormat';
 import { formatChangePercent } from '@/utils/formatting';
 import { DetailScreenLayout, DetailScreenConfig, StatCardData, InfoSectionData, TimeRangeOption } from '@/design-system/patterns';
 import { useTranslation } from '@/i18n';
 import { IndicatorDetail } from '@/types';
+import { useScreenTracking, SCREEN_NAMES } from '@/core/analytics';
+import { analytics } from '@/core/analytics';
 
 // ============================================================================
 // Types
@@ -50,6 +50,11 @@ export const IndicatorDetailScreen: React.FC = () => {
   const [timeRange, setTimeRange] = useState<TimeRange>('1A');
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  // Track screen view
+  useScreenTracking(SCREEN_NAMES.SERIES_DETAIL, {
+    series_code: indicatorId,
+  });
+
   const seriesCode = indicatorId as SeriesCode;
 
   // Fetch data from API
@@ -60,6 +65,17 @@ export const IndicatorDetailScreen: React.FC = () => {
   );
   const { data: metadata, loading: metadataLoading } = useSeriesMetadata(seriesCode);
 
+  // Track series viewed event (after data is loaded)
+  useEffect(() => {
+    if (indicatorData && metadata) {
+      analytics.trackSeriesViewed({
+        series_code: indicatorId,
+        source: metadata.source || 'UNKNOWN',
+        category: indicatorData.category || 'other',
+      });
+    }
+  }, [indicatorId, indicatorData, metadata]);
+
   // Transform and compute derived data
   const chartData = useMemo(() => {
     if (!historyData) return undefined;
@@ -69,11 +85,6 @@ export const IndicatorDetailScreen: React.FC = () => {
       return undefined;
     }
   }, [historyData, seriesCode]);
-
-  const lastDataPoint = useMemo(() => {
-    if (!historyData?.length) return null;
-    return historyData[historyData.length - 1];
-  }, [historyData]);
 
   // Use obs_time from the latest indicator data (from /series/latest endpoint)
   // This is more accurate than using history data which may be filtered by time range
@@ -176,7 +187,15 @@ export const IndicatorDetailScreen: React.FC = () => {
       seriesCode,
       timeRange,
       timeRangeOptions,
-      onTimeRangeChange: (range: string) => setTimeRange(range as TimeRange),
+      onTimeRangeChange: (range: string) => {
+        const newRange = range as TimeRange;
+        setTimeRange(newRange);
+        // Track time range change
+        analytics.trackSeriesTimeRangeChanged({
+          series_code: indicatorId,
+          time_range: newRange,
+        });
+      },
       stats,
       infoSections,
       loading: indicatorLoading || metadataLoading || !indicator,

@@ -4,8 +4,8 @@
 
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
+import { AppLogo } from '@/components/brand';
 
 export const DrawerHeader: React.FC = () => {
   const { theme } = useTheme();
@@ -20,9 +20,7 @@ export const DrawerHeader: React.FC = () => {
           paddingHorizontal: theme.spacing.base,
         },
       ]}>
-      <Text variant="2xl" weight="bold" style={{ color: theme.colors.textPrimary }}>
-        Radar Económico
-      </Text>
+      <AppLogo variant="compact" size={48} />
     </View>
   );
 };
@@ -31,6 +29,7 @@ const styles = StyleSheet.create({
   header: {
     paddingTop: 20,
     borderBottomWidth: 1,
+    alignItems: 'center',
   },
 });
 

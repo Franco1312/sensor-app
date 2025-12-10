@@ -5,7 +5,8 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native';
 import { Screen } from '@/components/layout';
-import { Text, Button, Input, ChartIcon } from '@/design-system/components';
+import { Text, Button, Input } from '@/design-system/components';
+import { AppLogo } from '@/components/brand';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/context/AuthContext';
 import { login, requestPasswordReset, type LoginRequest } from '@/services/auth-api';
@@ -13,6 +14,7 @@ import { useTranslation } from '@/i18n';
 import { useNavigation } from '@react-navigation/native';
 import type { RootStackParamList } from '@/navigation/types';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useScreenTracking, SCREEN_NAMES } from '@/core/analytics';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -23,6 +25,9 @@ export const LoginScreen: React.FC = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  // Track screen view
+  useScreenTracking(SCREEN_NAMES.LOGIN);
 
   // Form state
   const [email, setEmail] = useState('');
@@ -95,17 +100,7 @@ export const LoginScreen: React.FC = () => {
           <View style={[styles.content, { maxWidth: 400 }]}>
             {/* Logo and Welcome Text */}
             <View style={[styles.header, { marginBottom: theme.spacing.xl }]}>
-              <View
-                style={[
-                  styles.logoContainer,
-                  {
-                    backgroundColor: theme.colors.primaryLight,
-                    borderRadius: theme.radii.xl,
-                    marginBottom: theme.spacing.base,
-                  },
-                ]}>
-                <ChartIcon size={32} />
-              </View>
+              <AppLogo variant="default" size={64} style={{ marginBottom: theme.spacing.base }} />
               <Text variant="3xl" weight="bold" style={{ marginBottom: theme.spacing.sm, textAlign: 'center' }}>
                 {t('screens.login.title')}
               </Text>
@@ -249,12 +244,6 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-  },
-  logoContainer: {
-    width: 64,
-    height: 64,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   form: {
     width: '100%',

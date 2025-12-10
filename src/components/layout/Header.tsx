@@ -9,14 +9,16 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { useDrawerContext } from '@/context/DrawerContext';
 import { Text } from '@/design-system/components/atoms/Text';
 import { HamburgerIcon } from '@/design-system/components/atoms/icons';
+import { AppLogo } from '@/components/brand';
 
 interface HeaderProps {
-  title: string;
+  title?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   onLeftPress?: () => void;
   onRightPress?: () => void;
   showBorder?: boolean;
+  showLogo?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -26,6 +28,7 @@ export const Header: React.FC<HeaderProps> = ({
   onLeftPress,
   onRightPress,
   showBorder = true,
+  showLogo = false,
 }) => {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
@@ -77,9 +80,13 @@ export const Header: React.FC<HeaderProps> = ({
       </View>
 
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: theme.spacing.sm, minWidth: 0 }}>
-        <Text variant="md" weight="semibold" numberOfLines={1} ellipsizeMode="tail" style={{ textAlign: 'center' }}>
-          {title}
-        </Text>
+        {showLogo ? (
+          <AppLogo variant="default" size={56} paddingHorizontal={0} paddingVertical={0} />
+        ) : title ? (
+          <Text variant="md" weight="semibold" numberOfLines={1} ellipsizeMode="tail" style={{ textAlign: 'center' }}>
+            {title}
+          </Text>
+        ) : null}
       </View>
 
       <View style={{ width: 48, alignItems: 'flex-end', justifyContent: 'center' }}>

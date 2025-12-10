@@ -30,6 +30,7 @@ import { NewsScreen } from '@/screens/NewsScreen';
 import { ProfileScreen } from '@/screens/ProfileScreen';
 import { AlertsScreen } from '@/screens/AlertsScreen';
 import { AlertFormScreen } from '@/screens/AlertFormScreen';
+import { SplashScreen } from '@/screens/SplashScreen';
 import { LoginScreen } from '@/screens/LoginScreen';
 import { RegisterScreen } from '@/screens/RegisterScreen';
 import { VerifyEmailScreen } from '@/screens/VerifyEmailScreen';
@@ -155,7 +156,9 @@ const RootStack: React.FC = () => {
         },
         // Optimize navigation performance - keep screens mounted
         freezeOnBlur: true, // Freeze screens when not focused to save resources
-      }}>
+      }}
+      initialRouteName="Splash">
+      <Stack.Screen name="Splash" component={SplashScreen} />
       {!isAuthenticated ? (
         <>
         <Stack.Screen name="Login" component={LoginScreen} />

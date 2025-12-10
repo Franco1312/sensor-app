@@ -1,14 +1,16 @@
 /**
  * AlertFormModal - Modal para crear/editar alertas
+ * Refactorizado para usar configuraciones dinámicas de /alert-configs
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, Modal, ScrollView, StyleSheet, Pressable, Alert as RNAlert, Dimensions } from 'react-native';
 import { Text, Button, Input, Card } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
-import { useCreateAlert, useUpdateAlert } from '@/hooks/useAlerts';
-import { Alert, RuleType, CreateAlertRequest, UpdateAlertRequest } from '@/services/alerts-api';
+import { useCreateAlert, useUpdateAlert, useAlertConfigs } from '@/hooks/useAlerts';
+import { Alert, RuleType, CreateAlertRequest, UpdateAlertRequest, AlertSeriesFrontendConfig } from '@/services/alerts-api';
 import { useTranslation } from '@/i18n';
+import { SeriesSelector, CrossSeriesSelector } from '@/components/features/alerts';
 
 interface AlertFormModalProps {
   visible: boolean;
@@ -18,13 +20,12 @@ interface AlertFormModalProps {
   onSuccess: () => void;
 }
 
-const RULE_TYPES: { value: RuleType; label: string }[] = [
-  { value: 'VALUE_ABOVE_THRESHOLD', label: 'Valor mayor que' },
-  { value: 'VALUE_BELOW_THRESHOLD', label: 'Valor menor que' },
-  { value: 'PERCENT_CHANGE_ABOVE_THRESHOLD', label: 'Cambio % mayor que' },
-  { value: 'PERCENT_CHANGE_BELOW_THRESHOLD', label: 'Cambio % menor que' },
-];
-
+const RULE_TYPE_LABELS: Record<RuleType, string> = {
+  VALUE_ABOVE_THRESHOLD: 'Valor mayor que',
+  VALUE_BELOW_THRESHOLD: 'Valor menor que',
+  PERCENT_CHANGE_ABOVE_THRESHOLD: 'Cambio % mayor que',
+  PERCENT_CHANGE_BELOW_THRESHOLD: 'Cambio % menor que',
+};
 
 export const AlertFormModal: React.FC<AlertFormModalProps> = ({
   visible,
@@ -37,6 +38,7 @@ export const AlertFormModal: React.FC<AlertFormModalProps> = ({
   const { t } = useTranslation();
   const createAlertMutation = useCreateAlert();
   const updateAlertMutation = useUpdateAlert();
+  const { data: alertConfigs, isLoading: configsLoading, error: configsError } = useAlertConfigs();
 
   const [name, setName] = useState('');
   const [seriesCode, setSeriesCode] = useState('');
@@ -44,8 +46,38 @@ export const AlertFormModal: React.FC<AlertFormModalProps> = ({
   const [threshold, setThreshold] = useState('');
   const [window, setWindow] = useState('7d');
   const [isActive, setIsActive] = useState(true);
+  const [crossSeriesValue, setCrossSeriesValue] = useState<string | null>(null);
 
   const isEditing = !!alert;
+
+  // Obtener la serie seleccionada de las configuraciones
+  const selectedSeriesConfig = useMemo(() => {
+    if (!alertConfigs || !seriesCode) return null;
+    return alertConfigs.find(config => config.seriesCode === seriesCode);
+  }, [alertConfigs, seriesCode]);
+
+  // Obtener ruleTypes disponibles para la serie seleccionada
+  const availableRuleTypes = useMemo(() => {
+    if (!selectedSeriesConfig) return [];
+    return selectedSeriesConfig.supportedRuleTypes;
+  }, [selectedSeriesConfig]);
+
+  // Verificar si la serie seleccionada soporta cruces
+  const hasCrossSeriesOptions = useMemo(() => {
+    return selectedSeriesConfig?.crossSeriesOptions && selectedSeriesConfig.crossSeriesOptions.length > 0;
+  }, [selectedSeriesConfig]);
+
+  // Resetear ruleType si no está soportado por la serie seleccionada
+  useEffect(() => {
+    if (selectedSeriesConfig && !selectedSeriesConfig.supportedRuleTypes.includes(ruleType)) {
+      setRuleType(selectedSeriesConfig.supportedRuleTypes[0] || 'VALUE_ABOVE_THRESHOLD');
+    }
+  }, [selectedSeriesConfig, ruleType]);
+
+  // Resetear crossSeriesValue cuando cambia la serie
+  useEffect(() => {
+    setCrossSeriesValue(null);
+  }, [seriesCode]);
 
   useEffect(() => {
     if (alert) {
@@ -63,6 +95,7 @@ export const AlertFormModal: React.FC<AlertFormModalProps> = ({
       setThreshold('');
       setWindow('7d');
       setIsActive(true);
+      setCrossSeriesValue(null);
     }
   }, [alert, visible]);
 
@@ -74,6 +107,14 @@ export const AlertFormModal: React.FC<AlertFormModalProps> = ({
     }
     if (!seriesCode.trim()) {
       RNAlert.alert(t('screens.alerts.error.title'), t('screens.alerts.error.seriesCodeRequired'));
+      return;
+    }
+    if (!selectedSeriesConfig) {
+      RNAlert.alert(t('screens.alerts.error.title'), 'Serie no encontrada en las configuraciones');
+      return;
+    }
+    if (!selectedSeriesConfig.supportedRuleTypes.includes(ruleType)) {
+      RNAlert.alert(t('screens.alerts.error.title'), 'Tipo de regla no soportado para esta serie');
       return;
     }
     if (!threshold.trim() || isNaN(Number(threshold))) {
@@ -103,7 +144,7 @@ export const AlertFormModal: React.FC<AlertFormModalProps> = ({
           userId,
           name: name.trim(),
           seriesCode: seriesCode.trim(),
-          dataSource: 'projections-consumer', // Default, will be obtained from API later
+          dataSource: selectedSeriesConfig.dataSource as any, // Usar dataSource de la configuración
           ruleType,
           ruleConfig,
         };
@@ -116,6 +157,10 @@ export const AlertFormModal: React.FC<AlertFormModalProps> = ({
         error instanceof Error ? error.message : t('screens.alerts.error.saveFailed')
       );
     }
+  };
+
+  const handleCrossSeriesSelect = (relatedSeriesCode: string, operation: string) => {
+    setCrossSeriesValue(`${relatedSeriesCode}:${operation}`);
   };
 
   const requiresWindow = ruleType.includes('PERCENT_CHANGE');
@@ -152,33 +197,48 @@ export const AlertFormModal: React.FC<AlertFormModalProps> = ({
                   containerStyle={styles.inputContainer}
                 />
 
-                <View style={styles.sectionContainer}>
-                  <Text variant="sm" weight="medium" style={styles.sectionLabel}>
-                    {t('screens.alerts.form.ruleType')}
-                  </Text>
-                  <View style={styles.optionsContainer}>
-                    {RULE_TYPES.map((rule, index) => (
-                      <View key={rule.value} style={styles.ruleTypeButtonWrapper}>
-                        <Button
-                          title={rule.label}
-                          variant={ruleType === rule.value ? 'primary' : 'outline'}
-                          size="sm"
-                          onPress={() => setRuleType(rule.value)}
-                          style={styles.ruleTypeButton}
-                        />
-                      </View>
-                    ))}
-                  </View>
-                </View>
-
-                <Input
+                <SeriesSelector
                   label={t('screens.alerts.form.seriesCode')}
                   value={seriesCode}
-                  onChangeText={setSeriesCode}
-                  placeholder={t('screens.alerts.form.seriesCodePlaceholder')}
+                  seriesList={alertConfigs || []}
+                  onSelect={setSeriesCode}
+                  disabled={isEditing}
                   containerStyle={styles.inputContainer}
-                  editable={!isEditing}
+                  loading={configsLoading}
+                  error={configsError?.message || null}
                 />
+
+                {selectedSeriesConfig && (
+                  <View style={styles.sectionContainer}>
+                    <Text variant="sm" weight="medium" style={styles.sectionLabel}>
+                      {t('screens.alerts.form.ruleType')}
+                    </Text>
+                    <View style={styles.optionsContainer}>
+                      {availableRuleTypes.map((rule) => (
+                        <View key={rule} style={styles.ruleTypeButtonWrapper}>
+                          <Button
+                            title={RULE_TYPE_LABELS[rule]}
+                            variant={ruleType === rule ? 'primary' : 'outline'}
+                            size="sm"
+                            onPress={() => setRuleType(rule)}
+                            style={styles.ruleTypeButton}
+                          />
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+                )}
+
+                {hasCrossSeriesOptions && selectedSeriesConfig && (
+                  <CrossSeriesSelector
+                    label="Serie Cruzada (Brecha)"
+                    value={crossSeriesValue}
+                    crossOptions={selectedSeriesConfig.crossSeriesOptions}
+                    onSelect={handleCrossSeriesSelect}
+                    disabled={isEditing}
+                    containerStyle={styles.inputContainer}
+                  />
+                )}
 
                 <Input
                   label={t('screens.alerts.form.threshold')}
@@ -308,4 +368,3 @@ const styles = StyleSheet.create({
     minHeight: 44,
   },
 });
-

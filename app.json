@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Radar Económico",
-    "slug": "radar-economico",
+    "name": "Econnexus",
+    "slug": "econnexus",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,14 +16,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.radareconomico.app"
+      "bundleIdentifier": "com.econnexus.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#F4D35E"
       },
-      "package": "com.radareconomico.app",
+      "package": "com.econnexus.app",
       "statusBar": {
         "barStyle": "dark-content",
         "backgroundColor": "#FAFAFA"
@@ -32,6 +32,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "radar-economico"
+    "scheme": "econnexus"
   }
 }

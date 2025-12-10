@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "906533494484",
+    "project_id": "econnexus-fc7cb",
+    "storage_bucket": "econnexus-fc7cb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:906533494484:android:d50f320510ba07c492a541",
+        "android_client_info": {
+          "package_name": "com.econnexus.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKlfgspOIg0iEmN-FqdtbfBZP5jx6D2QE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
+

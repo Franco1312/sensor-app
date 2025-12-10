@@ -11,6 +11,7 @@ import {
   PaginatedResult,
   EvaluateAlertsRequest,
   EvaluateAlertsResponse,
+  AlertSeriesFrontendConfig,
 } from './types';
 import { ApiError } from '../common/ApiError';
 import { ALERTS_API_BASE_URL } from './config';
@@ -122,5 +123,12 @@ export const evaluateAlerts = async (
     method: 'POST',
     body: JSON.stringify(request),
   });
+};
+
+/**
+ * Gets all alert configurations (series with their capabilities and cross-series options)
+ */
+export const getAlertConfigs = async (): Promise<AlertSeriesFrontendConfig[]> => {
+  return apiFetch<AlertSeriesFrontendConfig[]>('/alert-configs');
 };
 

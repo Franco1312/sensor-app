@@ -9,9 +9,11 @@ import {
   createAlert,
   updateAlert,
   deleteAlert,
+  getAlertConfigs,
   CreateAlertRequest,
   UpdateAlertRequest,
   Alert,
+  AlertSeriesFrontendConfig,
 } from '@/services/alerts-api';
 
 export const alertsKeys = {
@@ -20,6 +22,7 @@ export const alertsKeys = {
   list: (userId: string) => [...alertsKeys.lists(), userId] as const,
   details: () => [...alertsKeys.all, 'detail'] as const,
   detail: (id: string) => [...alertsKeys.details(), id] as const,
+  configs: () => [...alertsKeys.all, 'configs'] as const,
 };
 
 /**
@@ -90,6 +93,19 @@ export const useDeleteAlert = () => {
       // Invalidate all alerts queries
       queryClient.invalidateQueries({ queryKey: alertsKeys.all });
     },
+  });
+};
+
+/**
+ * Hook to fetch alert configurations (series with their capabilities)
+ * This is cached for a longer time since configs don't change frequently
+ */
+export const useAlertConfigs = () => {
+  return useQuery({
+    queryKey: alertsKeys.configs(),
+    queryFn: () => getAlertConfigs(),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes (formerly cacheTime)
   });
 };
 

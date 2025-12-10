@@ -24,6 +24,8 @@ import { useIndicatorsFilter } from '@/context/IndicatorsFilterContext';
 import { useTranslation } from '@/i18n';
 import { usePrefetchIndicator } from '@/hooks/usePrefetch';
 import { SeriesCode } from '@/constants/series';
+import { useScreenTracking, SCREEN_NAMES } from '@/core/analytics';
+import { analytics } from '@/core/analytics';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 type TabNavigationProp = BottomTabNavigationProp<MainTabParamList, 'Indicators'>;
@@ -87,6 +89,9 @@ export const IndicatorsScreen: React.FC = () => {
   const [categoryFilter, setCategoryFilter] = useState<string>(DEFAULT_CATEGORY);
   const prefetchIndicator = usePrefetchIndicator();
 
+  // Track screen view
+  useScreenTracking(SCREEN_NAMES.SERIES_LIST);
+
   // Update filter when context category changes
   useEffect(() => {
     if (selectedCategory !== null) {
@@ -103,6 +108,7 @@ export const IndicatorsScreen: React.FC = () => {
       ? null
       : INDICATOR_CATEGORIES.find(cat => cat.label === categoryFilter)?.value || null;
     setCurrentCategory(categoryValue);
+    
   }, [categoryFilter, setCurrentCategory]);
 
   const { indicators, loading, refetch: refetchIndicators } = useIndicators();
@@ -121,6 +127,15 @@ export const IndicatorsScreen: React.FC = () => {
 
   const renderIndicator = useCallback(({ item }: { item: Indicator }) => {
     const handlePress = () => {
+      // Track series view
+      // Map category to source (category values are: 'precios', 'monetaria', 'actividad', 'externo', 'finanzas')
+      const source = item.category === 'precios' ? 'INDEC' : item.category ? 'BCRA' : 'DOLAR_API';
+      analytics.trackSeriesViewed({
+        series_code: item.id,
+        source,
+        category: item.category || 'other',
+      });
+      
       // Prefetch detail data before navigation
       prefetchIndicator(item.id as SeriesCode);
       navigation.navigate('IndicatorDetail', {
@@ -146,7 +161,7 @@ export const IndicatorsScreen: React.FC = () => {
         style={{ marginBottom: theme.spacing.sm }}
       />
     );
-  }, [navigation, theme.spacing.md, prefetchIndicator]);
+    }, [navigation, theme.spacing.md, prefetchIndicator]);
 
   // Get header title with category breadcrumb
   const headerTitle = useMemo(() => {

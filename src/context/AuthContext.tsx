@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getCurrentUser, logout as logoutApi, getRefreshToken, clearTokens } from '@/services/auth-api';
 import type { User, LoginResponse } from '@/services/auth-api';
 import { STORAGE_KEYS } from '@/services/auth-api/config';
+import { analyticsClient } from '@/core/analytics';
 
 interface AuthContextType {
   user: User | null;
@@ -34,18 +35,32 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (storedUser && refreshToken) {
         const parsedUser: User = JSON.parse(storedUser);
         setUser(parsedUser);
+        
+        // Set user ID in analytics
+        if (parsedUser.id) {
+          await analyticsClient.setUserId(parsedUser.id);
+        }
 
         // Try to refresh user data from API to verify token is still valid
         try {
           const currentUser = await getCurrentUser();
           setUser(currentUser);
           await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
+          
+          // Update user ID in analytics
+          if (currentUser.id) {
+            await analyticsClient.setUserId(currentUser.id);
+          }
         } catch (error) {
           // Token might be expired, clear storage
           console.warn('Failed to refresh user data, clearing session:', error);
           await clearTokens();
           setUser(null);
+          await analyticsClient.setUserId(null);
         }
+      } else {
+        // No user, clear analytics
+        await analyticsClient.setUserId(null);
       }
     } catch (error) {
       console.error('Error loading user:', error);
@@ -69,6 +84,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // Store user data
       await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(loginResponse.user));
       setUser(loginResponse.user);
+      
+      // Set user ID in analytics
+      if (loginResponse.user.id) {
+        await analyticsClient.setUserId(loginResponse.user.id);
+      }
     } catch (error) {
       console.error('Error storing user data:', error);
       throw error;
@@ -91,11 +111,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       await clearTokens();
       setUser(null);
+      
+      // Reset analytics data and clear user ID
+      await analyticsClient.resetAnalyticsData();
+      await analyticsClient.setUserId(null);
     } catch (error) {
       console.error('Error during logout:', error);
       // Clear storage anyway
       await clearTokens();
-    setUser(null);
+      setUser(null);
+      
+      // Reset analytics even on error
+      await analyticsClient.resetAnalyticsData();
+      await analyticsClient.setUserId(null);
     }
   }, []);
 

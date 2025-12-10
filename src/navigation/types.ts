@@ -5,6 +5,7 @@
 import { Alert } from '@/services/alerts-api';
 
 export type RootStackParamList = {
+  Splash: undefined;
   Login: undefined;
   Register: undefined;
   VerifyEmail: { email?: string };

@@ -1,17 +1,18 @@
 /**
  * SeriesSelector - Componente selector de series con modal
+ * Now uses AlertSeriesFrontendConfig from /alert-configs endpoint
  */
 
 import React, { useState } from 'react';
 import { View, Modal, FlatList, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
 import { Text, Button } from '@/design-system/components';
 import { useTheme } from '@/theme/ThemeProvider';
-import { SeriesMetadataItem } from '@/services/projections-consumer-api';
+import { AlertSeriesFrontendConfig } from '@/services/alerts-api';
 
 interface SeriesSelectorProps {
   label: string;
-  value: string; // internal_series_code
-  seriesList: SeriesMetadataItem[];
+  value: string; // seriesCode
+  seriesList: AlertSeriesFrontendConfig[];
   onSelect: (seriesCode: string) => void;
   disabled?: boolean;
   containerStyle?: any;
@@ -32,17 +33,17 @@ export const SeriesSelector: React.FC<SeriesSelectorProps> = ({
   const { theme } = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
 
-  const selectedSeries = seriesList.find(s => s.internal_series_code === value);
+  const selectedSeries = seriesList.find(s => s.seriesCode === value);
   
-  // Helper function to get display title (fallback to internal_series_code if title is null)
-  const getDisplayTitle = (item: SeriesMetadataItem): string => {
-    return item.title || item.internal_series_code
+  // Helper function to get display title (uses displayName from config)
+  const getDisplayTitle = (item: AlertSeriesFrontendConfig): string => {
+    return item.displayName || item.seriesCode
       .replace(/_/g, ' ')
       .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
-  const handleSelect = (series: SeriesMetadataItem) => {
-    onSelect(series.internal_series_code);
+  const handleSelect = (series: AlertSeriesFrontendConfig) => {
+    onSelect(series.seriesCode);
     setModalVisible(false);
   };
 
@@ -51,8 +52,8 @@ export const SeriesSelector: React.FC<SeriesSelectorProps> = ({
     setModalVisible(true);
   };
 
-  const isValidItem = (item: SeriesMetadataItem | null | undefined): item is SeriesMetadataItem => {
-    return !!item?.internal_series_code;
+  const isValidItem = (item: AlertSeriesFrontendConfig | null | undefined): item is AlertSeriesFrontendConfig => {
+    return !!item?.seriesCode;
   };
 
   return (
@@ -132,11 +133,11 @@ export const SeriesSelector: React.FC<SeriesSelectorProps> = ({
               {!loading && !error && seriesList.length > 0 && (
                 <FlatList
                   data={seriesList}
-                  keyExtractor={(item) => item.internal_series_code}
+                  keyExtractor={(item) => item.seriesCode}
                   renderItem={({ item }) => {
                     if (!isValidItem(item)) return null;
                     
-                    const isSelected = value === item.internal_series_code;
+                    const isSelected = value === item.seriesCode;
                     return (
                       <TouchableOpacity
                         onPress={() => handleSelect(item)}
@@ -147,12 +148,19 @@ export const SeriesSelector: React.FC<SeriesSelectorProps> = ({
                             borderBottomColor: theme.colors.border,
                           }
                         ]}>
-                        <Text
-                          variant="base"
-                          weight={isSelected ? 'semibold' : undefined}
-                          color={isSelected ? 'primary' : 'textPrimary'}>
-                          {getDisplayTitle(item)}
-                        </Text>
+                        <View style={{ flex: 1 }}>
+                          <Text
+                            variant="base"
+                            weight={isSelected ? 'semibold' : undefined}
+                            color={isSelected ? 'primary' : 'textPrimary'}>
+                            {getDisplayTitle(item)}
+                          </Text>
+                          {item.description && (
+                            <Text variant="sm" color="textSecondary" style={{ marginTop: 4 }}>
+                              {item.description}
+                            </Text>
+                          )}
+                        </View>
                         {isSelected && <Text variant="sm" color="primary">✓</Text>}
                       </TouchableOpacity>
                     );

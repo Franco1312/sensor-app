@@ -1,7 +1,7 @@
 {
   "screens": {
     "home": {
-      "title": "Radar Económico",
+      "title": "Econnexus",
       "sections": {
         "dailyQuotes": "Cotizaciones del Día",
         "mainIndicators": "Indicadores Principales",
@@ -40,7 +40,7 @@
     },
     "login": {
       "title": "Bienvenido de vuelta",
-      "subtitle": "Inicia sesión para continuar en Radar Económico",
+      "subtitle": "Inicia sesión para continuar en Econnexus",
       "emailLabel": "Email o Usuario",
       "emailPlaceholder": "Ingresa tu email o usuario",
       "passwordLabel": "Contraseña",
@@ -69,7 +69,7 @@
     },
     "register": {
       "title": "Crear cuenta",
-      "subtitle": "Regístrate para comenzar a usar Radar Económico",
+      "subtitle": "Regístrate para comenzar a usar Econnexus",
       "emailLabel": "Email",
       "emailPlaceholder": "Ingresa tu email",
       "passwordLabel": "Contraseña",
@@ -151,7 +151,7 @@
       "darkModeInactive": "Desactivado",
       "notifications": "Notificaciones",
       "notificationsSubtitle": "Gestiona tus notificaciones",
-      "appName": "Radar Económico",
+      "appName": "Econnexus",
       "version": "Versión 1.0.0",
       "appDescription": "Aplicación para seguimiento de indicadores económicos y cotizaciones de mercado.",
       "terms": "Términos y Condiciones",

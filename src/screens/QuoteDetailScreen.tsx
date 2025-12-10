@@ -17,6 +17,7 @@ import { formatChangePercent } from '@/utils/formatting';
 import { DetailScreenLayout, DetailScreenConfig, StatCardData, TimeRangeOption } from '@/design-system/patterns';
 import { useTranslation } from '@/i18n';
 import { Quote } from '@/types';
+import { useScreenTracking, useAnalytics, SCREEN_NAMES, EVENT_NAMES } from '@/core/analytics';
 
 // ============================================================================
 // Types
@@ -43,6 +44,12 @@ export const QuoteDetailScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const { quoteId, quoteName } = route.params;
   const [timeRange, setTimeRange] = useState<TimeRange>('1A');
+  const { trackEvent } = useAnalytics();
+
+  // Track screen view
+  useScreenTracking(SCREEN_NAMES.QUOTE_DETAIL, {
+    quote_id: quoteId,
+  });
 
   // Fetch current quote and history
   const { quotes, loading: quotesLoading } = useQuotes();
@@ -139,7 +146,15 @@ export const QuoteDetailScreen: React.FC = () => {
       chartLoading: historyLoading,
       timeRange,
       timeRangeOptions,
-      onTimeRangeChange: (range: string) => setTimeRange(range as TimeRange),
+      onTimeRangeChange: (range: string) => {
+        const newRange = range as TimeRange;
+        setTimeRange(newRange);
+        // Track quote config change
+        trackEvent(EVENT_NAMES.CHANGE_QUOTE_CONFIG, {
+          quote_id: quoteId,
+          period: newRange,
+        });
+      },
       stats,
       additionalContent,
       loading: quotesLoading || historyLoading || !currentQuote,
@@ -161,6 +176,7 @@ export const QuoteDetailScreen: React.FC = () => {
       theme.colors.success,
       theme.colors.error,
       t,
+      trackEvent,
     ]
   );
 

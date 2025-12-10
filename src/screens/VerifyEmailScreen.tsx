@@ -5,7 +5,8 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native';
 import { Screen } from '@/components/layout';
-import { Text, Button, Input, ChartIcon } from '@/design-system/components';
+import { Text, Button, Input } from '@/design-system/components';
+import { AppLogo } from '@/components/brand';
 import { useTheme } from '@/theme/ThemeProvider';
 import { verifyEmail, sendVerificationEmail } from '@/services/auth-api';
 import { useTranslation } from '@/i18n';
@@ -97,17 +98,7 @@ export const VerifyEmailScreen: React.FC = () => {
           <View style={[styles.content, { maxWidth: 400 }]}>
             {/* Logo and Welcome Text */}
             <View style={[styles.header, { marginBottom: theme.spacing.xl }]}>
-              <View
-                style={[
-                  styles.logoContainer,
-                  {
-                    backgroundColor: theme.colors.primaryLight,
-                    borderRadius: theme.radii.xl,
-                    marginBottom: theme.spacing.base,
-                  },
-                ]}>
-                <ChartIcon size={32} />
-              </View>
+              <AppLogo variant="default" size={64} style={{ marginBottom: theme.spacing.base }} />
               <Text variant="3xl" weight="bold" style={{ marginBottom: theme.spacing.sm, textAlign: 'center' }}>
                 {t('screens.verifyEmail.title')}
               </Text>
@@ -190,12 +181,6 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-  },
-  logoContainer: {
-    width: 64,
-    height: 64,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   form: {
     width: '100%',

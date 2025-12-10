@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Screen, Header } from '@/components/layout';
 import { Text, Skeleton, Card, EmptyState } from '@/design-system/components';
+import { AdBanner } from '@/components/common';
 import { QuoteItem } from '@/components/features/quotes/QuoteItem';
 import { CategoryTabs } from '@/components/navigation/CategoryTabs';
 import { CategoryPager } from '@/components/navigation/CategoryPager';
@@ -24,6 +25,7 @@ import { cryptosToQuotes, CryptoQuote } from '@/utils/cryptoToQuote';
 import { DEFAULT_POLLING_INTERVAL } from '@/constants/crypto';
 import { useTranslation } from '@/i18n';
 import { usePrefetchQuote, usePrefetchCrypto } from '@/hooks/usePrefetch';
+import { useScreenTracking, SCREEN_NAMES } from '@/core/analytics';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -40,6 +42,9 @@ export const QuotesScreen: React.FC = () => {
   );
   const prefetchQuote = usePrefetchQuote();
   const prefetchCrypto = usePrefetchCrypto();
+
+  // Track screen view
+  useScreenTracking(SCREEN_NAMES.QUOTES_LIST);
 
   // No need to reload on focus - React Query handles caching automatically
 
@@ -123,6 +128,7 @@ export const QuotesScreen: React.FC = () => {
       });
     } else {
       const casa = item.id.replace('quote-', '');
+      
       // Prefetch quote detail data before navigation
       prefetchQuote(casa);
       navigation.navigate('QuoteDetail', {
@@ -154,6 +160,11 @@ export const QuotesScreen: React.FC = () => {
           </Text>
         </View>
       )}
+
+      {/* Ad Banner */}
+      <View style={{ paddingHorizontal: theme.spacing.base }}>
+        <AdBanner marginVertical="sm" placement="quotes_list_header" />
+      </View>
 
       {/* Swipeable Quotes List */}
       <CategoryPager

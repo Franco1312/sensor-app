@@ -12,6 +12,7 @@ export { NewsScreen } from './NewsScreen';
 export { ProfileScreen } from './ProfileScreen';
 export { AlertsScreen } from './AlertsScreen';
 export { AlertFormScreen } from './AlertFormScreen';
+export { SplashScreen } from './SplashScreen';
 export { LoginScreen } from './LoginScreen';
 export { RegisterScreen } from './RegisterScreen';
 export { VerifyEmailScreen } from './VerifyEmailScreen';
